@@ -3,7 +3,7 @@ import Logo from "../../assets/Slotify Logo.webp"
 export const Footer = () => {
 
     return (
-        <footer className="pt-6">
+        <footer className="pt-34">
             <div className="flex justify-around px-24 ">
                 <div className=" flex-1 items-center justify-center">
                     <img src={Logo} alt="Slotify" className="h-24" />
