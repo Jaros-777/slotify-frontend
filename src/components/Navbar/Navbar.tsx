@@ -4,7 +4,7 @@ export const Navbar =()=>{
 
 
     return(
-        <header id="navbar" className="flex h-20 px-20  sticky justify-between items-center shadow-xl text-gray-600">
+        <header id="navbar" className="flex h-20 px-20  sticky top-0 left-0 bg-white justify-between items-center shadow-xl text-gray-600">
             <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
             
             <div>
