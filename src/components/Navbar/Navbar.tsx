@@ -1,4 +1,4 @@
-import Logo from "./assets/Slotify Logo.webp"
+import Logo from "../../assets/Slotify Logo.webp"
 
 export const Navbar =()=>{
 
@@ -9,12 +9,13 @@ export const Navbar =()=>{
             
             <div>
                 <a href="#" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Features</a>
+                <a href="#" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Why Slotify?</a>
                 <a href="#" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Pricing</a>
                 <a href="#" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Contact</a>
             </div>
             <div>
                 <a href="#" className="mr-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">LOG IN</a>
-                <a href="#" className="bg-blue-400 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-500 duration-200">SING UP</a>
+                <a href="#" className="bg-blue-500 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-600 duration-200">SING UP</a>
             </div>
         </header>
     )
