@@ -3,8 +3,9 @@ import Home from './pages/Home/Home.tsx';
 import { Auth } from './pages/Home/components/Auth/Auth.tsx';
 import { NavbarHome } from './components/Navbar/NavbarHome.tsx';
 import { NavbarAdmin } from "./components/Navbar/NavbarAdmin.tsx";
-import { Admin } from "./pages/Admin/admin.tsx";
+import { Calendar } from "./pages/Admin/Calendar.tsx";
 import { Footer } from './components/Footer/Footer.tsx';
+import { NotFound } from "./pages/NotFound.tsx";
 
 export const AppRouter = () => {
   const location = useLocation();
@@ -20,7 +21,9 @@ export const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Auth view="login" />} />
         <Route path="/register" element={<Auth view="register" />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
 
       <Footer />
