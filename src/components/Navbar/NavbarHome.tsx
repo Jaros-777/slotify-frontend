@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Logo from "../../assets/Slotify Logo.webp"
 
 
-export const Navbar = () => {
+export const NavbarHome = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
