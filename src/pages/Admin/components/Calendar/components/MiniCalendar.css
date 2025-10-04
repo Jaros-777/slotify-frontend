@@ -1,0 +1,58 @@
+.react-calendar{
+    border: none;
+    margin-top: 1rem;
+}
+/*Name of month and year*/
+.react-calendar__navigation__label{
+    font-size: 1rem;
+    font-weight: bold;
+}
+/*Week days name*/
+.react-calendar__month-view__weekdays__weekday{
+    font-size: 0.7rem;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+/*Delete underline from week days name*/
+abbr{
+    text-decoration: none;
+}
+/*Delete changing color on hover effect*/
+.react-calendar__tile:hover {
+  background-color: transparent !important;
+}
+
+/*All days*/
+.react-calendar__tile {
+    font-weight: bold;
+    font-size: 0.7rem;
+}
+
+/* Today */
+.react-calendar__tile--now {
+  color: blue;
+  background-color: rgba(255, 255, 255, 0);
+}
+.selected-day {
+  background-color: rgba(173, 216, 230, 0.8) !important;
+}
+
+.selected-week-start {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.selected-week-end {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/*Delete changing color on hover effect in choosen week*/
+.selected-day,
+.selected-day:hover,
+.selected-day:focus,
+.selected-day:active {
+  background-color: rgba(173, 216, 230, 0.8) !important;
+}
