@@ -75,7 +75,7 @@ export const BigCalendar = () => {
 
 
 
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
   const [selectedDuration, setSelectedDuration] = useState<number>(30);
 
@@ -93,6 +93,7 @@ export const BigCalendar = () => {
     });
     setIsModalOpen(true);
   };
+
 
   const handleAddEvent = () => {
     if (newEvent.name && newEvent.start) {
@@ -169,140 +170,162 @@ export const BigCalendar = () => {
             <h2 className="text-xl font-semibold mb-4 text-center">
               New reservation
             </h2>
-            <input
-              type="text"
-              placeholder="Client name"
-              value={newEvent.name || ""}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, name: e.target.value })
-              }
-              className="w-full border p-2 rounded mb-4"
-            />
-            <input
-              type="email"
-              placeholder="Client mail"
-              value={newEvent.email || ""}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, email: e.target.value })
-              }
-              className="w-full border p-2 rounded mb-4"
-            />
-            <input
-              type="number"
-              placeholder="Client phone"
-              value={newEvent.phone || undefined}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, phone: Number(e.target.value) })
-              }
-              className="w-full border p-2 rounded mb-4"
-            />
-            <p>Assign service</p>
-            <select
-              value={newEvent.service ?? services[0].id}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, service: Number(e.target.value) })
-              }
-              className="w-full border p-2 rounded mb-4"
+            <form
+              onSubmit={(e) => {
+                e.preventDefault(); // żeby nie przeładowywało strony
+                handleAddEvent();
+              }}
             >
-              {services.map((service) => (
-                <option key={service.id} value={service.id}>
-                  {service.name}
-                </option>
-              ))}
-            </select>
-            <div className="flex">
-              <div>
-                <p>Date</p>
-                <input type="date"
-                  value={newEvent.start ? newEvent.start.toLocaleDateString("en-CA") : ""}
-                  onChange={(e) => {
-                    if (!newEvent.start) return;
-                    const [year, month, day] = e.target.value.split("-").map(Number);
-                    const hours = newEvent.start.getHours();
-                    const minutes = newEvent.start.getMinutes();
-                    setNewEvent({
-                      ...newEvent,
-                      start: new Date(year, month - 1, day, hours, minutes),
-                      end: newEvent.end
-                        ? new Date(
-                          year,
-                          month - 1,
-                          day,
-                          newEvent.end.getHours(),
-                          newEvent.end.getMinutes()
-                        )
-                        : new Date(year, month - 1, day, hours + 0.5, minutes), // default duration 30 min
-                    });
-                  }}
-                />
+              <input
+                type="text"
+                required
+                placeholder="Client name"
+                value={newEvent.name || ""}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, name: e.target.value })
+                }
+                className="w-full border p-2 rounded mb-4"
+              />
+              <input
+                type="email"
+                placeholder="Client mail"
+                value={newEvent.email || ""}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, email: e.target.value })
+                }
+                className="w-full border p-2 rounded mb-4"
+              />
+              <input
+                type="tel"
+                pattern="[0-9]+"
+                placeholder="Client phone"
+                minLength={9}
+                maxLength={9}
+                value={newEvent.phone || undefined}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, phone: Number(e.target.value) })
+                }
+                className="w-full border p-2 rounded mb-4"
+              />
+
+
+              <p className=" font-medium">Assign service</p>
+              <select
+                value={newEvent.service ?? services[0].id}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, service: Number(e.target.value) })
+                }
+                className="w-full border p-2 rounded mb-4"
+              >
+                {services.map((service) => (
+                  <option key={service.id} value={service.id}>
+                    {service.name}
+                  </option>
+                ))}
+              </select>
+              <div className="flex w-full justify-between">
+                <div>
+                  <p className=" font-medium">Date</p>
+                  <input
+                    className="border-1 border-black px-2 py-1 h-[2em]"
+                    type="date"
+                    value={newEvent.start ? newEvent.start.toLocaleDateString("en-CA") : ""}
+                    onChange={(e) => {
+                      if (!newEvent.start) return;
+                      const [year, month, day] = e.target.value.split("-").map(Number);
+                      const hours = newEvent.start.getHours();
+                      const minutes = newEvent.start.getMinutes();
+                      setNewEvent({
+                        ...newEvent,
+                        start: new Date(year, month - 1, day, hours, minutes),
+                        end: newEvent.end
+                          ? new Date(
+                            year,
+                            month - 1,
+                            day,
+                            newEvent.end.getHours(),
+                            newEvent.end.getMinutes()
+                          )
+                          : new Date(year, month - 1, day, hours + 0.5, minutes), // default duration 30 min
+                      });
+                    }}
+                  />
+
+                </div>
+                <div>
+                  <p className=" font-medium">Time</p>
+                  <select
+                    className="border-1 border-black px-2 py-1 h-[2em]"
+                    value={
+                      newEvent.start
+                        ? `${newEvent.start.getHours().toString().padStart(2, "0")}:${newEvent.start
+                          .getMinutes()
+                          .toString()
+                          .padStart(2, "0")}`
+                        : ""
+                    }
+                    onChange={(e) => {
+                      if (!newEvent.start) return;
+                      const [hours, minutes] = e.target.value.split(":").map(Number);
+                      setNewEvent({
+                        ...newEvent,
+                        start: new Date(
+                          newEvent.start.getFullYear(),
+                          newEvent.start.getMonth(),
+                          newEvent.start.getDate(),
+                          hours,
+                          minutes
+                        ),
+                      });
+                    }}
+                  >
+                    {times.map((time) => (
+                      <option key={time} value={time}>
+                        {time}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <p className=" font-medium">Duration</p>
+                  <select
+                    className="border-1 border-black px-2 py-1 h-[2em]"
+                    value={selectedDuration}
+                    onChange={(e) => setSelectedDuration(Number(e.target.value))}
+                  >
+                    {durations.map((d) => (
+                      <option key={d.value} value={d.value}>
+                        {d.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="flex w-full justify-between pt-4 mt-4 border-t-1 border-gray-300 ">
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 duration-200"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-4 py-2 bg-gray-300 rounded font-medium hover:bg-gray-400 duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+
+
+                <button
+                  onClick={() => handleDeleteEvent(newEvent.id)}
+                  className="px-4 py-2 text-red-500 font-medium rounded hover:bg-red-700 duration-200">
+                  Delete
+                </button>
 
               </div>
-              <div>
-                <p>Time</p>
-                <select
-                  value={
-                    newEvent.start
-                      ? `${newEvent.start.getHours().toString().padStart(2, "0")}:${newEvent.start
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0")}`
-                      : ""
-                  }
-                  onChange={(e) => {
-                    if (!newEvent.start) return;
-                    const [hours, minutes] = e.target.value.split(":").map(Number);
-                    setNewEvent({
-                      ...newEvent,
-                      start: new Date(
-                        newEvent.start.getFullYear(),
-                        newEvent.start.getMonth(),
-                        newEvent.start.getDate(),
-                        hours,
-                        minutes
-                      ),
-                    });
-                  }}
-                >
-                  {times.map((time) => (
-                    <option key={time} value={time}>
-                      {time}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <p>Duration</p>
-                <select
-                  value={selectedDuration}
-                  onChange={(e) => setSelectedDuration(Number(e.target.value))}
-                >
-                  {durations.map((d) => (
-                    <option key={d.value} value={d.value}>
-                      {d.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 duration-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddEvent}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 duration-200"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => handleDeleteEvent(newEvent.id)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 duration-200">
-                Delete
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       )}
