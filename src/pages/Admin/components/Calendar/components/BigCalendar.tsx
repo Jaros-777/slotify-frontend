@@ -11,11 +11,10 @@ import { v4 as uuid } from 'uuid';
 
 
 const locales = {
-  "en-GB": enGB, // lokalizacja polska
+  "en-GB": enGB,
 };
 
 
-// konfigurujemy "localizer" — czyli sposób obsługi dat
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -78,10 +77,10 @@ export const BigCalendar = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
+  const [selectedDuration, setSelectedDuration] = useState<number>(30);
 
   // When user selects a time slot
   const handleSelectSlot = (slotInfo: SlotInfo) => {
-    const durationInHours = (slotInfo.end.getTime() - slotInfo.start.getTime()) / (1000 * 60 * 60);
     setNewEvent({
       id: uuid(),
       name: "",
@@ -97,16 +96,24 @@ export const BigCalendar = () => {
 
   const handleAddEvent = () => {
     if (newEvent.name && newEvent.start) {
-      setEvents([...events, newEvent as EventType]);
+      const endDate = new Date(newEvent.start.getTime() + selectedDuration * 60000);
+      setEvents([
+        ...events,
+        { ...newEvent, end: endDate } as EventType,
+      ]);
       setIsModalOpen(false);
+      setSelectedDuration(30)
     } else {
-      alert("Can't create new reservation")
+      alert("Reservation must have client name");
     }
-    // if (newEvent.name && newEvent.start && newEvent.end) {
-    //   setEvents([...events, newEvent as EventType]);
-    //   setIsModalOpen(false);
-    // }
   };
+
+  const handleDeleteEvent = (id: number | string | undefined) => {
+    if (!id) return;
+    setEvents(events.filter(e => e.id.toString() !== id.toString()));
+    setIsModalOpen(false);
+
+  }
 
   const times = Array.from({ length: 24 * 2 }, (_, i) => {
     const hours = Math.floor(i / 2);
@@ -149,7 +156,12 @@ export const BigCalendar = () => {
         culture="en-GB"
         className="h-full bg-white"
         onSelectSlot={handleSelectSlot}
-
+        onSelectEvent={(event: EventType) => {
+          setNewEvent(event);
+          const durationInMinutes = (event.end.getTime() - event.start.getTime()) / 60000;
+          setSelectedDuration(durationInMinutes);
+          setIsModalOpen(true);
+        }}
       />
       {isModalOpen && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -228,6 +240,28 @@ export const BigCalendar = () => {
               <div>
                 <p>Time</p>
                 <select
+                  value={
+                    newEvent.start
+                      ? `${newEvent.start.getHours().toString().padStart(2, "0")}:${newEvent.start
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0")}`
+                      : ""
+                  }
+                  onChange={(e) => {
+                    if (!newEvent.start) return;
+                    const [hours, minutes] = e.target.value.split(":").map(Number);
+                    setNewEvent({
+                      ...newEvent,
+                      start: new Date(
+                        newEvent.start.getFullYear(),
+                        newEvent.start.getMonth(),
+                        newEvent.start.getDate(),
+                        hours,
+                        minutes
+                      ),
+                    });
+                  }}
                 >
                   {times.map((time) => (
                     <option key={time} value={time}>
@@ -239,10 +273,12 @@ export const BigCalendar = () => {
               <div>
                 <p>Duration</p>
                 <select
+                  value={selectedDuration}
+                  onChange={(e) => setSelectedDuration(Number(e.target.value))}
                 >
-                  {durations.map((duration) => (
-                    <option key={duration.value} value={duration.value}>
-                      {duration.label}
+                  {durations.map((d) => (
+                    <option key={d.value} value={d.value}>
+                      {d.label}
                     </option>
                   ))}
                 </select>
@@ -251,15 +287,20 @@ export const BigCalendar = () => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddEvent}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 duration-200"
               >
                 Save
+              </button>
+              <button
+                onClick={() => handleDeleteEvent(newEvent.id)}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 duration-200">
+                Delete
               </button>
             </div>
           </div>
