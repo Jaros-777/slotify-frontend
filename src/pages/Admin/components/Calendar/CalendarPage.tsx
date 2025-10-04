@@ -1,9 +1,11 @@
 
 import { useState } from "react"
 import { MiniCalendar } from "./components/MiniCalendar"
+import { BigCalendar } from "./components/BigCalendar"
 
 export const CalendarPage = () => {
     const [formatDate, setFormatDate] = useState<string>("")
+    const [serviceData, setServiceData] = useState<string[]>(["service 1", 'service 2', 'service 3'])
 
     return (
         <section className="mt-20 borer-1 border-text-gray flex">
@@ -13,18 +15,19 @@ export const CalendarPage = () => {
                     <span>CREATE NEW</span>
                 </button>
                 <MiniCalendar onWeekChange={setFormatDate} />
-                <div>
-                    <p>SERVICES</p>
+                <div className="mt-4">
+                    <p className="font-medium">SERVICES</p>
 
                     <ul>
-                        <li>service 1</li>
-                        <li>service 2</li>
-                        <li>service 3</li>
+                        {serviceData.map((_, index)=>(
+                            <li key={index} className="mt-2">🏿 {serviceData[index]}</li>
+                        ))}
                     </ul>
                 </div>
             </div>
-            <div>
+            <div className="w-5/6">
                 <p>{formatDate}</p>
+                <BigCalendar/>
             </div>
         </section>
     )
