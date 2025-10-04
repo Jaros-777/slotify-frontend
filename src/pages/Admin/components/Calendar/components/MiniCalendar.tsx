@@ -30,8 +30,8 @@ export const MiniCalendar = ({onWeekChange}:MiniCalendarProps) => {
     const start = week[0];
     const end = week[week.length - 1];
 
-    const startMonth = start.toLocaleString('en-US', { month: 'long' });
-    const endMonth = end.toLocaleString('en-US', { month: 'long' });
+    const startMonth = start.toLocaleString('en-GB', { month: 'long' });
+    const endMonth = end.toLocaleString('en-GB', { month: 'long' });
 
     const startDay = start.getDate();
     const endDay = end.getDate();
@@ -61,8 +61,7 @@ export const MiniCalendar = ({onWeekChange}:MiniCalendarProps) => {
             }}
             prev2Label={null}
             next2Label={null}
-            locale="en-US"
-            calendarType="iso8601"
+            locale="en-GB"
             tileClassName={({ date }) => {
                 const week = selectedWeek;
                 const dayIndex = week.findIndex(d => d.toDateString() === date.toDateString());
