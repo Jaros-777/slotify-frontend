@@ -1,0 +1,50 @@
+/*Delete hours set by calendar lib*/
+.rbc-event-label {
+  display: none !important;
+}
+
+/*Style for 1 slot = 15min*/
+.rbc-time-slot {
+  height: 1.666666px;
+  border: none !important;
+}
+
+
+/* Height od hour slot */
+.rbc-timeslot-group {
+  min-height: 20px;
+  position: relative;
+  border: none;
+}
+
+/*Set border only around 4 slots = 1 hour*/
+.rbc-timeslot-group:nth-child(4n + 1)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(20px * 4); /* 4 sloty po 15 min = 1 godzina */
+  border-bottom: 1px solid #ccc;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/*Set only full hours on view*/
+.rbc-timeslot-group:not(:nth-child(4n + 1)) .rbc-label {
+  display: none;
+}
+
+/*Set reservation style*/
+.rbc-day-slot .rbc-event {
+  background-color: lightblue;
+  color: rgb(49, 60, 63);
+  border: none;
+  border-radius: 0;
+}
+
+/*Set selected reservation style*/
+.rbc-event.rbc-selected {
+  background-color: lightblue;
+  border: none;
+}

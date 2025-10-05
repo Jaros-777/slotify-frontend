@@ -10,8 +10,9 @@ import { NotFound } from "./pages/NotFound.tsx";
 export const AppRouter = () => {
   const location = useLocation();
 
-  const navbar =
-    location.pathname.startsWith("/calendar") ? <NavbarAdmin /> : <NavbarHome />;
+  const navbar = location.pathname.startsWith("/calendar") ? <NavbarAdmin /> : <NavbarHome />;
+
+  const footer = location.pathname.startsWith("/calendar") ? null : <Footer/>
 
   return (
     <>
@@ -25,7 +26,7 @@ export const AppRouter = () => {
         <Route path="/*" element={<NotFound />} />
       </Routes>
 
-      <Footer />
+      {footer}
     </>
   );
 };

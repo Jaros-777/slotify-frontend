@@ -8,6 +8,11 @@ import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useState } from "react";
 import { v4 as uuid } from 'uuid';
+import "./BigCalendar.css"
+import type { EventType } from "./types/EventType";
+import { CustomEvent } from "./components/CustomEvent";
+import { services } from "./data/services";
+// import { events } from "./data/events";
 
 
 const locales = {
@@ -23,63 +28,18 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-interface ServiceType {
-  id: number;
-  name: string;
-}
-
-type EventType = {
-  id: number | string;
-  name: string;
-  email: string;
-  phone: number | undefined;
-  service: number;
-  start: Date;
-  end: Date;
-  bookingStatus: "Confirmed" | "Client arrived" | "Client did not arrive";
-
-};
-
 export const BigCalendar = () => {
-  const [services, setServices] = useState<ServiceType[]>([
-    {
-      id: 0,
-      name: "Not assigned"
-    },
-    {
-      id: 1,
-      name: "Strzyzenie meskie"
-    },
-    {
-      id: 2,
-      name: "Golenie"
-    },
-    {
-      id: 3,
-      name: "Mycie wlosow"
-    },
-  ])
 
   const [events, setEvents] = useState<EventType[]>([
-    {
-      id: 1,
-      name: "Project Meeting",
-      email: "",
-      phone: undefined,
-      service: services[1].id,
-      start: new Date(2025, 9, 4, 10, 0),
-      end: new Date(2025, 9, 4, 10, 30),
-      bookingStatus: "Confirmed",
-    },
+
   ]);
 
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
-  const [selectedDuration, setSelectedDuration] = useState<number>(30);
+  const [selectedDuration, setSelectedDuration] = useState<number>(15);
 
-  // When user selects a time slot
   const handleSelectSlot = (slotInfo: SlotInfo) => {
     setNewEvent({
       id: uuid(),
@@ -96,30 +56,40 @@ export const BigCalendar = () => {
 
 
   const handleAddEvent = () => {
-    if (newEvent.name && newEvent.start) {
-      const endDate = new Date(newEvent.start.getTime() + selectedDuration * 60000);
-      setEvents([
-        ...events,
-        { ...newEvent, end: endDate } as EventType,
-      ]);
-      setIsModalOpen(false);
-      setSelectedDuration(30)
+  if (!newEvent.name || !newEvent.start) {
+    alert("Reservation must have client name");
+    return;
+  }
+
+  const endDate = new Date(newEvent.start.getTime() + selectedDuration * 60000);
+
+  setEvents((prevEvents) => {
+    const existingIndex = prevEvents.findIndex(e => e.id === newEvent.id);
+
+    if (existingIndex !== -1) {
+      const updatedEvents = [...prevEvents];
+      updatedEvents[existingIndex] = { ...newEvent, end: endDate } as EventType;
+      return updatedEvents;
     } else {
-      alert("Reservation must have client name");
+      return [...prevEvents, { ...newEvent, end: endDate } as EventType];
     }
-  };
+  });
+
+  setIsModalOpen(false);
+  setSelectedDuration(15);
+};
+
 
   const handleDeleteEvent = (id: number | string | undefined) => {
     if (!id) return;
     setEvents(events.filter(e => e.id.toString() !== id.toString()));
     setIsModalOpen(false);
-
   }
 
-  const times = Array.from({ length: 24 * 2 }, (_, i) => {
-    const hours = Math.floor(i / 2);
-    const minutes = i % 2 === 0 ? "00" : "30";
-    return `${hours.toString().padStart(2, "0")}:${minutes}`;
+  const times = Array.from({ length: 24 * 4 }, (_, i) => {
+    const hours = Math.floor(i / 4);
+    const minutes = (i % 4) * 15;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
   });
 
   const durations = [
@@ -143,7 +113,7 @@ export const BigCalendar = () => {
   ];
 
   return (
-    <div className="h-150 p-4 w-full">
+    <div className="h-200 p-4 pb-0 w-full">
       <Calendar
         selectable
         localizer={localizer}
@@ -151,7 +121,7 @@ export const BigCalendar = () => {
         startAccessor="start"
         endAccessor="end"
         defaultView="week"
-        step={30}
+        step={15}
         timeslots={1}
         defaultDate={new Date()}
         culture="en-GB"
@@ -163,6 +133,10 @@ export const BigCalendar = () => {
           setSelectedDuration(durationInMinutes);
           setIsModalOpen(true);
         }}
+        scrollToTime={new Date(2025, 0, 1, 8, 0, 0)}
+        components={{
+          event: CustomEvent,
+        }}
       />
       {isModalOpen && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -172,7 +146,7 @@ export const BigCalendar = () => {
             </h2>
             <form
               onSubmit={(e) => {
-                e.preventDefault(); // żeby nie przeładowywało strony
+                e.preventDefault();
                 handleAddEvent();
               }}
             >
@@ -184,7 +158,7 @@ export const BigCalendar = () => {
                 onChange={(e) =>
                   setNewEvent({ ...newEvent, name: e.target.value })
                 }
-                className="w-full border p-2 rounded mb-4"
+                className="w-full border p-2 rounded mb-4 border-gray-300"
               />
               <input
                 type="email"
@@ -193,7 +167,7 @@ export const BigCalendar = () => {
                 onChange={(e) =>
                   setNewEvent({ ...newEvent, email: e.target.value })
                 }
-                className="w-full border p-2 rounded mb-4"
+                className="w-full border p-2 rounded mb-4 border-gray-300"
               />
               <input
                 type="tel"
@@ -205,7 +179,7 @@ export const BigCalendar = () => {
                 onChange={(e) =>
                   setNewEvent({ ...newEvent, phone: Number(e.target.value) })
                 }
-                className="w-full border p-2 rounded mb-4"
+                className="w-full border p-2 rounded mb-4 border-gray-300"
               />
 
 
@@ -215,7 +189,7 @@ export const BigCalendar = () => {
                 onChange={(e) =>
                   setNewEvent({ ...newEvent, service: Number(e.target.value) })
                 }
-                className="w-full border p-2 rounded mb-4"
+                className="w-full border p-2 rounded mb-4 border-gray-300"
               >
                 {services.map((service) => (
                   <option key={service.id} value={service.id}>
@@ -227,7 +201,7 @@ export const BigCalendar = () => {
                 <div>
                   <p className=" font-medium">Date</p>
                   <input
-                    className="border-1 border-black px-2 py-1 h-[2em]"
+                    className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
                     type="date"
                     value={newEvent.start ? newEvent.start.toLocaleDateString("en-CA") : ""}
                     onChange={(e) => {
@@ -246,7 +220,7 @@ export const BigCalendar = () => {
                             newEvent.end.getHours(),
                             newEvent.end.getMinutes()
                           )
-                          : new Date(year, month - 1, day, hours + 0.5, minutes), // default duration 30 min
+                          : new Date(year, month - 1, day, hours + 0.5, minutes),
                       });
                     }}
                   />
@@ -255,7 +229,7 @@ export const BigCalendar = () => {
                 <div>
                   <p className=" font-medium">Time</p>
                   <select
-                    className="border-1 border-black px-2 py-1 h-[2em]"
+                    className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
                     value={
                       newEvent.start
                         ? `${newEvent.start.getHours().toString().padStart(2, "0")}:${newEvent.start
@@ -289,7 +263,7 @@ export const BigCalendar = () => {
                 <div>
                   <p className=" font-medium">Duration</p>
                   <select
-                    className="border-1 border-black px-2 py-1 h-[2em]"
+                    className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
                     value={selectedDuration}
                     onChange={(e) => setSelectedDuration(Number(e.target.value))}
                   >

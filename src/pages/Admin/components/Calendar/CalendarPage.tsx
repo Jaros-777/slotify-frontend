@@ -1,7 +1,7 @@
 
 import { useState } from "react"
 import { MiniCalendar } from "./components/MiniCalendar"
-import { BigCalendar } from "./components/BigCalendar"
+import { BigCalendar } from "./components/BigCalendar/BigCalendar"
 
 export const CalendarPage = () => {
     const [formatDate, setFormatDate] = useState<string>("")
