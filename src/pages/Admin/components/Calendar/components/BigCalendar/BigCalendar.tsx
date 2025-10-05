@@ -12,6 +12,7 @@ import "./BigCalendar.css"
 import type { EventType } from "./types/EventType";
 import { CustomEvent } from "./components/CustomEvent";
 import { services } from "./data/services";
+import { CustomToolbar } from "./components/CustomToolbar";
 // import { events } from "./data/events";
 
 
@@ -141,6 +142,7 @@ export const BigCalendar = () => {
         scrollToTime={new Date(2025, 0, 1, 8, 0, 0)}
         components={{
           event: CustomEvent,
+          toolbar: CustomToolbar,
         }}
       />
       {isModalOpen && (

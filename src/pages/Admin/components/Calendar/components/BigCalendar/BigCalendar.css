@@ -24,7 +24,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(20px * 4); /* 4 sloty po 15 min = 1 godzina */
+  height: calc(20px * 4);
   border-bottom: 1px solid #ccc;
   pointer-events: none;
   box-sizing: border-box;
@@ -45,7 +45,24 @@
 }
 
 /*Set selected reservation style*/
-.rbc-event.rbc-selected {
+.rbc-event, .rbc-event.rbc-selected {
   background-color: lightblue;
   border: 1px solid black;
+  color: black;
+}
+
+/*Upper header - 29 mon, 30 tue*/
+.rbc-row{
+  height: 2rem;
+  align-items: center;
+}
+
+/*Section i upper header*/
+.rbc-header{
+  border: none;
+}
+
+/*Useless place bottom upper header*/
+.rbc-allday-cell {
+  display: none !important;
 }
