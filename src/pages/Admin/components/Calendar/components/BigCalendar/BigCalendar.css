@@ -39,12 +39,13 @@
 .rbc-day-slot .rbc-event {
   background-color: lightblue;
   color: rgb(49, 60, 63);
-  border: none;
-  border-radius: 0;
+  border: 1px solid black;
+  box-sizing: border-box;
+  border-radius: 5px;
 }
 
 /*Set selected reservation style*/
 .rbc-event.rbc-selected {
   background-color: lightblue;
-  border: none;
+  border: 1px solid black;
 }

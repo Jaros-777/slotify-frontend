@@ -41,18 +41,23 @@ export const BigCalendar = () => {
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
-    setNewEvent({
-      id: uuid(),
-      name: "",
-      email: "",
-      phone: undefined,
-      service: services[0].id,
-      start: slotInfo.start,
-      end: slotInfo.end,
-      bookingStatus: "Confirmed"
-    });
-    setIsModalOpen(true);
-  };
+  const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
+
+  setNewEvent({
+    id: uuid(),
+    name: "",
+    email: "",
+    phone: undefined,
+    service: services[0].id,
+    start: slotInfo.start,
+    end: slotInfo.end,
+    bookingStatus: "Confirmed"
+  });
+
+  setSelectedDuration(diffInMinutes);
+  setIsModalOpen(true);
+};
+
 
 
   const handleAddEvent = () => {
@@ -142,7 +147,7 @@ export const BigCalendar = () => {
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-lg p-6 w-96 flex flex-col items-start">
             <h2 className="text-xl font-semibold mb-4 text-center">
-              New reservation
+              Client
             </h2>
             <form
               onSubmit={(e) => {
@@ -153,7 +158,7 @@ export const BigCalendar = () => {
               <input
                 type="text"
                 required
-                placeholder="Client name"
+                placeholder="Name"
                 value={newEvent.name || ""}
                 onChange={(e) =>
                   setNewEvent({ ...newEvent, name: e.target.value })
@@ -162,7 +167,7 @@ export const BigCalendar = () => {
               />
               <input
                 type="email"
-                placeholder="Client mail"
+                placeholder="Mail"
                 value={newEvent.email || ""}
                 onChange={(e) =>
                   setNewEvent({ ...newEvent, email: e.target.value })
@@ -172,7 +177,7 @@ export const BigCalendar = () => {
               <input
                 type="tel"
                 pattern="[0-9]+"
-                placeholder="Client phone"
+                placeholder="Phone"
                 minLength={9}
                 maxLength={9}
                 value={newEvent.phone || undefined}
@@ -229,7 +234,7 @@ export const BigCalendar = () => {
                 <div>
                   <p className=" font-medium">Time</p>
                   <select
-                    className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
+                    className="border-1 px-2 py-1 h-[2em] border-gray-300"
                     value={
                       newEvent.start
                         ? `${newEvent.start.getHours().toString().padStart(2, "0")}:${newEvent.start
