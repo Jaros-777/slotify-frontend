@@ -29,7 +29,12 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-export const BigCalendar = () => {
+interface BigCalendarProps {
+  weekStartDate: Date,
+  onWeekChange: (date: Date) => void
+}
+
+export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) => {
 
   const [events, setEvents] = useState<EventType[]>([
 
@@ -42,48 +47,48 @@ export const BigCalendar = () => {
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
-  const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
+    const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
 
-  setNewEvent({
-    id: uuid(),
-    name: "",
-    email: "",
-    phone: undefined,
-    service: services[0].id,
-    start: slotInfo.start,
-    end: slotInfo.end,
-    bookingStatus: "Confirmed"
-  });
+    setNewEvent({
+      id: uuid(),
+      name: "",
+      email: "",
+      phone: undefined,
+      service: services[0].id,
+      start: slotInfo.start,
+      end: slotInfo.end,
+      bookingStatus: "Confirmed"
+    });
 
-  setSelectedDuration(diffInMinutes);
-  setIsModalOpen(true);
-};
+    setSelectedDuration(diffInMinutes);
+    setIsModalOpen(true);
+  };
 
 
 
   const handleAddEvent = () => {
-  if (!newEvent.name || !newEvent.start) {
-    alert("Reservation must have client name");
-    return;
-  }
-
-  const endDate = new Date(newEvent.start.getTime() + selectedDuration * 60000);
-
-  setEvents((prevEvents) => {
-    const existingIndex = prevEvents.findIndex(e => e.id === newEvent.id);
-
-    if (existingIndex !== -1) {
-      const updatedEvents = [...prevEvents];
-      updatedEvents[existingIndex] = { ...newEvent, end: endDate } as EventType;
-      return updatedEvents;
-    } else {
-      return [...prevEvents, { ...newEvent, end: endDate } as EventType];
+    if (!newEvent.name || !newEvent.start) {
+      alert("Reservation must have client name");
+      return;
     }
-  });
 
-  setIsModalOpen(false);
-  setSelectedDuration(15);
-};
+    const endDate = new Date(newEvent.start.getTime() + selectedDuration * 60000);
+
+    setEvents((prevEvents) => {
+      const existingIndex = prevEvents.findIndex(e => e.id === newEvent.id);
+
+      if (existingIndex !== -1) {
+        const updatedEvents = [...prevEvents];
+        updatedEvents[existingIndex] = { ...newEvent, end: endDate } as EventType;
+        return updatedEvents;
+      } else {
+        return [...prevEvents, { ...newEvent, end: endDate } as EventType];
+      }
+    });
+
+    setIsModalOpen(false);
+    setSelectedDuration(15);
+  };
 
 
   const handleDeleteEvent = (id: number | string | undefined) => {
@@ -91,6 +96,16 @@ export const BigCalendar = () => {
     setEvents(events.filter(e => e.id.toString() !== id.toString()));
     setIsModalOpen(false);
   }
+  function getWeekStart(date: Date) {
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    const start = new Date(date);
+    start.setDate(date.getDate() + diff);
+    start.setHours(0, 0, 0, 0);
+    return start;
+  }
+
+
 
   const times = Array.from({ length: 24 * 4 }, (_, i) => {
     const hours = Math.floor(i / 4);
@@ -129,7 +144,7 @@ export const BigCalendar = () => {
         defaultView="week"
         step={15}
         timeslots={1}
-        defaultDate={new Date()}
+        date={weekStartDate}
         culture="en-GB"
         className="h-full bg-white"
         onSelectSlot={handleSelectSlot}
@@ -144,6 +159,7 @@ export const BigCalendar = () => {
           event: CustomEvent,
           toolbar: CustomToolbar,
         }}
+        onNavigate={(date) => onWeekChange(getWeekStart(date))}
       />
       {isModalOpen && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">

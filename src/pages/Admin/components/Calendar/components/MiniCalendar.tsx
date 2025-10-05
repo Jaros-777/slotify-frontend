@@ -1,77 +1,79 @@
 
-import { useEffect, useState } from 'react';
+import {useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import "./MiniCalendar.css"
 
 interface MiniCalendarProps {
-    onWeekChange: (weekText: string)=> void;
+    onWeekChange: (date: Date) => void;
+    currentWeekStart: Date;
 }
 
-export const MiniCalendar = ({onWeekChange}:MiniCalendarProps) => {
-    const [value, setValue] = useState<Date>(new Date())
-    const [selectedWeek, setSelectedWeek] = useState<Date[]>([]);
+export const MiniCalendar = ({ currentWeekStart, onWeekChange }: MiniCalendarProps) => {
+
+    function getWeekStart(date: Date) {
+        const day = date.getDay();
+        const diff = day === 0 ? -6 : 1 - day;
+        const start = new Date(date);
+        start.setDate(date.getDate() + diff);
+        start.setHours(0, 0, 0, 0);
+        return start;
+    }
 
     function getWeekDates(date: Date): Date[] {
-        const startOfWeek = new Date(date);
-        startOfWeek.setDate(date.getDate() - date.getDay() + 1);
-        const week = [];
+        const start = getWeekStart(date);
+        const week: Date[] = [];
         for (let i = 0; i < 7; i++) {
-            const d = new Date(startOfWeek);
-            d.setDate(startOfWeek.getDate() + i);
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
             week.push(d);
         }
         return week;
     }
 
-    function formatWeek(week: Date[]):string {
-    if (week.length === 0) return "";
+    function isSameWeek(date: Date, weekStartDate: Date) {
+        const start = new Date(weekStartDate);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        return date >= start && date <= end;
+    }
 
-    const start = week[0];
-    const end = week[week.length - 1];
-
-    const startMonth = start.toLocaleString('en-GB', { month: 'long' });
-    const endMonth = end.toLocaleString('en-GB', { month: 'long' });
-
-    const startDay = start.getDate();
-    const endDay = end.getDate();
-    const year = end.getFullYear();
-
-     return startMonth === endMonth
-            ? `${startMonth} ${startDay} - ${endDay} ${year}`
-            : `${startMonth} ${startDay} - ${endMonth} ${endDay} ${year}`;
-}
+    const getInitialActiveStartDate = (weekStart: Date) => {
+        const week = getWeekDates(weekStart);
+        const today = new Date();
+        const todayInWeek = week.find(d => d.toDateString() === today.toDateString());
+        return todayInWeek || week[0];
+    };
 
 
+    const [activeStartDate, setActiveStartDate] = useState<Date>(() => getInitialActiveStartDate(currentWeekStart));
 
-    useEffect(() => {
-        const week = getWeekDates(new Date())
-        setSelectedWeek(week);
-        onWeekChange(formatWeek(week));
-    }, []);
 
     return (
         <Calendar
-            onChange={() => setValue}
-            value={value}
+            onChange={() => { }}
+            value={currentWeekStart}
             onClickDay={(date) => {
                 const week = getWeekDates(date);
-                setSelectedWeek(getWeekDates(date));
-                onWeekChange?.(formatWeek(week));
+                onWeekChange(week[0]);
+                setActiveStartDate(date);
             }}
+            activeStartDate={activeStartDate}
             prev2Label={null}
             next2Label={null}
             locale="en-GB"
-            tileClassName={({ date }) => {
-                const week = selectedWeek;
-                const dayIndex = week.findIndex(d => d.toDateString() === date.toDateString());
-                if (dayIndex !== -1) {
-                    if (dayIndex === 0) return "selected-day selected-week-start";
-                    if (dayIndex === week.length - 1) return "selected-day selected-week-end";
-                    return "selected-day";
+            tileClassName={({ date, view, activeStartDate }) => {
+                if (view === "month") {
+                    const isWeek = isSameWeek(date, currentWeekStart);
+                    const isNeighboring = date.getMonth() !== activeStartDate.getMonth();
+
+                    if (isWeek && !isNeighboring) return "selected-day";
+                    if (isWeek && isNeighboring) return "selected-day neighboring-month";
                 }
                 return null;
             }}
+
+
         />
     )
 }

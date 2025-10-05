@@ -4,9 +4,19 @@ import { MiniCalendar } from "./components/MiniCalendar"
 import { BigCalendar } from "./components/BigCalendar/BigCalendar"
 
 export const CalendarPage = () => {
-    const [formatDate, setFormatDate] = useState<string>("")
     const [serviceData, setServiceData] = useState<string[]>(["service 1", 'service 2', 'service 3'])
+    const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
 
+    function getWeekStart(date: Date) {
+        const day = date.getDay();
+        const diff = day === 0 ? -6 : 1 - day;
+        const start = new Date(date);
+        start.setDate(date.getDate() + diff);
+        start.setHours(0, 0, 0, 0);
+        return start;
+    }
+
+    
     return (
         <section className="mt-20 borer-1 border-text-gray flex">
             <div className="w-1/6 border-r-1 border-b-1 border-gray-300 p-6">
@@ -14,20 +24,25 @@ export const CalendarPage = () => {
                     <img src="#" alt="" />
                     <span>CREATE NEW</span>
                 </button>
-                <MiniCalendar onWeekChange={setFormatDate} />
+                <MiniCalendar
+                    onWeekChange={setCurrentWeekStart}
+                    currentWeekStart={currentWeekStart}
+                />
                 <div className="mt-4">
                     <p className="font-medium">SERVICES</p>
 
                     <ul>
-                        {serviceData.map((_, index)=>(
+                        {serviceData.map((_, index) => (
                             <li key={index} className="mt-2">🏿 {serviceData[index]}</li>
                         ))}
                     </ul>
                 </div>
             </div>
             <div className="w-5/6">
-                <p>{formatDate}</p>
-                <BigCalendar/>
+                <BigCalendar
+                    weekStartDate={currentWeekStart}
+                    onWeekChange={setCurrentWeekStart}
+                />
             </div>
         </section>
     )
