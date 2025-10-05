@@ -7,14 +7,14 @@ export const services:ServiceType[]= [
         },
         {
           id: 1,
-          name: "Strzyzenie meskie"
+          name: "Change oil and filters"
         },
         {
           id: 2,
-          name: "Golenie"
+          name: "Wheel balancig"
         },
         {
           id: 3,
-          name: "Mycie wlosow"
+          name: "Repair air condition"
         },
 ]

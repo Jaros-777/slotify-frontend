@@ -3,8 +3,7 @@ import type { EventType } from "../types/EventType";
 
 export const CustomToolbar = ({ label, onNavigate, onView }: ToolbarProps<EventType, object>) => {
   return (
-    <div className="flex items-center justify-between mb-4 bg-blue-50 p-3 rounded-lg shadow-sm">
-      {/* Lewa strona: przyciski nawigacji */}
+    <div className="flex items-center justify-between mb-4 p-3">
       <div className="flex gap-2">
         <button
           onClick={() => onNavigate("PREV")}
