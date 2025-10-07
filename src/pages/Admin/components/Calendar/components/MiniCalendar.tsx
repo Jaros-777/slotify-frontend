@@ -1,5 +1,5 @@
 
-import {useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import "./MiniCalendar.css"
@@ -38,27 +38,66 @@ export const MiniCalendar = ({ currentWeekStart, onWeekChange }: MiniCalendarPro
         return date >= start && date <= end;
     }
 
-    const getInitialActiveStartDate = (weekStart: Date) => {
-        const week = getWeekDates(weekStart);
-        const today = new Date();
-        const todayInWeek = week.find(d => d.toDateString() === today.toDateString());
-        return todayInWeek || week[0];
-    };
+
+    const [activeStartDate, setActiveStartDate] = useState<Date>(
+        () => new Date(currentWeekStart.getFullYear(), currentWeekStart.getMonth(), 1)
+    );
+
+    const userChangedMonth = useRef(false);
 
 
-    const [activeStartDate, setActiveStartDate] = useState<Date>(() => getInitialActiveStartDate(currentWeekStart));
+
+    useEffect(() => {
+        if (userChangedMonth.current) {
+            userChangedMonth.current = false;
+            return;
+        }
+
+        const weekDays = getWeekDates(currentWeekStart);
+        const monthCounts: Record<number, number> = {};
+
+        for (const day of weekDays) {
+            const m = day.getMonth();
+            monthCounts[m] = (monthCounts[m] || 0) + 1;
+        }
+
+
+        const dominantMonth = Number(
+            Object.keys(monthCounts).reduce((a, b) =>
+                monthCounts[Number(a)] > monthCounts[Number(b)] ? a : b
+            )
+        );
+
+
+        const representativeDay = weekDays.find(d => d.getMonth() === dominantMonth)!;
+
+        const newMonthStart = new Date(representativeDay.getFullYear(), dominantMonth, 1);
+        setActiveStartDate(newMonthStart);
+    }, [currentWeekStart]);
 
 
     return (
         <Calendar
             onChange={() => { }}
             value={currentWeekStart}
+            activeStartDate={activeStartDate}
+            onActiveStartDateChange={({ activeStartDate }) => {
+                if (activeStartDate) {
+                    setActiveStartDate(activeStartDate);
+                }
+            }}
             onClickDay={(date) => {
                 const week = getWeekDates(date);
                 onWeekChange(week[0]);
-                setActiveStartDate(date);
+
+                const clickedMonth = date.getMonth();
+                const visibleMonth = activeStartDate.getMonth();
+
+                if (clickedMonth !== visibleMonth) {
+                    userChangedMonth.current = true;
+                    setActiveStartDate(new Date(date.getFullYear(), clickedMonth, 1));
+                }
             }}
-            activeStartDate={activeStartDate}
             prev2Label={null}
             next2Label={null}
             locale="en-GB"

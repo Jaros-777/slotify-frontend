@@ -1,7 +1,11 @@
 import type { ToolbarProps } from "react-big-calendar";
 import type { EventType } from "../types/EventType";
 
-export const CustomToolbar = ({ label, onNavigate, onView }: ToolbarProps<EventType, object>) => {
+interface CustomToolbarProps extends ToolbarProps<EventType, object> {
+  currentViewDate: Date;
+}
+
+export const CustomToolbar = ({ label, onNavigate, onView, currentViewDate }: CustomToolbarProps) => {
   return (
     <div className="flex items-center justify-between mb-4 p-3">
       <div className="flex gap-2">
@@ -26,7 +30,7 @@ export const CustomToolbar = ({ label, onNavigate, onView }: ToolbarProps<EventT
       </div>
 
       <div className="text-lg font-semibold text-gray-800">
-        {label} {new Date().getFullYear()}
+        {label} {currentViewDate.getFullYear()}
       </div>
 
       <div className="flex gap-2">

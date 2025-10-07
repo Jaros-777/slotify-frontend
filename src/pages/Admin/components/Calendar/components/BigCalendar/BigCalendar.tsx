@@ -36,15 +36,11 @@ interface BigCalendarProps {
 
 export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) => {
 
-  const [events, setEvents] = useState<EventType[]>([
-
-  ]);
-
-
-
+  const [events, setEvents] = useState<EventType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
+  const [currentViewDate, setCurrentViewDate] = useState(new Date());
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
     const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
@@ -157,7 +153,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
         scrollToTime={new Date(2025, 0, 1, 8, 0, 0)}
         components={{
           event: CustomEvent,
-          toolbar: CustomToolbar,
+          toolbar: (props) => <CustomToolbar {...props} currentViewDate={weekStartDate} />,
         }}
         onNavigate={(date) => onWeekChange(getWeekStart(date))}
       />
