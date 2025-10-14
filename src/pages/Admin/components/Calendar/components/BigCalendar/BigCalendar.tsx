@@ -31,16 +31,16 @@ const localizer = dateFnsLocalizer({
 
 interface BigCalendarProps {
   weekStartDate: Date,
-  onWeekChange: (date: Date) => void
+  onWeekChange: (date: Date) => void,
+  events: EventType[]
 }
 
 export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) => {
-
-  const [events, setEvents] = useState<EventType[]>([]);
+  const [events,setEvents] = useState<EventType[]>([]) // positon only for time witchout backend
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
-  const [currentViewDate, setCurrentViewDate] = useState(new Date());
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
     const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
@@ -92,6 +92,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
     setEvents(events.filter(e => e.id.toString() !== id.toString()));
     setIsModalOpen(false);
   }
+
   function getWeekStart(date: Date) {
     const day = date.getDay();
     const diff = day === 0 ? -6 : 1 - day;

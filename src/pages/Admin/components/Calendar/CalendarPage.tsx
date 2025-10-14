@@ -2,9 +2,11 @@
 import { useState } from "react"
 import { MiniCalendar } from "./components/MiniCalendar"
 import { BigCalendar } from "./components/BigCalendar/BigCalendar"
+import type { EventType } from "./components/BigCalendar/types/EventType"
 
 export const CalendarPage = () => {
     const [serviceData, setServiceData] = useState<string[]>(["service 1", 'service 2', 'service 3'])
+    const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
 
     function getWeekStart(date: Date) {
@@ -42,6 +44,7 @@ export const CalendarPage = () => {
                 <BigCalendar
                     weekStartDate={currentWeekStart}
                     onWeekChange={setCurrentWeekStart}
+                    events={eventsData}
                 />
             </div>
         </section>
