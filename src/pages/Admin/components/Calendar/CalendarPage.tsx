@@ -1,13 +1,17 @@
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { MiniCalendar } from "./components/MiniCalendar"
 import { BigCalendar } from "./components/BigCalendar/BigCalendar"
 import type { EventType } from "./components/BigCalendar/types/EventType"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export const CalendarPage = () => {
     const [serviceData, setServiceData] = useState<string[]>(["service 1", 'service 2', 'service 3'])
     const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
+    const [isLogged, setIsLogged] = useState<boolean>(false)
+    const navigate = useNavigate();
 
     function getWeekStart(date: Date) {
         const day = date.getDay();
@@ -18,7 +22,32 @@ export const CalendarPage = () => {
         return start;
     }
 
-    
+    function checkIsLogged() {
+        const token = localStorage.getItem("token")
+        axios.get("http://localhost:8080/auth/validate",
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        )
+            .then(function (response) {
+                setIsLogged(true)
+            }).catch(function (error) {
+                console.log(error);
+                navigate("/login")
+            })
+
+    }
+
+    useEffect(()=>{
+        checkIsLogged()
+    },[])
+
+    if(!isLogged){
+        return <p className="mt-20">Waiting..</p>
+    }
+
     return (
         <section className="mt-20 borer-1 border-text-gray flex">
             <div className="w-1/6 border-r-1 border-b-1 border-gray-300 p-6">
