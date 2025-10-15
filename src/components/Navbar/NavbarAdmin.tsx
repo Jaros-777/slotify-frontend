@@ -4,11 +4,18 @@ import CalendarIcon from "./assets/calendar-icon.png"
 import ClientIcon from "./assets/client-icon.png"
 import LinkIcon from "./assets/link-icon.png"
 import SettingsIcon from "./assets/settings-icon.png"
+import { useState } from "react"
 
 
 export const NavbarAdmin = () => {
+    const [showDropBar, setShowDropBar] = useState<boolean>(false)
 
     const navigate = useNavigate();
+
+    function logOut(){
+        localStorage.clear()
+        navigate("/")
+    }
 
     return (
         <header id="navbar" className="flex h-20 px-20 w-full fixed top-0 left-0 z-50 bg-white justify-between items-center border-b-1 border-gray-300 ">
@@ -32,9 +39,20 @@ export const NavbarAdmin = () => {
                     <span>Settings</span>
                 </button>
             </div>
-            <div className="bg-gray-300 rounded-full h-12 w-12 aspect-square flex items-center justify-center cursor-pointer">
-                <p className="">US</p>
+
+            <div className="bg-gray-300 rounded-full h-12 w-12 aspect-square flex items-center justify-center cursor-pointer relative" onClick={()=>showDropBar? setShowDropBar(false) : setShowDropBar(true)}>
+                <p>US</p>
+                {showDropBar ?
+                    <ul className="absolute top-[3rem]  bg-white border-1 border-gray-300">
+                        <li className="px-6 py-2 whitespace-nowrap">User profile</li>
+                        <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300">Support</li>
+                        <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={logOut}>Log out</li>
+                    </ul>
+
+                    : null
+                }
             </div>
+
 
 
         </header>
