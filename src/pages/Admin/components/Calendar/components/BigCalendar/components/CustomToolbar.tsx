@@ -1,5 +1,5 @@
 import type { ToolbarProps } from "react-big-calendar";
-import type { EventType } from "../types/EventType";
+import type { EventType } from "../../types/EventType";
 
 interface CustomToolbarProps extends ToolbarProps<EventType, object> {
   currentViewDate: Date;

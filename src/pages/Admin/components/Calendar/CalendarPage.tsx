@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react"
 import { MiniCalendar } from "./components/MiniCalendar"
 import { BigCalendar } from "./components/BigCalendar/BigCalendar"
-import type { EventType } from "./components/BigCalendar/types/EventType"
+import type { EventType } from "./components/types/EventType"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import type { ServiceType } from "./components/types/ServiceType"
 
 export const CalendarPage = () => {
-    const [serviceData, setServiceData] = useState<string[]>(["service 1", 'service 2', 'service 3'])
+    const [serviceData, setServiceData] = useState<ServiceType[]>([])
     const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
     const [isLogged, setIsLogged] = useState<boolean>(false)
@@ -22,9 +23,9 @@ export const CalendarPage = () => {
         return start;
     }
 
-    function checkIsLogged() {
+    async function checkIsLogged() {
         const token = localStorage.getItem("token")
-        axios.get("http://localhost:8080/auth/validate",
+        await axios.get("http://localhost:8080/auth/validate",
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -33,6 +34,7 @@ export const CalendarPage = () => {
         )
             .then(function (response) {
                 setIsLogged(true)
+                loadServiceData();
             }).catch(function (error) {
                 console.log(error);
                 navigate("/login")
@@ -40,11 +42,27 @@ export const CalendarPage = () => {
 
     }
 
-    useEffect(()=>{
-        checkIsLogged()
-    },[])
+    async function loadServiceData() {
+        const token = localStorage.getItem("token")
+        await axios.get("http://localhost:8080/service",
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        )
+            .then(function (response) {
+                setServiceData(response.data)
+            }).catch(function (error) {
+                console.log(error);
+            })
+    }
 
-    if(!isLogged){
+    useEffect(() => {
+        checkIsLogged()
+    }, [])
+
+    if (!isLogged) {
         return <p className="mt-20">Waiting..</p>
     }
 
@@ -64,7 +82,7 @@ export const CalendarPage = () => {
 
                     <ul>
                         {serviceData.map((_, index) => (
-                            <li key={index} className="mt-2">🏿 {serviceData[index]}</li>
+                            <li key={index} className="mt-2">🏿 {serviceData[index].name}</li>
                         ))}
                     </ul>
                 </div>
@@ -74,6 +92,7 @@ export const CalendarPage = () => {
                     weekStartDate={currentWeekStart}
                     onWeekChange={setCurrentWeekStart}
                     events={eventsData}
+                    serviceData={serviceData}
                 />
             </div>
         </section>

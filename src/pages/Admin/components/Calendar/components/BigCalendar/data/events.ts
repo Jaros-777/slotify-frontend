@@ -1,4 +1,4 @@
-import type { EventType } from "../types/EventType"
+import type { EventType } from "../../types/EventType"
 import { services } from "./services"
 
 export const events: EventType[] = [

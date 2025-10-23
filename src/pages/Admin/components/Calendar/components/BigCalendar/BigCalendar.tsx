@@ -9,10 +9,13 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useState } from "react";
 import { v4 as uuid } from 'uuid';
 import "./BigCalendar.css"
-import type { EventType } from "./types/EventType";
+import type { EventType } from "../types/EventType";
 import { CustomEvent } from "./components/CustomEvent";
-import { services } from "./data/services";
+// import { services } from "./data/services";
 import { CustomToolbar } from "./components/CustomToolbar";
+import type { ServiceType } from "../types/ServiceType";
+import axios from "axios";
+import { toLocalDateTimeString } from "./utils/dateUtils";
 // import { events } from "./data/events";
 
 
@@ -32,12 +35,13 @@ const localizer = dateFnsLocalizer({
 interface BigCalendarProps {
   weekStartDate: Date,
   onWeekChange: (date: Date) => void,
-  events: EventType[]
+  events: EventType[],
+  serviceData: ServiceType[]
 }
 
-export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) => {
-  const [events,setEvents] = useState<EventType[]>([]) // positon only for time witchout backend
-  
+export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCalendarProps) => {
+  const [events, setEvents] = useState<EventType[]>([]) // positon only for time witchout backend
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
@@ -46,14 +50,15 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
     const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
 
     setNewEvent({
-      id: uuid(),
-      name: "",
+      // id: uuid(),
+      clientId: undefined,
+      clientName: "",
       email: "",
       phone: undefined,
-      service: services[0].id,
-      start: slotInfo.start,
-      end: slotInfo.end,
-      bookingStatus: "Confirmed"
+      serviceId: serviceData[0].id,
+      startDate: slotInfo.start,
+      endDate: slotInfo.end,
+      bookingStatus: "CONFIRMED"
     });
 
     setSelectedDuration(diffInMinutes);
@@ -63,24 +68,43 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
 
 
   const handleAddEvent = () => {
-    if (!newEvent.name || !newEvent.start) {
+    if (!newEvent.clientName || !newEvent.startDate) {
       alert("Reservation must have client name");
       return;
     }
 
-    const endDate = new Date(newEvent.start.getTime() + selectedDuration * 60000);
+    const token = localStorage.getItem("token");
 
-    setEvents((prevEvents) => {
-      const existingIndex = prevEvents.findIndex(e => e.id === newEvent.id);
+    newEvent.endDate = new Date(newEvent.startDate.getTime() + selectedDuration * 60);
+    console.log(newEvent)
 
-      if (existingIndex !== -1) {
-        const updatedEvents = [...prevEvents];
-        updatedEvents[existingIndex] = { ...newEvent, end: endDate } as EventType;
-        return updatedEvents;
-      } else {
-        return [...prevEvents, { ...newEvent, end: endDate } as EventType];
+    axios.post("http://localhost:8080/events",
+      {...newEvent,
+        start: toLocalDateTimeString(newEvent.startDate),
+        end:toLocalDateTimeString(newEvent.endDate)
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       }
-    });
+    ).then(function(response){
+      console.log(response)
+    }).catch(function(error){
+      console.log(error)
+    })
+
+    // setEvents((prevEvents) => {
+    //   const existingIndex = prevEvents.findIndex(e => e.id === newEvent.id);
+
+    //   if (existingIndex !== -1) {
+    //     const updatedEvents = [...prevEvents];
+    //     updatedEvents[existingIndex] = { ...newEvent, end: endDate } as EventType;
+    //     return updatedEvents;
+    //   } else {
+    //     return [...prevEvents, { ...newEvent, end: endDate } as EventType];
+    //   }
+    // });
 
     setIsModalOpen(false);
     setSelectedDuration(15);
@@ -136,8 +160,8 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
         selectable
         localizer={localizer}
         events={events}
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor="startDate"
+        endAccessor="endDate"
         defaultView="week"
         step={15}
         timeslots={1}
@@ -147,7 +171,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
         onSelectSlot={handleSelectSlot}
         onSelectEvent={(event: EventType) => {
           setNewEvent(event);
-          const durationInMinutes = (event.end.getTime() - event.start.getTime()) / 60000;
+          const durationInMinutes = (event.endDate.getTime() - event.startDate.getTime()) / 60000;
           setSelectedDuration(durationInMinutes);
           setIsModalOpen(true);
         }}
@@ -174,9 +198,9 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
                 type="text"
                 required
                 placeholder="Name"
-                value={newEvent.name || ""}
+                value={newEvent.clientName || ""}
                 onChange={(e) =>
-                  setNewEvent({ ...newEvent, name: e.target.value })
+                  setNewEvent({ ...newEvent, clientName: e.target.value })
                 }
                 className="w-full border p-2 rounded mb-4 border-gray-300"
               />
@@ -184,6 +208,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
                 type="email"
                 placeholder="Mail"
                 value={newEvent.email || ""}
+                required
                 onChange={(e) =>
                   setNewEvent({ ...newEvent, email: e.target.value })
                 }
@@ -205,13 +230,13 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
 
               <p className=" font-medium">Assign service</p>
               <select
-                value={newEvent.service ?? services[0].id}
+                value={newEvent.serviceId ?? serviceData[0].id}
                 onChange={(e) =>
-                  setNewEvent({ ...newEvent, service: Number(e.target.value) })
+                  setNewEvent({ ...newEvent, serviceId: Number(e.target.value) })
                 }
                 className="w-full border p-2 rounded mb-4 border-gray-300"
               >
-                {services.map((service) => (
+                {serviceData.map((service) => (
                   <option key={service.id} value={service.id}>
                     {service.name}
                   </option>
@@ -223,22 +248,22 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
                   <input
                     className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
                     type="date"
-                    value={newEvent.start ? newEvent.start.toLocaleDateString("en-CA") : ""}
+                    value={newEvent.startDate ? newEvent.startDate.toLocaleDateString("en-CA") : ""}
                     onChange={(e) => {
-                      if (!newEvent.start) return;
+                      if (!newEvent.startDate) return;
                       const [year, month, day] = e.target.value.split("-").map(Number);
-                      const hours = newEvent.start.getHours();
-                      const minutes = newEvent.start.getMinutes();
+                      const hours = newEvent.startDate.getHours();
+                      const minutes = newEvent.startDate.getMinutes();
                       setNewEvent({
                         ...newEvent,
-                        start: new Date(year, month - 1, day, hours, minutes),
-                        end: newEvent.end
+                        startDate: new Date(year, month - 1, day, hours, minutes),
+                        endDate: newEvent.endDate
                           ? new Date(
                             year,
                             month - 1,
                             day,
-                            newEvent.end.getHours(),
-                            newEvent.end.getMinutes()
+                            newEvent.endDate.getHours(),
+                            newEvent.endDate.getMinutes()
                           )
                           : new Date(year, month - 1, day, hours + 0.5, minutes),
                       });
@@ -251,22 +276,22 @@ export const BigCalendar = ({ weekStartDate, onWeekChange }: BigCalendarProps) =
                   <select
                     className="border-1 px-2 py-1 h-[2em] border-gray-300"
                     value={
-                      newEvent.start
-                        ? `${newEvent.start.getHours().toString().padStart(2, "0")}:${newEvent.start
+                      newEvent.startDate
+                        ? `${newEvent.startDate.getHours().toString().padStart(2, "0")}:${newEvent.startDate
                           .getMinutes()
                           .toString()
                           .padStart(2, "0")}`
                         : ""
                     }
                     onChange={(e) => {
-                      if (!newEvent.start) return;
+                      if (!newEvent.startDate) return;
                       const [hours, minutes] = e.target.value.split(":").map(Number);
                       setNewEvent({
                         ...newEvent,
-                        start: new Date(
-                          newEvent.start.getFullYear(),
-                          newEvent.start.getMonth(),
-                          newEvent.start.getDate(),
+                        startDate: new Date(
+                          newEvent.startDate.getFullYear(),
+                          newEvent.startDate.getMonth(),
+                          newEvent.startDate.getDate(),
                           hours,
                           minutes
                         ),

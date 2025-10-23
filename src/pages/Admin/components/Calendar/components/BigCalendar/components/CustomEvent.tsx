@@ -1,4 +1,4 @@
-import type { EventType } from "../types/EventType";
+import type { EventType } from "../../types/EventType";
 import { services } from "../data/services";
 
 export const CustomEvent = ({ event }: { event: EventType }) => {
