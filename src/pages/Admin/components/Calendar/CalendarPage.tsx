@@ -6,9 +6,12 @@ import type { EventType } from "./components/types/EventType"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import type { ServiceType } from "./components/types/ServiceType"
+import { useData } from "../../../../AppRouter"
+
+
 
 export const CalendarPage = () => {
-    const [serviceData, setServiceData] = useState<ServiceType[]>([])
+    const {serviceData, setServiceData} = useData();
     const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
     const [isLogged, setIsLogged] = useState<boolean>(false)
@@ -32,9 +35,10 @@ export const CalendarPage = () => {
                 }
             }
         )
-            .then(function (response) {
+            .then(async function (response) {
                 setIsLogged(true)
-                loadServiceData();
+                loadServiceData(token);
+                fetchData(token)
             }).catch(function (error) {
                 console.log(error);
                 navigate("/login")
@@ -42,8 +46,7 @@ export const CalendarPage = () => {
 
     }
 
-    async function loadServiceData() {
-        const token = localStorage.getItem("token")
+    async function loadServiceData(token: string | null) {
         await axios.get("http://localhost:8080/service",
             {
                 headers: {
@@ -56,6 +59,27 @@ export const CalendarPage = () => {
             }).catch(function (error) {
                 console.log(error);
             })
+    }
+
+    function fetchData(token: string | null) {
+        const localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
+        axios.get(`http://localhost:8080/events/${localDateTimeStartWeek}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        ).then(function (response) {
+            console.log(response.data)
+            setEventsData(response.data.map((event: any) => ({
+                ...event,
+                startDate: new Date(event.startDate),
+                endDate: new Date(event.endDate)
+            })));
+        }).catch(function (error) {
+            console.log(error)
+        })
+
     }
 
     useEffect(() => {

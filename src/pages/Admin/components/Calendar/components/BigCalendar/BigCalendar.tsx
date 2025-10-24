@@ -6,17 +6,14 @@ import { startOfWeek } from "date-fns/startOfWeek";
 import { getDay } from "date-fns/getDay";
 import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useState } from "react";
-import { v4 as uuid } from 'uuid';
+import { useEffect, useState } from "react";
 import "./BigCalendar.css"
 import type { EventType } from "../types/EventType";
 import { CustomEvent } from "./components/CustomEvent";
-// import { services } from "./data/services";
 import { CustomToolbar } from "./components/CustomToolbar";
 import type { ServiceType } from "../types/ServiceType";
 import axios from "axios";
 import { toLocalDateTimeString } from "./utils/dateUtils";
-// import { events } from "./data/events";
 
 
 const locales = {
@@ -39,8 +36,8 @@ interface BigCalendarProps {
   serviceData: ServiceType[]
 }
 
-export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCalendarProps) => {
-  const [events, setEvents] = useState<EventType[]>([]) // positon only for time witchout backend
+export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }: BigCalendarProps) => {
+  const [userToken, setUserToken] = useState<string | null>("")
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
@@ -50,15 +47,14 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCal
     const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
 
     setNewEvent({
-      // id: uuid(),
-      clientId: undefined,
       clientName: "",
-      email: "",
-      phone: undefined,
+      clientEmail: "",
+      clientPhone: undefined,
       serviceId: serviceData[0].id,
       startDate: slotInfo.start,
       endDate: slotInfo.end,
-      bookingStatus: "CONFIRMED"
+      bookingStatus: "CONFIRMED",
+      description:""
     });
 
     setSelectedDuration(diffInMinutes);
@@ -73,7 +69,6 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCal
       return;
     }
 
-    const token = localStorage.getItem("token");
 
     newEvent.endDate = new Date(newEvent.startDate.getTime() + selectedDuration * 60);
     console.log(newEvent)
@@ -85,26 +80,13 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCal
       },
       {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${userToken}`
         }
       }
     ).then(function(response){
-      console.log(response)
+      window.location.reload()
     }).catch(function(error){
-      console.log(error)
     })
-
-    // setEvents((prevEvents) => {
-    //   const existingIndex = prevEvents.findIndex(e => e.id === newEvent.id);
-
-    //   if (existingIndex !== -1) {
-    //     const updatedEvents = [...prevEvents];
-    //     updatedEvents[existingIndex] = { ...newEvent, end: endDate } as EventType;
-    //     return updatedEvents;
-    //   } else {
-    //     return [...prevEvents, { ...newEvent, end: endDate } as EventType];
-    //   }
-    // });
 
     setIsModalOpen(false);
     setSelectedDuration(15);
@@ -112,9 +94,9 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCal
 
 
   const handleDeleteEvent = (id: number | string | undefined) => {
-    if (!id) return;
-    setEvents(events.filter(e => e.id.toString() !== id.toString()));
-    setIsModalOpen(false);
+    // if (!id) return;
+    // setEvents(events.filter(e => e.id.toString() !== id.toString()));
+    // setIsModalOpen(false);
   }
 
   function getWeekStart(date: Date) {
@@ -153,6 +135,12 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCal
     { value: 660, label: "11 hr" },
     { value: 720, label: "12 hr" },
   ];
+
+
+  useEffect(()=>{
+    const token = localStorage.getItem("token")
+    setUserToken(token)
+  },[])
 
   return (
     <div className="h-200 p-4 pb-0 w-full">
@@ -207,10 +195,10 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCal
               <input
                 type="email"
                 placeholder="Mail"
-                value={newEvent.email || ""}
+                value={newEvent.clientEmail || ""}
                 required
                 onChange={(e) =>
-                  setNewEvent({ ...newEvent, email: e.target.value })
+                  setNewEvent({ ...newEvent, clientEmail: e.target.value })
                 }
                 className="w-full border p-2 rounded mb-4 border-gray-300"
               />
@@ -220,9 +208,9 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData }: BigCal
                 placeholder="Phone"
                 minLength={9}
                 maxLength={9}
-                value={newEvent.phone || undefined}
+                value={newEvent.clientPhone || undefined}
                 onChange={(e) =>
-                  setNewEvent({ ...newEvent, phone: Number(e.target.value) })
+                  setNewEvent({ ...newEvent, clientPhone: Number(e.target.value) })
                 }
                 className="w-full border p-2 rounded mb-4 border-gray-300"
               />
