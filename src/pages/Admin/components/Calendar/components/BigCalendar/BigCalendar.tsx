@@ -33,10 +33,12 @@ interface BigCalendarProps {
   weekStartDate: Date,
   onWeekChange: (date: Date) => void,
   events: EventType[],
-  serviceData: ServiceType[]
+  serviceData: ServiceType[],
+  fetchData:() => void,
+  setLoadingState:(value: boolean) => void
 }
 
-export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }: BigCalendarProps) => {
+export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, fetchData,setLoadingState }: BigCalendarProps) => {
   const [userToken, setUserToken] = useState<string | null>("")
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,7 +56,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }
       startDate: slotInfo.start,
       endDate: slotInfo.end,
       bookingStatus: "CONFIRMED",
-      description:""
+      description: ""
     });
 
     setSelectedDuration(diffInMinutes);
@@ -69,23 +71,25 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }
       return;
     }
 
+    newEvent.endDate = new Date(newEvent.startDate.getTime() + selectedDuration * 60 * 1000);
 
-    newEvent.endDate = new Date(newEvent.startDate.getTime() + selectedDuration * 60);
-    console.log(newEvent)
+    const payload = {
+      ...newEvent,
+      startDate: toLocalDateTimeString(newEvent.startDate),
+      endDate: toLocalDateTimeString(newEvent.endDate)
+    };
 
     axios.post("http://localhost:8080/events",
-      {...newEvent,
-        start: toLocalDateTimeString(newEvent.startDate),
-        end:toLocalDateTimeString(newEvent.endDate)
-      },
+      payload,
       {
         headers: {
           'Authorization': `Bearer ${userToken}`
         }
       }
-    ).then(function(response){
-      window.location.reload()
-    }).catch(function(error){
+    ).then(function (response) {
+      setLoadingState(true)
+      fetchData()
+    }).catch(function (error) {
     })
 
     setIsModalOpen(false);
@@ -94,9 +98,19 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }
 
 
   const handleDeleteEvent = (id: number | string | undefined) => {
-    // if (!id) return;
-    // setEvents(events.filter(e => e.id.toString() !== id.toString()));
-    // setIsModalOpen(false);
+    axios.delete(`http://localhost:8080/events/delete/${id}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${userToken}`
+        }
+      }
+    ).then(res=> {
+      console.log(res)
+      setLoadingState(true)
+      fetchData()
+    }).catch(function (error) {
+      setIsModalOpen(false)
+    })
   }
 
   function getWeekStart(date: Date) {
@@ -137,10 +151,10 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }
   ];
 
 
-  useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem("token")
     setUserToken(token)
-  },[])
+  }, [])
 
   return (
     <div className="h-200 p-4 pb-0 w-full">
@@ -318,6 +332,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }
                   </button>
                   <button
                     onClick={() => setIsModalOpen(false)}
+                    type="button"
                     className="px-4 py-2 bg-gray-300 rounded font-medium hover:bg-gray-400 duration-200"
                   >
                     Cancel
@@ -327,7 +342,8 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events }
 
                 <button
                   onClick={() => handleDeleteEvent(newEvent.id)}
-                  className="px-4 py-2 text-red-500 font-medium rounded hover:bg-red-700 duration-200">
+                  type="button"
+                  className="px-4 py-2 text-red-500 font-medium rounded cursor-pointer hover:bg-red-700 hover:text-white duration-200">
                   Delete
                 </button>
 

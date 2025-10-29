@@ -11,22 +11,22 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 
 
 interface DataContextType {
-  token: string | null,
-  setToken: (t:string | null) => void
+  userToken: string | null,
+  setUserToken: (t:string | null) => void
   serviceData: ServiceType[]
   setServiceData: (t:ServiceType[]) => void
 }
 
 const DataContext = createContext<DataContextType>({
-  token: null,
-  setToken:() => {},
+  userToken: null,
+  setUserToken:() => {},
   serviceData: [],
   setServiceData:() => {},
 })
 
 
 export const AppRouter = ({}: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>("")
+  const [userToken, setUserToken] = useState<string | null>("")
   const [serviceData, setServiceData] = useState<ServiceType[]>([])
 
 
@@ -37,7 +37,7 @@ export const AppRouter = ({}: { children: ReactNode }) => {
   const footer = location.pathname.startsWith("/calendar") ? null : <Footer />
 
   return (
-    <DataContext.Provider value={{ token, setToken, serviceData, setServiceData }}>
+    <DataContext.Provider value={{ userToken, setUserToken, serviceData, setServiceData }}>
       {navbar}
       <Routes>
         <Route path="/" element={<Home />} />

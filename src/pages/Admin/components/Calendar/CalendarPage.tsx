@@ -5,16 +5,16 @@ import { BigCalendar } from "./components/BigCalendar/BigCalendar"
 import type { EventType } from "./components/types/EventType"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
-import type { ServiceType } from "./components/types/ServiceType"
 import { useData } from "../../../../AppRouter"
 
 
 
 export const CalendarPage = () => {
-    const {serviceData, setServiceData} = useData();
+    const { serviceData, setServiceData, userToken, setUserToken } = useData();
     const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
-    const [isLogged, setIsLogged] = useState<boolean>(false)
+    const [isLogged, setIsLogged] = useState<boolean>(true)
+    const [loadingState, setLoadingState] = useState<boolean>(false)
     const navigate = useNavigate();
 
     function getWeekStart(date: Date) {
@@ -28,6 +28,7 @@ export const CalendarPage = () => {
 
     async function checkIsLogged() {
         const token = localStorage.getItem("token")
+        setUserToken(token)
         await axios.get("http://localhost:8080/auth/validate",
             {
                 headers: {
@@ -61,7 +62,7 @@ export const CalendarPage = () => {
             })
     }
 
-    function fetchData(token: string | null) {
+    function fetchData(token: string | null = userToken) {
         const localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
         axios.get(`http://localhost:8080/events/${localDateTimeStartWeek}`,
             {
@@ -70,12 +71,12 @@ export const CalendarPage = () => {
                 }
             }
         ).then(function (response) {
-            console.log(response.data)
             setEventsData(response.data.map((event: any) => ({
                 ...event,
                 startDate: new Date(event.startDate),
                 endDate: new Date(event.endDate)
             })));
+            setLoadingState(false)
         }).catch(function (error) {
             console.log(error)
         })
@@ -85,6 +86,10 @@ export const CalendarPage = () => {
     useEffect(() => {
         checkIsLogged()
     }, [])
+    useEffect(() => {
+        setLoadingState(true)
+        fetchData()
+    }, [currentWeekStart])
 
     if (!isLogged) {
         return <p className="mt-20">Waiting..</p>
@@ -111,13 +116,20 @@ export const CalendarPage = () => {
                     </ul>
                 </div>
             </div>
-            <div className="w-5/6">
-                <BigCalendar
-                    weekStartDate={currentWeekStart}
-                    onWeekChange={setCurrentWeekStart}
-                    events={eventsData}
-                    serviceData={serviceData}
-                />
+            <div className="w-5/6 flex justify-center items-center ">
+                {!loadingState ?
+                    <BigCalendar
+                        weekStartDate={currentWeekStart}
+                        onWeekChange={setCurrentWeekStart}
+                        events={eventsData}
+                        serviceData={serviceData}
+                        fetchData={fetchData}
+                        setLoadingState={setLoadingState}
+                    />
+                    :
+                    <p className="text-5xl">Loading data...</p>
+                }
+
             </div>
         </section>
     )
