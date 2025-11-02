@@ -34,11 +34,11 @@ interface BigCalendarProps {
   onWeekChange: (date: Date) => void,
   events: EventType[],
   serviceData: ServiceType[],
-  fetchData:() => void,
-  setLoadingState:(value: boolean) => void
+  fetchData: () => void,
+  setLoadingState: (value: boolean) => void
 }
 
-export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, fetchData,setLoadingState }: BigCalendarProps) => {
+export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, fetchData, setLoadingState }: BigCalendarProps) => {
   const [userToken, setUserToken] = useState<string | null>("")
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,7 +65,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
 
 
 
-  const handleAddEvent = () => {
+  const handleAddUpdateEvent = () => {
     if (!newEvent.clientName || !newEvent.startDate) {
       alert("Reservation must have client name");
       return;
@@ -78,19 +78,37 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
       startDate: toLocalDateTimeString(newEvent.startDate),
       endDate: toLocalDateTimeString(newEvent.endDate)
     };
+    console.log(newEvent.id === undefined)
 
-    axios.post("http://localhost:8080/events",
-      payload,
-      {
-        headers: {
-          'Authorization': `Bearer ${userToken}`
+    if (newEvent.id != undefined) {
+      axios.put("http://localhost:8080/events/update",
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${userToken}`
+          }
         }
-      }
-    ).then(function (response) {
-      setLoadingState(true)
-      fetchData()
-    }).catch(function (error) {
-    })
+      ).then(function (response) {
+        setLoadingState(true)
+        fetchData()
+      }).catch(function (error) {
+      })
+    } else {
+      axios.post("http://localhost:8080/events",
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${userToken}`
+          }
+        }
+      ).then(function (response) {
+        setLoadingState(true)
+        fetchData()
+      }).catch(function (error) {
+      })
+    }
+
+
 
     setIsModalOpen(false);
     setSelectedDuration(15);
@@ -104,7 +122,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
           'Authorization': `Bearer ${userToken}`
         }
       }
-    ).then(res=> {
+    ).then(res => {
       console.log(res)
       setLoadingState(true)
       fetchData()
@@ -156,6 +174,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
     setUserToken(token)
   }, [])
 
+
   return (
     <div className="h-200 p-4 pb-0 w-full">
       <Calendar
@@ -193,7 +212,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleAddEvent();
+                handleAddUpdateEvent();
               }}
             >
               <input
