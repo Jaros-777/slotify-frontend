@@ -1,14 +1,15 @@
 import DoneLogo from "../assets/done-icon.png"
 import BackgroundBellRing from "../assets/background-bell-ring.webp"
+import { useNavigate } from "react-router-dom"
 
 export const Hero =()=>{
-
+    const navigate = useNavigate()
 
     return(
         <section className="flex flex-col items-center pt-42 " id="hero">
             <h1 className="text-7xl font-medium">Get Bokings, Take Payments,</h1>
             <h1 className="text-7xl mt-4 font-medium">and Grow Your Buisness</h1>
-            <a href="#" className="mt-20 bg-blue-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600 duration-200">Create free account</a>
+            <button onClick={()=>navigate("/register")} className="mt-20 bg-blue-500 text-white py-3 px-6 rounded-lg font-medium cursor-pointer hover:bg-blue-600 duration-200">Create free account</button>
             <div className="flex my-12">
                 <div className="flex items-center mx-4">
                     <img src={DoneLogo} className="h-[1em] mr-2"/>
