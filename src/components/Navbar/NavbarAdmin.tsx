@@ -22,7 +22,7 @@ export const NavbarAdmin = () => {
             <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
             <div className="flex">
-                <button className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>navigate("/admin/calendar")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <img src={CalendarIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Calendar</span>
                 </button>
@@ -34,8 +34,8 @@ export const NavbarAdmin = () => {
                     <img src={LinkIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Online booking</span>
                 </button>
-                <button className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
-                    <img src={SettingsIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
+                <button onClick={()=>navigate("/admin/settings")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                    <img src={SettingsIcon} alt="Settings" className="mr-4 h-[1.5em]" />
                     <span>Settings</span>
                 </button>
             </div>

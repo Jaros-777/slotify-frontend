@@ -22,7 +22,7 @@ export const Login = () => {
             .then(function (response) {
                 localStorage.clear()
                 localStorage.setItem("token", response.data.token)
-                navigate("/calendar")
+                navigate("/admin/calendar")
             })
             .catch(function (response) {
                 setShowError(true)
