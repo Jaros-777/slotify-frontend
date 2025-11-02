@@ -78,7 +78,6 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
       startDate: toLocalDateTimeString(newEvent.startDate),
       endDate: toLocalDateTimeString(newEvent.endDate)
     };
-    console.log(newEvent.id === undefined)
 
     if (newEvent.id != undefined) {
       axios.put("http://localhost:8080/events/update",

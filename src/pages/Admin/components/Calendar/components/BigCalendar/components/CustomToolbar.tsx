@@ -33,7 +33,7 @@ export const CustomToolbar = ({ label, onNavigate, onView, currentViewDate }: Cu
         {label} {currentViewDate.getFullYear()}
       </div>
 
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <button
           onClick={() => onView("month")}
           className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-200 duration-200 cursor-pointer"
@@ -52,7 +52,7 @@ export const CustomToolbar = ({ label, onNavigate, onView, currentViewDate }: Cu
         >
           Day
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
