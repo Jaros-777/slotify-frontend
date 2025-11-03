@@ -7,25 +7,25 @@ type service = "serviceSection" | "serviceForm"
 
 export const Settings = () => {
 
-    const [currentSection, setCurrentSection] = useState<service>("serviceSection")
+    const [currentSection, setCurrentSection] = useState<service>("serviceForm")
 
     return (
-        <div className="flex pt-20 h-full">
-            <div className="flex flex-col p-4 ml-4 mt-20 w-[15%]">
-                <button className="flex cursor-pointer py-2">
-                    <PencilRuler></PencilRuler>
-                    <p className="ml-4">dsd</p>
+        <div className="flex pt-20 min-h-full">
+            <div className="flex flex-col p-4 ml-4 pt-20 w-46 border-r-1 border-gray-300">
+                <button className="flex cursor-pointer py-2 group">
+                    <PencilRuler className="group-hover:text-blue-600"></PencilRuler>
+                    <p className="ml-4 group-hover:text-blue-600">Setting 1</p>
                 </button>
-                <button className="flex cursor-pointer py-2">
-                    <PencilRuler></PencilRuler>
-                    <p className="ml-4">dsds</p>
+                <button className="flex cursor-pointer py-2 group">
+                    <PencilRuler className="group-hover:text-blue-600"></PencilRuler>
+                    <p className="ml-4 group-hover:text-blue-600">Setting 2</p>
                 </button>
                 <button className="flex cursor-pointer py-2 group">
                     <PencilRuler className="group-hover:text-blue-600"></PencilRuler>
                     <p className="ml-4 group-hover:text-blue-600">Services</p>
                 </button>
             </div>
-            <div className="mt-4 w-full h-full">
+            <div className="w-full h-full bg-gray-200">
                 {currentSection === "serviceSection" && <Services/>}
                 {currentSection === "serviceForm" && <ServiceForm/>}
             </div>

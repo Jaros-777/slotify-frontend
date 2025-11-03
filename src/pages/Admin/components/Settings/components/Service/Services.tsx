@@ -6,11 +6,11 @@ export const Services = () => {
     const { serviceData } = useData();
 
     return (
-        <div className="flex flex-col items-center bg-gray-100 h-full">
-            <div className=" bg-white w-full px-6 ">
+        <div className="flex flex-col items-center h-full">
+            <div className=" bg-white w-full p-6 ">
                 <div className="flex justify-between items-center w-full ">
-                    <h1 className="text-2xl font-bold">Services</h1>
-                    <button className="bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium cursor-pointer hover:bg-blue-600 duration-200">ADD NEW SERVICE</button>
+                    <h1 className="text-3xl font-bold">Services</h1>
+                    <button className="bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">ADD NEW SERVICE</button>
                 </div>
                 <div className="flex border border-gray-300 w-full mt-6 mb-6 p-2 ">
                     <Search className="text-gray-300" />
