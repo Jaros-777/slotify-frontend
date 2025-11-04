@@ -7,11 +7,13 @@ import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { useData } from "../../../../AppRouter"
 import { useCheckIsLogged } from "../utlis/checkIsLoged"
+import { useLoadServiceData } from "../utlis/loadServiceData"
 
 
 
 export const CalendarPage = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { loadServiceData } = useLoadServiceData();
 
     const { serviceData, setServiceData, userToken, setUserToken, isLogged } = useData();
     const [eventsData, setEventsData] = useState<EventType[]>([])
@@ -28,48 +30,27 @@ export const CalendarPage = () => {
         return start;
     }
 
-    // async function checkIsLogged() {
-    //     const token = localStorage.getItem("token")
-    //     setUserToken(token)
-    //     await axios.get("http://localhost:8080/auth/validate",
+    // async function loadServiceData(token: string) {
+    //     await axios.get("http://localhost:8080/service",
     //         {
     //             headers: {
     //                 'Authorization': `Bearer ${token}`
     //             }
     //         }
     //     )
-    //         .then(async function (response) {
-    //             setIsLogged(true)
-    //             loadServiceData(token);
-    //             fetchData(token)
+    //         .then(function (response) {
+    //             setServiceData(response.data)
     //         }).catch(function (error) {
     //             console.log(error);
-    //             navigate("/login")
     //         })
-
     // }
-
-    async function loadServiceData(token: string) {
-        await axios.get("http://localhost:8080/service",
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        )
-            .then(function (response) {
-                setServiceData(response.data)
-            }).catch(function (error) {
-                console.log(error);
-            })
-    }
 
     async function fetchData(token?: string) {
         const localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
         axios.get(`http://localhost:8080/events/${localDateTimeStartWeek}`,
             {
                 headers: {
-                    'Authorization': `Bearer ${token? token: userToken}`
+                    'Authorization': `Bearer ${token ? token : userToken}`
                 }
             }
         ).then(function (response) {
@@ -102,8 +83,8 @@ export const CalendarPage = () => {
     }, [currentWeekStart])
 
     if (isAuthLoading) {
-  return <p className="mt-20">Checking authentication...</p>;
-}
+        return <p className="mt-20">Checking authentication...</p>;
+    }
     if (!isLogged) {
         return <p className="mt-20">Waiting..</p>
     }

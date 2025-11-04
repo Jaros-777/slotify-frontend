@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Services } from "./components/Service/Services"
-import { ServiceForm } from "./components/Service/components/ServiceForm";
 import { PencilRuler  } from "lucide-react";
+import { useCheckIsLogged } from "../utlis/checkIsLoged";
 
-type service = "serviceSection" | "serviceForm"
+type sectionTypes = "serviceSection"
 
 export const Settings = () => {
 
-    const [currentSection, setCurrentSection] = useState<service>("serviceForm")
+    const {checkIsLogged, isAuthLoading} = useCheckIsLogged();
+    const [currentSection, setCurrentSection] = useState<sectionTypes>("serviceSection")
+
+    useEffect(() => {
+    
+            (async () => {
+                await checkIsLogged()
+            })();
+        }, [])
+
+    if (isAuthLoading) {
+        return <p className="mt-20">Checking authentication...</p>;
+    }
 
     return (
         <div className="flex pt-20 min-h-full">
@@ -25,9 +37,8 @@ export const Settings = () => {
                     <p className="ml-4 group-hover:text-blue-600">Services</p>
                 </button>
             </div>
-            <div className="w-full h-full bg-gray-200">
+            <div className="w-full min-h-full bg-gray-200">
                 {currentSection === "serviceSection" && <Services/>}
-                {currentSection === "serviceForm" && <ServiceForm/>}
             </div>
         </div>
     )

@@ -1,7 +1,7 @@
 export interface ServiceType {
-  id: number;
+  id: string;
   name: string;
-  userId: number;
   price: number;
-  duration:number
+  duration:number;
+  description: string
 }

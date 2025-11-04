@@ -252,7 +252,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
               <select
                 value={newEvent.serviceId ?? serviceData[0].id}
                 onChange={(e) =>
-                  setNewEvent({ ...newEvent, serviceId: Number(e.target.value) })
+                  setNewEvent({ ...newEvent, serviceId:e.target.value })
                 }
                 className="w-full border p-2 rounded mb-4 border-gray-300"
               >

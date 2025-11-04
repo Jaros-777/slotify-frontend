@@ -1,26 +1,38 @@
+import axios from "axios";
 import { Camera, Image } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useData } from "../../../../../../../AppRouter";
+import type { ServiceType } from "../../../../Calendar/components/types/ServiceType";
 
-interface createService {
-    name: string,
-    description?: string,
+interface durationState {
     durationHours: number,
     durationMinutes: number,
-    price: number,
-    img: string | null
 }
 
-export const ServiceForm = () => {
+interface serviceProps {
+    handleOpenForm: (id: string | null) => void,
+    id: string | null
+}
+
+interface payload {
+    id?: string;
+    name: string | undefined;
+    description?: string;
+    price: number | undefined;
+    duration: number;
+}
+
+export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
-    const [serviceCreateData, setServiceCreateData] = useState<createService>(
+    const { userToken, serviceData } = useData();
+    const [selecetedDuration, setSelectedDuration] = useState<durationState>({ durationHours: 0, durationMinutes: 15 })
+    const [serviceCreateData, setServiceCreateData] = useState<Partial<ServiceType>>(
         {
             name: "",
-            description: "",
-            durationHours: 0,
-            durationMinutes: 15,
             price: 0,
-            img: null
+            duration: 0,
+            description: ""
         }
     )
 
@@ -37,16 +49,70 @@ export const ServiceForm = () => {
     const handlePostNewService = () => {
 
 
-        const payload = {
+        let payload:payload = {
             name: serviceCreateData.name,
             description: serviceCreateData.description,
             price: serviceCreateData.price,
-            img: serviceCreateData.img,
-            duration: serviceCreateData.durationHours * 3600 + serviceCreateData.durationMinutes * 60,
+            duration: selecetedDuration.durationHours * 3600 + selecetedDuration.durationMinutes * 60,
         }
-        console.log(payload)
+        
+
+        if (id) {
+             payload.id = id
+            axios.put("http://localhost:8080/service",
+                payload,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }
+            ).then(() => {
+            }).catch((error) => {
+                console.log(error)
+            })
+
+        } else {
+            axios.post("http://localhost:8080/service",
+                payload,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }
+            ).then(() => {
+                
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+
+        handleOpenForm(null)
+
+
     }
 
+    const handleDeleteService=()=>{
+        axios.delete(`http://localhost:8080/service/delete/${id}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }
+            ).then(() => {
+                handleOpenForm(null)
+            }).catch((error) => {
+                console.log(error)
+            })
+    }
+
+    useEffect(() => {
+        if (id) {
+            const currentService = serviceData.filter(service => service.id == id)[0]
+            setServiceCreateData(currentService);
+            selecetedDuration.durationHours = Math.floor(currentService.duration / 3600)
+            selecetedDuration.durationMinutes = Math.floor((currentService.duration % 3600) / 60)
+        }
+    }, [])
 
 
     return (
@@ -67,6 +133,8 @@ export const ServiceForm = () => {
                     ></input>
                 </div>
                 <h1 className="text-2xl font-bold ml-12">Add new service</h1>
+                <button type="button" onClick={() => handleDeleteService()} className="ml-auto bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DISCARD</button>
+
             </div>
             <form className="bg-white m-6 rounded-2xl p-4 w-5/6" onSubmit={(e) => {
                 e.preventDefault()
@@ -97,8 +165,8 @@ export const ServiceForm = () => {
                             type="number"
                             min={0}
                             className="w-2/3 px-2 outline-none"
-                            onChange={(e) => setServiceCreateData({ ...serviceCreateData, durationHours: parseInt(e.target.value) })}
-                            value={serviceCreateData.durationHours}
+                            onChange={(e) => setSelectedDuration({ ...selecetedDuration, durationHours: parseInt(e.target.value) })}
+                            value={selecetedDuration.durationHours}
                         />
                         <p className="text-center">hrs</p>
                     </div>
@@ -108,8 +176,8 @@ export const ServiceForm = () => {
                             type="number"
                             min={0}
                             className="w-2/3 px-2 outline-none"
-                            onChange={(e) => setServiceCreateData({ ...serviceCreateData, durationMinutes: parseInt(e.target.value) })}
-                            value={serviceCreateData.durationMinutes}
+                            onChange={(e) => setSelectedDuration({ ...selecetedDuration, durationMinutes: parseInt(e.target.value) })}
+                            value={selecetedDuration.durationMinutes}
                         />
                         <p>min</p>
                     </div>
@@ -124,10 +192,10 @@ export const ServiceForm = () => {
                         onChange={(e) => setServiceCreateData({ ...serviceCreateData, price: parseInt(e.target.value) })}
                         value={serviceCreateData.price}
                     />
-                    <p className="w-1/4 font-bold">PLN</p>
+                    <p className="w-1/4 font-bold">USD</p>
                 </div>
                 <button type="submit" className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">SAVE</button>
-                <button type="button" className="mt-12 ml-12 bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DISCARD</button>
+                <button type="button" onClick={() => handleOpenForm(null)} className="mt-12 ml-12 bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DISCARD</button>
             </form>
         </div>
     )
