@@ -175,7 +175,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
 
 
   return (
-    <div className="h-200 p-4 pb-0 w-full">
+    <div className="h-180 p-4 pb-0 w-full">
       <Calendar
         selectable
         localizer={localizer}

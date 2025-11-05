@@ -5,7 +5,7 @@ export const NotFound = () => {
     const navigate = useNavigate()
 
     return (
-        <section className="mt-34 flex flex-col items-center">
+        <section className="flex flex-col items-center">
             <h1 className="text-[20rem]">404</h1>
             <h3 className="text-5xl">We apologize, but this page doesn’t exist.</h3>
             <p className="mt-16">Oh. We are sorry, but we can’t find the page you are looking for. Go back to Home or to the previous page. </p>

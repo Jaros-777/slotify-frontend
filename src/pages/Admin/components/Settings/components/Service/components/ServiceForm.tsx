@@ -3,15 +3,11 @@ import { Camera, Image } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useData } from "../../../../../../../AppRouter";
 import type { ServiceType } from "../../../../Calendar/components/types/ServiceType";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface durationState {
     durationHours: number,
     durationMinutes: number,
-}
-
-interface serviceProps {
-    handleOpenForm: (id: string | null) => void,
-    id: string | null
 }
 
 interface payload {
@@ -22,7 +18,9 @@ interface payload {
     duration: number;
 }
 
-export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
+export const ServiceForm = () => {
+
+    const id = useParams<{id: string}>();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const { userToken, serviceData } = useData();
@@ -35,6 +33,7 @@ export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
             description: ""
         }
     )
+    const navigate = useNavigate();
 
     const handleAddImg = () => {
         fileInputRef.current?.click()
@@ -58,7 +57,7 @@ export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
         
 
         if (id) {
-             payload.id = id
+            //  payload.id = id
             axios.put("http://localhost:8080/service",
                 payload,
                 {
@@ -86,7 +85,7 @@ export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
             })
         }
 
-        handleOpenForm(null)
+        navigate("/admin/settings/services")
 
 
     }
@@ -99,14 +98,14 @@ export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
                     }
                 }
             ).then(() => {
-                handleOpenForm(null)
+                navigate("/admin/settings/services")
             }).catch((error) => {
                 console.log(error)
             })
     }
 
     useEffect(() => {
-        if (id) {
+        if (id && serviceData) {
             const currentService = serviceData.filter(service => service.id == id)[0]
             setServiceCreateData(currentService);
             selecetedDuration.durationHours = Math.floor(currentService.duration / 3600)
@@ -114,6 +113,9 @@ export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
         }
     }, [])
 
+    if(!serviceData){
+        return <p>Loading data...</p>
+    }
 
     return (
         <div className="bg-gray-200 pb-20 flex flex-col items-center">
@@ -195,7 +197,7 @@ export const ServiceForm = ({ handleOpenForm, id }: serviceProps) => {
                     <p className="w-1/4 font-bold">USD</p>
                 </div>
                 <button type="submit" className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">SAVE</button>
-                <button type="button" onClick={() => handleOpenForm(null)} className="mt-12 ml-12 bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DISCARD</button>
+                <button type="button" onClick={() => navigate("/admin/settings/services")} className="mt-12 ml-12 bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DISCARD</button>
             </form>
         </div>
     )

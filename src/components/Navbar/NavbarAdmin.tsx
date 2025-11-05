@@ -34,7 +34,7 @@ export const NavbarAdmin = () => {
                     <img src={LinkIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Online booking</span>
                 </button>
-                <button onClick={()=>navigate("/admin/settings")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>navigate("/admin/settings/services")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <img src={SettingsIcon} alt="Settings" className="mr-4 h-[1.5em]" />
                     <span>Settings</span>
                 </button>
