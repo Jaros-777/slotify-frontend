@@ -1,7 +1,6 @@
 import { Search, Dot, ArrowRight } from "lucide-react";
 import { useData } from "../../../../../../AppRouter";
 import { useEffect } from "react";
-import { ServiceForm } from "./components/ServiceForm";
 import { useLoadServiceData } from "../../../utlis/loadServiceData";
 import { useNavigate } from "react-router-dom";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
@@ -35,7 +34,7 @@ export const Services = () => {
                 <div className=" bg-white w-full p-6 ">
                     <div className="flex justify-between items-center w-full ">
                         <h1 className="text-3xl font-bold">Services</h1>
-                        <button onClick={() => navigate(`/admin/settings/services/form/`)} className="bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">ADD NEW SERVICE</button>
+                        <button onClick={() => navigate(`/admin/settings/services/form/add`)} className="bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">ADD NEW SERVICE</button>
                     </div>
                     <div className="flex border border-gray-300 w-full mt-6 mb-6 p-2 ">
                         <Search className="text-gray-300" />
@@ -57,7 +56,7 @@ export const Services = () => {
                                     <p className="font-bold ">{e.name}</p>
                                 </div>
                                 <div className="flex">
-                                    <p>{e.duration / 3600} hours</p>
+                                    <p>{(e.duration / 3600).toFixed(2)} hours</p>
                                     <Dot className="mx-2" />
                                     <p className="">{e.price}$</p>
                                 </div>

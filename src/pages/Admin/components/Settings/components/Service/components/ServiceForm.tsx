@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useData } from "../../../../../../../AppRouter";
 import type { ServiceType } from "../../../../Calendar/components/types/ServiceType";
 import { useNavigate, useParams } from "react-router-dom";
+import { useCheckIsLogged } from "../../../../utlis/checkIsLoged";
+import { useLoadServiceData } from "../../../../utlis/loadServiceData";
 
 interface durationState {
     durationHours: number,
@@ -20,16 +22,18 @@ interface payload {
 
 export const ServiceForm = () => {
 
-    const id = useParams<{id: string}>();
+    const { id } = useParams<{ id: string }>();
+    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { loadServiceData, isDataLoading } = useLoadServiceData();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const { userToken, serviceData } = useData();
     const [selecetedDuration, setSelectedDuration] = useState<durationState>({ durationHours: 0, durationMinutes: 15 })
-    const [serviceCreateData, setServiceCreateData] = useState<Partial<ServiceType>>(
+    const [currentService, setCurrentService] = useState<Partial<ServiceType>>(
         {
             name: "",
             price: 0,
-            duration: 0,
+            duration: 900,
             description: ""
         }
     )
@@ -45,21 +49,22 @@ export const ServiceForm = () => {
         }
     }
 
-    const handlePostNewService = () => {
+    const handleAddUpdateNewService = () => {
 
 
-        let payload:payload = {
-            name: serviceCreateData.name,
-            description: serviceCreateData.description,
-            price: serviceCreateData.price,
+        let payload: payload = {
+            name: currentService.name,
+            description: currentService.description,
+            price: currentService.price,
             duration: selecetedDuration.durationHours * 3600 + selecetedDuration.durationMinutes * 60,
         }
-        
+
 
         if (id) {
-            //  payload.id = id
+            const payloadWithId = id ? { ...payload, id } : payload;
+            console.log(payloadWithId)
             axios.put("http://localhost:8080/service",
-                payload,
+                payloadWithId,
                 {
                     headers: {
                         'Authorization': `Bearer ${userToken}`
@@ -79,7 +84,7 @@ export const ServiceForm = () => {
                     }
                 }
             ).then(() => {
-                
+
             }).catch((error) => {
                 console.log(error)
             })
@@ -90,31 +95,51 @@ export const ServiceForm = () => {
 
     }
 
-    const handleDeleteService=()=>{
+    const handleDeleteService = () => {
         axios.delete(`http://localhost:8080/service/delete/${id}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${userToken}`
-                    }
+            {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
                 }
-            ).then(() => {
-                navigate("/admin/settings/services")
-            }).catch((error) => {
-                console.log(error)
-            })
+            }
+        ).then(() => {
+            navigate("/admin/settings/services")
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     useEffect(() => {
-        if (id && serviceData) {
-            const currentService = serviceData.filter(service => service.id == id)[0]
-            setServiceCreateData(currentService);
-            selecetedDuration.durationHours = Math.floor(currentService.duration / 3600)
-            selecetedDuration.durationMinutes = Math.floor((currentService.duration % 3600) / 60)
-        }
-    }, [])
+        (async () => {
+            const token = await checkIsLogged();
+            if (token) {
+                await loadServiceData(token);
 
-    if(!serviceData){
-        return <p>Loading data...</p>
+            }
+        })();
+
+    }, []);
+
+    useEffect(() => {
+        if (serviceData && id != undefined) {
+            console.log(serviceData)
+            console.log("Id ", id)
+            const curService = serviceData.filter(service => service.id.toString() === id)[0];
+            setCurrentService(curService)
+            setSelectedDuration({
+                durationHours: Math.floor(curService.duration / 3600),
+                durationMinutes: Math.floor((curService.duration % 3600) / 60)
+            })
+
+        }
+
+    }, [serviceData])
+
+    if (isAuthLoading) {
+        return <p className="mt-20">Checking authentication...</p>;
+    }
+    if (isDataLoading) {
+        return <p className="mt-20">Loading data...</p>;
     }
 
     return (
@@ -134,30 +159,34 @@ export const ServiceForm = () => {
                         accept="image/*"
                     ></input>
                 </div>
-                <h1 className="text-2xl font-bold ml-12">Add new service</h1>
-                <button type="button" onClick={() => handleDeleteService()} className="ml-auto bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DISCARD</button>
+                <h1 className="text-2xl font-bold ml-12">{id ? currentService.name : "Add new service"}</h1>
+                {id ?
+                    <button type="button" onClick={() => handleDeleteService()} className="ml-auto bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DELETE</button>
+                    : null
+                }
 
             </div>
             <form className="bg-white m-6 rounded-2xl p-4 w-5/6" onSubmit={(e) => {
                 e.preventDefault()
-                handlePostNewService();
+                handleAddUpdateNewService();
             }}>
                 <h3 className="text-xl font-bold border-b border-gray-300 pb-4">Details</h3>
                 <p className="font-bold mt-6">Name</p>
+                {/* <p>{serviceData[id].name}</p> */}
                 <input
                     required
                     type="text"
                     placeholder="Service name"
                     className="border border-gray-300 w-full py-2 px-4 rounded-md mt-2 focus:outline-1 outline-blue-600"
-                    onChange={(e) => setServiceCreateData({ ...serviceCreateData, name: e.target.value })}
-                    value={serviceCreateData.name}
+                    onChange={(e) => setCurrentService({ ...currentService, name: e.target.value })}
+                    value={currentService.name}
                 />
                 <p className="font-bold mt-6">Description</p>
                 <textarea
                     className="resize-none border border-gray-300 w-full h-24 py-2 px-4 rounded-md mt-2 focus:outline-1 outline-blue-600"
                     placeholder="Description"
-                    onChange={(e) => setServiceCreateData({ ...serviceCreateData, description: e.target.value })}
-                    value={serviceCreateData.description}
+                    onChange={(e) => setCurrentService({ ...currentService, description: e.target.value })}
+                    value={currentService.description}
                 />
                 <p className="font-bold mt-6">Duration</p>
                 <div className=" w-60 flex mt-2">
@@ -191,8 +220,8 @@ export const ServiceForm = () => {
                         type="number"
                         min={0}
                         className="border-r border-gray-300 py-2 px-4 rounded-md outline-none w-3/4"
-                        onChange={(e) => setServiceCreateData({ ...serviceCreateData, price: parseInt(e.target.value) })}
-                        value={serviceCreateData.price}
+                        onChange={(e) => setCurrentService({ ...currentService, price: parseInt(e.target.value) })}
+                        value={currentService.price}
                     />
                     <p className="w-1/4 font-bold">USD</p>
                 </div>

@@ -51,6 +51,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
           <Route element={<SettingsLayout />}>
             <Route path="/admin/settings/services" element={<Services />} />
             <Route path="/admin/settings/services/form/:id" element={<ServiceForm />} />
+            <Route path="/admin/settings/services/form/add" element={<ServiceForm />} />
           </Route>
 
 
