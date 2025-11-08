@@ -22,6 +22,11 @@ export const useLoadServiceData = () => {
         )
             .then(function (response) {
                 const sorted = [...response.data].sort((a, b) => a.name.localeCompare(b.name));
+
+                const indexOfnotAssignetElement = sorted.findIndex(s=> s.isEditable === false);
+                const [notAssignetElement] = sorted.splice(indexOfnotAssignetElement, 1)
+                sorted.unshift(notAssignetElement)
+
                 setServiceData(sorted);
                 setIsDataLoading(false)
 

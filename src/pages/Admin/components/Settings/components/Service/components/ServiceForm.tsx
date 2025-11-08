@@ -62,7 +62,6 @@ export const ServiceForm = () => {
 
         if (id) {
             const payloadWithId = id ? { ...payload, id } : payload;
-            console.log(payloadWithId)
             axios.put("http://localhost:8080/service",
                 payloadWithId,
                 {
@@ -123,8 +122,6 @@ export const ServiceForm = () => {
 
     useEffect(() => {
         if (serviceData && id != undefined) {
-            console.log(serviceData)
-            console.log("Id ", id)
             const curService = serviceData.filter(service => service.id.toString() === id)[0];
             setCurrentService(curService)
             setSelectedDuration({

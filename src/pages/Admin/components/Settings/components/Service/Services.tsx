@@ -1,13 +1,15 @@
 import { Search, Dot, ArrowRight } from "lucide-react";
 import { useData } from "../../../../../../AppRouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLoadServiceData } from "../../../utlis/loadServiceData";
 import { useNavigate } from "react-router-dom";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
+import type { ServiceType } from "../../../Calendar/components/types/ServiceType";
 
 export const Services = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
     const { serviceData } = useData();
+    const [serviceDataToShow, setServiceDataToShow] = useState<ServiceType[]>([])
     const { loadServiceData, isDataLoading } = useLoadServiceData();
     const navigate = useNavigate()
 
@@ -17,9 +19,14 @@ export const Services = () => {
             const token = await checkIsLogged();
             if (token) {
                 await loadServiceData(token);
+
             }
         })();
     }, []);
+
+    useEffect(() => {
+        setServiceDataToShow(serviceData.filter(service=> service.isEditable === true))
+    }, [serviceData])
 
     if (isAuthLoading) {
         return <p className="mt-20">Checking authentication...</p>;
@@ -42,7 +49,7 @@ export const Services = () => {
                     </div>
                 </div>
                 <ul className="w-full mt-6 pb-12 flex flex-col items-center ">
-                    {serviceData.map((e) => (
+                    {serviceDataToShow.map((e) => (
                         <li
                             key={e.id}
                             className="flex my-2 w-[90%] bg-white p-4 items-center rounded-2xl cursor-pointer"

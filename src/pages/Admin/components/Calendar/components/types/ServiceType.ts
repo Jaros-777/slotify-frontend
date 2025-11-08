@@ -3,5 +3,6 @@ export interface ServiceType {
   name: string;
   price: number;
   duration:number;
-  description: string
+  description: string;
+  isEditable:boolean;
 }
