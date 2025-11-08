@@ -91,6 +91,7 @@ export const ServiceForm = () => {
         }
 
         navigate("/admin/settings/services")
+        window.location.reload()
 
 
     }
@@ -112,7 +113,7 @@ export const ServiceForm = () => {
     useEffect(() => {
         (async () => {
             const token = await checkIsLogged();
-            if (token) {
+            if (token && id!= undefined) {
                 await loadServiceData(token);
 
             }
@@ -138,7 +139,7 @@ export const ServiceForm = () => {
     if (isAuthLoading) {
         return <p className="mt-20">Checking authentication...</p>;
     }
-    if (isDataLoading) {
+    if (isDataLoading && id!= undefined ) {
         return <p className="mt-20">Loading data...</p>;
     }
 

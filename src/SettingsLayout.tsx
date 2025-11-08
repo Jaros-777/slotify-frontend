@@ -4,7 +4,7 @@ import { Settings } from "./pages/Admin/components/Settings/Settings"
 export const SettingsLayout = () => {
 
     return (
-        <div className="flex w-full h-full">
+        <div className="flex w-full min-h-screen">
             <Settings />
             <div className="bg-gray-200 w-full">
                 <Outlet />

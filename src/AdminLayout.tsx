@@ -5,7 +5,7 @@ export const AdminLayout = () => {
     return (
         <>
             <NavbarAdmin />
-            <div className="pt-20 h-full">
+            <div className="pt-20 min-h-screen">
                 <Outlet />
             </div>
 

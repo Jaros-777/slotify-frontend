@@ -30,21 +30,6 @@ export const CalendarPage = () => {
         return start;
     }
 
-    // async function loadServiceData(token: string) {
-    //     await axios.get("http://localhost:8080/service",
-    //         {
-    //             headers: {
-    //                 'Authorization': `Bearer ${token}`
-    //             }
-    //         }
-    //     )
-    //         .then(function (response) {
-    //             setServiceData(response.data)
-    //         }).catch(function (error) {
-    //             console.log(error);
-    //         })
-    // }
-
     async function fetchData(token?: string) {
         const localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
         axios.get(`http://localhost:8080/events/${localDateTimeStartWeek}`,
