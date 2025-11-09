@@ -76,7 +76,7 @@ export const GetBooking = () => {
                                 level="H"
                                 className=""
                             />
-                            <button className="mt-4 p-2 border border-gray-300 text-nowrap text-gray-500 font-bold text-sm w-full flex items-center justify-center hover:text-red-500" onClick={downloadQRCode}>
+                            <button className="mt-4 p-2 border border-gray-300 text-nowrap text-gray-500 font-bold text-sm w-full flex items-center justify-center cursor-pointer hover:text-red-500" onClick={downloadQRCode}>
                                 <Download className="mr-2 h-[1.2em]"></Download>
                                 <span>DOWNLOAD QR CODE</span>
                             </button>
