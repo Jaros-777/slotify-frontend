@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom"
-import { SettingsSideBar } from "./pages/Admin/components/Settings/SettingsSideBar"
+import { BookingSideBar } from "./pages/Admin/components/Booking/BookingSideBar"
 
-export const SettingsLayout = () => {
+export const BookingLayout = () => {
 
     return (
         <div className="flex w-full min-h-screen">
-            <SettingsSideBar />
+            <BookingSideBar />
             <div className="bg-gray-200 w-full">
                 <Outlet />
             </div>

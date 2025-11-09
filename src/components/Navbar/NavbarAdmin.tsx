@@ -30,7 +30,7 @@ export const NavbarAdmin = () => {
                     <img src={ClientIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Clients</span>
                 </button>
-                <button className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>navigate("/admin/booking/get-booking")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <img src={LinkIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Online booking</span>
                 </button>

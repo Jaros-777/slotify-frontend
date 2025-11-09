@@ -4,10 +4,11 @@ import { Auth } from './pages/Home/components/Auth/Auth.tsx';
 import { AdminLayout } from "./AdminLayout.tsx";
 import { HomeLayout } from "./HomeLayout.tsx";
 import { SettingsLayout } from "./SettingsLayout.tsx";
+import { BookingLayout } from "./BookingLayout.tsx";
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
-import { Settings } from "./pages/Admin/components/Settings/Settings.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";
 import { ServiceForm } from "./pages/Admin/components/Settings/components/Service/components/ServiceForm.tsx";
+import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking.tsx";
 import { NotFound } from "./pages/NotFound.tsx";
 import type { ServiceType } from "./pages/Admin/components/Calendar/components/types/ServiceType.ts";
 import { createContext, useContext, useState, type ReactNode } from "react";
@@ -53,8 +54,9 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
             <Route path="/admin/settings/services/form/:id" element={<ServiceForm />} />
             <Route path="/admin/settings/services/form/add" element={<ServiceForm />} />
           </Route>
-
-
+          <Route element={<BookingLayout />}>
+            <Route path="/admin/booking/get-booking" element={<GetBooking />} />
+          </Route>
         </Route>
 
         <Route path="/*" element={<NotFound />} />

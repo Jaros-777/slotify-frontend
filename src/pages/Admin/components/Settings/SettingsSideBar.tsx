@@ -2,7 +2,7 @@ import { PencilRuler  } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 
-export const Settings = () => {
+export const SettingsSideBar = () => {
 
     const navigate = useNavigate()
 
