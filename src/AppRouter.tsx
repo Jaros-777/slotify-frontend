@@ -8,7 +8,7 @@ import { BookingLayout } from "./BookingLayout.tsx";
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";
 import { ServiceForm } from "./pages/Admin/components/Settings/components/Service/components/ServiceForm.tsx";
-import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking.tsx";
+import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking/GetBooking.tsx";
 import { NotFound } from "./pages/NotFound.tsx";
 import type { ServiceType } from "./pages/Admin/components/Calendar/components/types/ServiceType.ts";
 import { createContext, useContext, useState, type ReactNode } from "react";
