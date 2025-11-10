@@ -11,7 +11,7 @@ import "./BigCalendar.css"
 import type { EventType } from "../types/EventType";
 import { CustomEvent } from "./components/CustomEvent";
 import { CustomToolbar } from "./components/CustomToolbar";
-import type { ServiceType } from "../types/ServiceType";
+import type { ServiceType } from "../../../types/ServiceType";
 import axios from "axios";
 import { toLocalDateTimeString } from "./utils/dateUtils";
 

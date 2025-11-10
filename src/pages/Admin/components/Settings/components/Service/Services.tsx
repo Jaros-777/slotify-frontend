@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLoadServiceData } from "../../../utlis/loadServiceData";
 import { useNavigate } from "react-router-dom";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
-import type { ServiceType } from "../../../Calendar/components/types/ServiceType";
+import type { ServiceType } from "../../../types/ServiceType";
 
 export const Services = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();

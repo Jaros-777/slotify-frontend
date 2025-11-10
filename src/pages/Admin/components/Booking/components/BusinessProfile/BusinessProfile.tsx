@@ -1,11 +1,22 @@
 import { Camera, Image, Info, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useCheckIsLogged } from "../../utlis/checkIsLoged";
+import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
+import type { BusinessProfileType } from "./types/BusinessProfileType";
 
 export const BusinessProfile = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [showAddressForm, setShowAddressForm] = useState<boolean>(false)
+    const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({
+        name: "Business name",
+        slogan: "",
+        description: "",
+        email: "",
+        phone: undefined,
+        websiteURL: "",
+        facebookURL: ""
+    })
+
 
     const handleAddImg = () => {
         fileInputRef.current?.click()
@@ -17,15 +28,19 @@ export const BusinessProfile = () => {
         }
     }
 
+    const handleAddUpdateBusinessProfile = () => {
+        console.log(currentBusinessProfile)
+    }
+
     useEffect(() => {
-            (async () => {
-                await checkIsLogged();
-            })();
-        }, []);
-    
-        if (isAuthLoading) {
-            return <p className="mt-20">Checking authentication...</p>;
-        }
+        (async () => {
+            await checkIsLogged();
+        })();
+    }, []);
+
+    if (isAuthLoading) {
+        return <p className="mt-20">Checking authentication...</p>;
+    }
 
     return (
         <div className="flex flex-col items-center h-full w-full">
@@ -44,16 +59,34 @@ export const BusinessProfile = () => {
                         accept="image/*"
                     ></input>
                 </div>
-                <p className="text-2xl font-bold ml-12">Business name</p>
+                <p className="text-2xl font-bold ml-12">{currentBusinessProfile.name}</p>
             </div>
-            <div className="bg-white m-6 rounded-2xl p-4 w-5/6">
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                handleAddUpdateBusinessProfile()
+            }
+            } className="bg-white m-6 rounded-2xl p-4 w-5/6">
                 <p className="font-bold text-xl border-gray-300 border-b pt-2 pb-4">Details</p>
                 <p className="font-medium mt-6">Businness profile</p>
-                <input type="text" className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none" />
-                <p className="font-bold mt-4">Slogan</p>
-                <textarea className="resize-y border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"></textarea>
-                <p className="font-bold mt-4">Description</p>
-                <textarea className="resize-y border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"></textarea>
+                <input
+                    required
+                    type="text"
+                    className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                    value={currentBusinessProfile.name}
+                    onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, name: e.target.value })}
+                />
+                <p className="font-medium mt-4">Slogan</p>
+                <textarea
+                    className="resize-y border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                    value={currentBusinessProfile.slogan}
+                    onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, slogan: e.target.value })}
+                ></textarea>
+                <p className="font-medium mt-4">Description</p>
+                <textarea
+                    className="resize-y border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                    value={currentBusinessProfile.description}
+                    onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, description: e.target.value })}
+                ></textarea>
                 <p className="font-bold text-xl border-gray-300 border-b pt-2 pb-4 mt-6">Contact</p>
                 <div className="flex mt-4">
                     <div className="w-1/2 mx-2">
@@ -61,29 +94,34 @@ export const BusinessProfile = () => {
                         <input
                             type="email"
                             className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                            value={currentBusinessProfile.email}
+                            onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, email: e.target.value })}
                         />
                     </div>
                     <div className="w-1/2 mx-2">
                         <p className="font-medium">Phone</p>
                         <input
-                            type="number"
-                            min={9}
-                            max={9}
+                            type="tel"
+                            minLength={9}
+                            maxLength={9}
+                            pattern="[0-9]+"
                             className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                            value={currentBusinessProfile.phone || undefined}
+                            onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, phone: Number(e.target.value) })}
                         />
                     </div>
                 </div>
-                <div className="border-gray-300 border-b pt-2 pb-4 mt-6 flex justify-between">
+                {/* <div className="border-gray-300 border-b pt-2 pb-4 mt-6 flex justify-between">
                     <p className="font-bold text-xl ">Address</p>
-                    <button className="text-blue-600 font-bold text-sm cursor-pointer" onClick={()=>{setShowAddressForm(true);document.body.classList.add("overflow-hidden");}}>ADD NEW ADDRESS</button>
-                </div>
-                <p className="my-4">No address added. Click to add new address to fill in your business address.</p>
+                    <button type="button" className="text-blue-600 font-bold text-sm cursor-pointer" onClick={()=>{setShowAddressForm(true);document.body.classList.add("overflow-hidden");}}>ADD NEW ADDRESS</button>
+                </div> */}
+                {/* <p className="my-4">No address added. Click to add new address to fill in your business address.</p> */}
                 {showAddressForm ?
-                    <div  className="fixed bg-gray-300/75 z-50 h-full w-full top-0 right-0 flex items-center justify-center overflow-hidden">
+                    <div className="fixed bg-gray-300/75 z-50 h-full w-full top-0 right-0 flex items-center justify-center overflow-hidden">
                         <div className="bg-white w-4/5 h-3/5 opacity-100 p-4 rounded-md">
                             <div className="border-gray-300 border-b pt-2 pb-4 flex justify-between">
                                 <p className="font-bold text-xl ">Address</p>
-                                <X className="cursor-pointer" onClick={()=>{setShowAddressForm(false);document.body.classList.remove("overflow-hidden");}}></X>
+                                <X className="cursor-pointer" onClick={() => { setShowAddressForm(false); document.body.classList.remove("overflow-hidden"); }}></X>
                             </div>
                             <p className="mt-4 font-medium">Where's your business located?</p>
                             <div className="flex border border-gray-400 px-4 py-2 rounded-md mt-2">
@@ -95,7 +133,7 @@ export const BusinessProfile = () => {
                     : null
                 }
 
-                <p className="font-bold text-xl border-gray-300 border-b pt-2 pb-4">Channels</p>
+                <p className="font-bold text-xl border-gray-300 border-b pt-2 pb-4 mt-6">Channels</p>
                 <div className="mt-6 flex items-center">
                     <p className="font-medium">Webiste URL</p>
                     <div className="group relative">
@@ -115,6 +153,8 @@ export const BusinessProfile = () => {
                 <input
                     type="text"
                     className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                    value={currentBusinessProfile.websiteURL}
+                    onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, websiteURL: e.target.value })}
                 />
                 <div className="mt-4 flex items-center">
                     <p className="font-medium">Facebook page URL</p>
@@ -136,10 +176,14 @@ export const BusinessProfile = () => {
                 <input
                     type="text"
                     className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                    value={currentBusinessProfile.facebookURL}
+                    onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, facebookURL: e.target.value })}
                 />
+                <button type="submit" className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">SAVE</button>
 
 
-            </div>
+
+            </form>
 
         </div>
     )

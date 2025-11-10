@@ -2,7 +2,7 @@ import axios from "axios";
 import { Camera, Image } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useData } from "../../../../../../../AppRouter";
-import type { ServiceType } from "../../../../Calendar/components/types/ServiceType";
+import type { ServiceType } from "../../../../types/ServiceType";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCheckIsLogged } from "../../../../utlis/checkIsLoged";
 import { useLoadServiceData } from "../../../../utlis/loadServiceData";
