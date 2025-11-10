@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 
 interface userDetailsType {
     name: string,
+    businessName:string,
     email: string,
     password: string
 }
@@ -11,6 +12,7 @@ interface userDetailsType {
 export const Register = () => {
     const [userAuthData, setUserAuthData] = useState<userDetailsType>({
         name: "",
+        businessName: "",
         email: "",
         password: ""
     })
@@ -21,6 +23,7 @@ export const Register = () => {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
             setShowError(false)
+            console.log(userAuthData)
             axios.post("http://localhost:8080/auth/register", userAuthData)
             .then(function (response){
                 navigate("/login")
@@ -49,6 +52,14 @@ export const Register = () => {
                 hover:border-black duration-200 "
                     value={userAuthData.name}
                     onChange={(e) => setUserAuthData({ ...userAuthData, name: e.target.value })}
+                />
+                <label className=" text-text-gray block mt-6 font-medium">Business name</label>
+                <input type="text" required
+                    className="border-1 border-gray-300 rounded-sm w-full py-1 px-2 mt-2 
+                focus:border-blue-400 outline-none focus:shadow-sm focus:shadow-blue-400 
+                hover:border-black duration-200 "
+                    value={userAuthData.businessName}
+                    onChange={(e) => setUserAuthData({ ...userAuthData, businessName: e.target.value })}
                 />
                 <label className=" text-text-gray block mt-6 font-medium">Email</label>
                 <input type="email" required
