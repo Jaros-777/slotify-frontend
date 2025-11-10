@@ -2,21 +2,36 @@ import { Camera, Image, Info, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { BusinessProfileType } from "./types/BusinessProfileType";
+import axios from "axios";
+import { useData } from "../../../../../../AppRouter";
 
 export const BusinessProfile = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
     const fileInputRef = useRef<HTMLInputElement | null>(null)
-    const [showAddressForm, setShowAddressForm] = useState<boolean>(false)
-    const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({
-        name: "Business name",
-        slogan: "",
-        description: "",
-        email: "",
-        phone: undefined,
-        websiteURL: "",
-        facebookURL: ""
-    })
 
+    const [showAddressForm, setShowAddressForm] = useState<boolean>(false)
+    const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({})
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const {userToken} = useData();
+
+    const handleFetchBusinessProfileData= async(token:string | boolean)=>{
+        setIsLoading(true)
+        await axios.get("http://localhost:8080/business-profile",
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        )
+            .then(function (response) {
+                setCurrentBusinessProfile(response.data)
+                setIsLoading(false)
+
+            }).catch(function (error) {
+                console.log(error);
+            })
+    }
+    
 
     const handleAddImg = () => {
         fileInputRef.current?.click()
@@ -24,22 +39,41 @@ export const BusinessProfile = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            console.log("Selected file:", file.name)
+            // console.log("Selected file:", file.name)
         }
     }
 
-    const handleAddUpdateBusinessProfile = () => {
+    const handleUpdateBusinessProfile = () => {
         console.log(currentBusinessProfile)
+        axios.put("http://localhost:8080/business-profile",
+            currentBusinessProfile,
+            {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            }
+        )
+            .then(function (response) {
+                console.log(response.data)
+                window.location.reload()
+
+            }).catch(function (error) {
+                console.log(error);
+            })
     }
 
     useEffect(() => {
         (async () => {
-            await checkIsLogged();
+            const token = await checkIsLogged();
+            await handleFetchBusinessProfileData(token)
         })();
     }, []);
 
     if (isAuthLoading) {
         return <p className="mt-20">Checking authentication...</p>;
+    }
+    if (isLoading) {
+        return <p className="mt-20">Loading data...</p>;
     }
 
     return (
@@ -59,11 +93,11 @@ export const BusinessProfile = () => {
                         accept="image/*"
                     ></input>
                 </div>
-                <p className="text-2xl font-bold ml-12">{currentBusinessProfile.name}</p>
+                <p className="text-2xl font-bold ml-12">{currentBusinessProfile.businessName}</p>
             </div>
             <form onSubmit={(e) => {
                 e.preventDefault();
-                handleAddUpdateBusinessProfile()
+                handleUpdateBusinessProfile()
             }
             } className="bg-white m-6 rounded-2xl p-4 w-5/6">
                 <p className="font-bold text-xl border-gray-300 border-b pt-2 pb-4">Details</p>
@@ -72,8 +106,8 @@ export const BusinessProfile = () => {
                     required
                     type="text"
                     className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
-                    value={currentBusinessProfile.name}
-                    onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, name: e.target.value })}
+                    value={currentBusinessProfile.businessName}
+                    onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, businessName: e.target.value })}
                 />
                 <p className="font-medium mt-4">Slogan</p>
                 <textarea
@@ -151,7 +185,7 @@ export const BusinessProfile = () => {
                     </div>
                 </div>
                 <input
-                    type="text"
+                    type="url"
                     className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
                     value={currentBusinessProfile.websiteURL}
                     onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, websiteURL: e.target.value })}
@@ -174,7 +208,7 @@ export const BusinessProfile = () => {
                     </div>
                 </div>
                 <input
-                    type="text"
+                    type="url"
                     className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
                     value={currentBusinessProfile.facebookURL}
                     onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, facebookURL: e.target.value })}

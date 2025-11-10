@@ -1,7 +1,7 @@
 
 export interface BusinessProfileType{
     id?:number,
-    name: string,
+    businessName: string,
     slogan: string,
     description:string,
     email: string,
