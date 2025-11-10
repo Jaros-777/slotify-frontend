@@ -23,7 +23,6 @@ export const Register = () => {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
             setShowError(false)
-            console.log(userAuthData)
             axios.post("http://localhost:8080/auth/register", userAuthData)
             .then(function (response){
                 navigate("/login")

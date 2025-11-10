@@ -25,7 +25,7 @@ export const Services = () => {
     }, []);
 
     useEffect(() => {
-        setServiceDataToShow(serviceData.filter(service=> service.isEditable === true))
+        setServiceDataToShow(serviceData.filter(service => service.isEditable === true))
     }, [serviceData])
 
     if (isAuthLoading) {
@@ -49,13 +49,17 @@ export const Services = () => {
                     </div>
                 </div>
                 <ul className="w-full mt-6 pb-12 flex flex-col items-center ">
+                    {serviceDataToShow.length === 0 ?
+                        <p className="bg-white w-[90%] rounded-md p-4 text-center">You have no services</p>
+                        : null
+                    }
                     {serviceDataToShow.map((e) => (
                         <li
                             key={e.id}
-                            className="flex my-2 w-[90%] bg-white p-4 items-center rounded-2xl cursor-pointer"
+                            className="flex my-2 w-[90%] bg-white p-4 items-center rounded-md cursor-pointer"
                             onClick={() => navigate(`/admin/settings/services/form/${e.id}`)}
                         >
-                            <div className="border border-black w-12 h-12 rounded-2xl flex items-center justify-center">
+                            <div className="border border-black w-12 h-12 rounded-md flex items-center justify-center">
                                 <p className="text-gray-500 font-bold">{e.name.slice(0, 2)}</p>
                             </div>
                             <div className="ml-8">
