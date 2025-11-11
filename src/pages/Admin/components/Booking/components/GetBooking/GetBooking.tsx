@@ -55,7 +55,7 @@ export const GetBooking = () => {
 
     return (
         <>
-            <div className="flex flex-col items-center h-full w-full">
+            <div className="flex flex-col items-center w-full">
                 <div className=" bg-white w-full p-6 ">
                     <div className="flex justify-between items-center w-full pb-2">
                         <h1 className="text-3xl font-bold">Get booking</h1>

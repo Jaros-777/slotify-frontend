@@ -77,7 +77,7 @@ export const BusinessProfile = () => {
     }
 
     return (
-        <div className="flex flex-col items-center h-full w-full">
+        <div className="flex flex-col items-center w-full">
             <div className=" bg-white p-6 flex items-center w-full">
                 <div className="border-2 border-gray-300 w-24 h-24 rounded-4xl flex items-center justify-center relative">
                     <Image className="w-full h-[60%] text-gray-400" />

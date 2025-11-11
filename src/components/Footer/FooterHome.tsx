@@ -1,6 +1,6 @@
 import Logo from "../../assets/Slotify Logo.webp"
 
-export const Footer = () => {
+export const FooterHome = () => {
 
     return (
         <footer className="pt-34">
