@@ -1,15 +1,19 @@
 import { Routes, Route } from "react-router-dom";
 import Home from './pages/Home/Home.tsx';
 import { Auth } from './pages/Home/components/Auth/Auth.tsx';
+
 import { AdminLayout } from "./AdminLayout.tsx";
 import { HomeLayout } from "./HomeLayout.tsx";
 import { SettingsLayout } from "./SettingsLayout.tsx";
 import { BookingLayout } from "./BookingLayout.tsx";
+
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";
 import { ServiceForm } from "./pages/Admin/components/Settings/components/Service/components/ServiceForm.tsx";
 import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking/GetBooking.tsx";
 import { BusinessProfile } from "./pages/Admin/components/Booking/components/BusinessProfile/BusinessProfile.tsx";
+import { Reservation } from "./pages/Admin/components/Clients/Reservation.tsx";
+
 import { NotFound } from "./pages/NotFound.tsx";
 import type { ServiceType } from "./pages/Admin/components/types/ServiceType.ts";
 import { createContext, useContext, useState, type ReactNode } from "react";
@@ -60,6 +64,8 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
             <Route path="/admin/booking/business-profile" element={<BusinessProfile />} />
           </Route>
         </Route>
+
+        <Route path="/:businessName" element={<Reservation />} />
 
         <Route path="/*" element={<NotFound />} />
       </Routes >
