@@ -89,6 +89,7 @@ export const ServiceForm = () => {
             })
         }
 
+        window.scrollTo(0,0)
         navigate("/admin/settings/services")
         window.location.reload()
 
@@ -103,6 +104,7 @@ export const ServiceForm = () => {
                 }
             }
         ).then(() => {
+            window.scrollTo(0,0)
             navigate("/admin/settings/services")
         }).catch((error) => {
             console.log(error)

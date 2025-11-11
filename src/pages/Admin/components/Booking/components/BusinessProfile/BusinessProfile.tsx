@@ -54,7 +54,7 @@ export const BusinessProfile = () => {
             }
         )
             .then(function (response) {
-                console.log(response.data)
+                window.scrollTo(0,0)
                 window.location.reload()
 
             }).catch(function (error) {

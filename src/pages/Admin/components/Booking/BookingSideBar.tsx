@@ -10,11 +10,11 @@ const navigate = useNavigate()
                     <PencilRuler className="group-hover:text-blue-600"></PencilRuler>
                     <p className="ml-4 group-hover:text-blue-600">Booking 1</p>
                 </button>
-                <button className="flex cursor-pointer py-2 group" onClick={()=>navigate("/admin/booking/get-booking")}>
+                <button className="flex cursor-pointer py-2 group" onClick={()=>{navigate("/admin/booking/get-booking");window.scrollTo(0,0)}}>
                     <PencilRuler className="group-hover:text-blue-600"></PencilRuler>
                     <p className="ml-4 group-hover:text-blue-600">Get booking</p>
                 </button>
-                <button className="flex cursor-pointer py-2 group" onClick={()=>navigate("/admin/booking/business-profile")}>
+                <button className="flex cursor-pointer py-2 group" onClick={()=>{navigate("/admin/booking/business-profile");window.scrollTo(0,0)}}>
                     <PencilRuler className="group-hover:text-blue-600"></PencilRuler>
                     <p className="ml-4 group-hover:text-blue-600">Bussiness profile</p>
                 </button>

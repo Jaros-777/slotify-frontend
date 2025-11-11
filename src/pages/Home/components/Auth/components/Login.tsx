@@ -22,6 +22,7 @@ export const Login = () => {
             .then(function (response) {
                 localStorage.clear()
                 localStorage.setItem("token", response.data.token)
+                window.scrollTo(0,0)
                 navigate("/admin/calendar")
             })
             .catch(function (response) {

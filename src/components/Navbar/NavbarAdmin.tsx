@@ -14,6 +14,7 @@ export const NavbarAdmin = () => {
 
     function logOut(){
         localStorage.clear()
+        window.scrollTo(0,0)
         navigate("/")
     }
 
@@ -22,7 +23,7 @@ export const NavbarAdmin = () => {
             <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
             <div className="flex">
-                <button onClick={()=>navigate("/admin/calendar")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>{navigate("/admin/calendar");window.scrollTo(0,0)}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <img src={CalendarIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Calendar</span>
                 </button>
@@ -30,11 +31,11 @@ export const NavbarAdmin = () => {
                     <img src={ClientIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Clients</span>
                 </button>
-                <button onClick={()=>navigate("/admin/booking/get-booking")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>{navigate("/admin/booking/get-booking");window.scrollTo(0,0)}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <img src={LinkIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
                     <span>Online booking</span>
                 </button>
-                <button onClick={()=>navigate("/admin/settings/services")} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>{navigate("/admin/settings/services");window.scrollTo(0,0)}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <img src={SettingsIcon} alt="Settings" className="mr-4 h-[1.5em]" />
                     <span>Settings</span>
                 </button>
