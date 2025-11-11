@@ -12,9 +12,9 @@ export const BusinessProfile = () => {
     const [showAddressForm, setShowAddressForm] = useState<boolean>(false)
     const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({})
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const {userToken} = useData();
+    const { userToken } = useData();
 
-    const handleFetchBusinessProfileData= async(token:string | boolean)=>{
+    const handleFetchBusinessProfileData = async (token: string | boolean) => {
         setIsLoading(true)
         await axios.get("http://localhost:8080/business-profile",
             {
@@ -31,7 +31,7 @@ export const BusinessProfile = () => {
                 console.log(error);
             })
     }
-    
+
 
     const handleAddImg = () => {
         fileInputRef.current?.click()
@@ -54,7 +54,7 @@ export const BusinessProfile = () => {
             }
         )
             .then(function (response) {
-                window.scrollTo(0,0)
+                window.scrollTo(0, 0)
                 window.location.reload()
 
             }).catch(function (error) {
@@ -175,8 +175,7 @@ export const BusinessProfile = () => {
                         <p
                             className="p-4 w-60 text-center absolute bg-slate-900 text-white bottom-9 rounded-md right-[-350%] z-10 hidden duration-200
                             group-hover:block">
-
-                            Link your facebook page directly on your booking page
+                            Link your business webpage directly on your booking page
                         </p>
                         <div className="bg-slate-900 absolute w-4 h-4 bottom-8 right-1 rotate-45 hidden
                             group-hover:block">
@@ -197,8 +196,7 @@ export const BusinessProfile = () => {
                         <p
                             className="p-4 w-60 text-center absolute bg-slate-900 text-white bottom-9 rounded-md right-[-350%] z-10 hidden duration-200
                             group-hover:block">
-
-                            Link your business webpage directly on your booking page
+                            Link your facebook page directly on your booking page
                         </p>
                         <div className="bg-slate-900 absolute w-4 h-4 bottom-8 right-1 rotate-45 hidden
                             group-hover:block">
