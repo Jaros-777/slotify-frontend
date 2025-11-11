@@ -123,7 +123,7 @@ export const ServiceForm = () => {
     }, []);
 
     useEffect(() => {
-        if (serviceData && id != undefined) {
+        if (serviceData.length >0 && id != undefined) {
             const curService = serviceData.filter(service => service.id.toString() === id)[0];
             setCurrentService(curService)
             setSelectedDuration({
