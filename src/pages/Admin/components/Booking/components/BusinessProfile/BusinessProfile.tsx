@@ -1,7 +1,7 @@
 import { Camera, Image, Info, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
-import type { BusinessProfileType } from "./types/BusinessProfileType";
+import type { BusinessProfileType } from "../../../types/BusinessProfileType";
 import axios from "axios";
 import { useData } from "../../../../../../AppRouter";
 

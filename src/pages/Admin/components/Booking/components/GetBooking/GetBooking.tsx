@@ -5,16 +5,18 @@ import { QRCodeCanvas } from "qrcode.react";
 import FacebookLogo from "../assets/Facebook_Logo_Primary.png"
 import WhatsAppLogo from "../assets/Digital_Glyph_Green.png"
 import LinkedlnLogo from "../assets/LI-In-Bug.png"
+import axios from "axios";
 
 export const GetBooking = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
     const [showCopyInfo, setShowCopyInfo] = useState<boolean>(false)
-    const [businessUrl, setBusinessUrl] = useState<string>("https://filipjarocki.netlify.app/")
+    const [businessUrl, setBusinessUrl] = useState<string>("")
 
-    const mailToSendSubject = encodeURIComponent("Zapraszam do rezerwacji - nazwa firmy");
-    const mailToSendBody = encodeURIComponent(`Dzień Dobry\n Poniżej link do strony rezerwacji:\n${businessUrl}`);
+    const mailToSendSubject = encodeURIComponent(`I invite you to make a reservation - ${businessUrl.slice(22,businessUrl.length)}`);
+    const mailToSendBody = encodeURIComponent(`Good morning.\nBelow is a link to the booking page:\n${businessUrl}`);
     const mailto = `mailto:?subject=${mailToSendSubject}&body=${mailToSendBody}`
+
 
 
     const downloadQRCode = () => {
@@ -34,7 +36,7 @@ export const GetBooking = () => {
     };
 
     const copyLink = () => {
-        navigator.clipboard.writeText("cos tam")
+        navigator.clipboard.writeText(businessUrl)
         setShowCopyInfo(true)
 
         setTimeout(() => {
@@ -42,10 +44,25 @@ export const GetBooking = () => {
         }, 1000);
     }
 
+    const fetchBusinessName = async (token: string) => {
+        await axios.get("http://localhost:8080/business-profile/name",
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                setBusinessUrl("http://localhost:5173/" + response.data.businessName.toLowerCase())
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
 
     useEffect(() => {
         (async () => {
-            await checkIsLogged();
+            const token = await checkIsLogged();
+            if (token) {
+                await fetchBusinessName(token);
+            }
         })();
     }, []);
 
@@ -69,12 +86,11 @@ export const GetBooking = () => {
                             <p className="pb-4 font-bold text-left w-full">QR code</p>
                             <QRCodeCanvas
                                 ref={canvasRef}
-                                value="https://filipjarocki.netlify.app/"
+                                value={businessUrl}
                                 size={200}
                                 bgColor="#ffffff"
                                 fgColor="#000000"
                                 level="H"
-                                className=""
                             />
                             <button className="mt-4 p-2 border border-gray-300 text-nowrap text-gray-500 font-bold text-sm w-full flex items-center justify-center cursor-pointer hover:text-red-500" onClick={downloadQRCode}>
                                 <Download className="mr-2 h-[1.2em]"></Download>

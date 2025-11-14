@@ -3,7 +3,7 @@ import { Image, Share2, Globe } from "lucide-react"
 import { useEffect, useState } from "react"
 import type { ServiceType } from "../types/ServiceType"
 import axios from "axios"
-import type { BusinessProfileType } from "../Booking/components/BusinessProfile/types/BusinessProfileType"
+import type { BusinessProfileType } from "../types/BusinessProfileType"
 import { FooterAdmin } from "../../../../components/Footer/FooterAdmin"
 import FacebookLogo from "../Booking/components/assets/Facebook_Logo_Primary.png"
 
