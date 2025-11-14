@@ -117,7 +117,7 @@ export const BusinessProfile = () => {
                 ></textarea>
                 <p className="font-medium mt-4">Description</p>
                 <textarea
-                    className="resize-y border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
+                    className="resize-y border border-gray-300 w-full h-30 rounded-md px-4 py-2 mt-2 outline-none"
                     value={currentBusinessProfile.description}
                     onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, description: e.target.value })}
                 ></textarea>
