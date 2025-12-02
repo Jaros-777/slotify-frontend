@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { scheduleDay } from "./utlis/scheduleType";
+import axios from "axios";
+import { useData } from "../../../../../../AppRouter";
 
 
-const initialSchedule: scheduleDay[] = [
-    { id: 0, dayOfWeek: 0, openHour: "08:00", closeHour: "18:00", isClose: false },
-    { id: 1, dayOfWeek: 1, openHour: "08:00", closeHour: "18:00", isClose: false },
-    { id: 2, dayOfWeek: 2, openHour: "08:00", closeHour: "18:00", isClose: false },
-    { id: 3, dayOfWeek: 3, openHour: "08:00", closeHour: "18:00", isClose: false },
-    { id: 4, dayOfWeek: 4, openHour: "08:00", closeHour: "18:00", isClose: false },
-    { id: 5, dayOfWeek: 5, openHour: "10:00", closeHour: "18:00", isClose: true },
-    { id: 6, dayOfWeek: 6, openHour: "10:00", closeHour: "18:00", isClose: true }
-
-];
 
 const dayTypes = [
     "Monday",
@@ -27,27 +19,64 @@ const dayTypes = [
 
 export const Availability = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
-    const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>(initialSchedule)
+    const [checkIsDataLoaded, setCheckIsDataLoaded] = useState(true)
+    const {userToken} = useData();
+    const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>()
 
-    const handleChangeSchedule = (dayOfWeek: number, field: "openHour" | "closeHour" | "isClose", value: string | boolean) => {
-        setSchedulePlan(prev => 
-            prev.map(day=>
-                day.dayOfWeek === dayOfWeek ?
-                {...day, [field]:value} :
-                day
-            )
-        )
+    const handleChangeSchedule = async(dayOfWeek: number, field: "openHour" | "closeHour" | "isClose", value: string | boolean) => {
+        // setSchedulePlan(prev => 
+        //     prev.map(day=>
+        //         day.dayOfWeek === dayOfWeek ?
+        //         {...day, [field]:value} :
+        //         day
+        //     )
+        // )
+
+        await axios.put("http://localhost:8080/availability",
+            {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            }
+        ).then(response=> {
+            console.log(response.data)
+            setSchedulePlan(response.data)
+            setCheckIsDataLoaded(false)
+        }).catch(function (error) {
+            console.log(error)
+        })
     }
 
+    const fetchAvailability = async (token:string)=>{
+        setCheckIsDataLoaded(true)
+        await axios.get("http://localhost:8080/availability",
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        ).then(response=> {
+            console.log(response.data)
+            setSchedulePlan(response.data)
+            setCheckIsDataLoaded(false)
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
 
     useEffect(() => {
         (async () => {
-            await checkIsLogged();
+            const token = await checkIsLogged();
+            if(token)
+                await fetchAvailability(token)
         })();
     }, []);
 
     if (isAuthLoading) {
         return <p className="mt-20">Checking authentication...</p>;
+    }
+    if (checkIsDataLoaded) {
+        return <p className="mt-20">Checking data...</p>;
     }
 
 
@@ -62,7 +91,7 @@ export const Availability = () => {
                 <h3 className="font-bold">Opening hours</h3>
                 <p className="border-b border-gray-300 pb-6 pt-2">Adjust the general operating hours of your business.</p>
                 <ul>
-                    {schedulePlan.map((e) => (
+                    {schedulePlan?.map((e) => (
                         <li className="flex p-4" key={e.id}>
                             <div className="flex w-1/2">
                                 <input
