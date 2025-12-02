@@ -21,30 +21,28 @@ export const Availability = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
     const [checkIsDataLoaded, setCheckIsDataLoaded] = useState(true)
     const {userToken} = useData();
-    const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>()
+    const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>([])
 
     const handleChangeSchedule = async(dayOfWeek: number, field: "openHour" | "closeHour" | "isClose", value: string | boolean) => {
-        // setSchedulePlan(prev => 
-        //     prev.map(day=>
-        //         day.dayOfWeek === dayOfWeek ?
-        //         {...day, [field]:value} :
-        //         day
-        //     )
-        // )
+        let copy = schedulePlan;
+        copy = copy.map(day=>
+                day.dayOfWeek === dayOfWeek ?
+                {...day, [field]:value} :
+                day
+            )
+        console.log("Copy ",copy)
 
-        await axios.put("http://localhost:8080/availability",
+        await axios.put("http://localhost:8080/availability", copy,
             {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
             }
         ).then(response=> {
-            console.log(response.data)
-            setSchedulePlan(response.data)
-            setCheckIsDataLoaded(false)
         }).catch(function (error) {
             console.log(error)
         })
+        window.location.reload()
     }
 
     const fetchAvailability = async (token:string)=>{
@@ -57,7 +55,8 @@ export const Availability = () => {
             }
         ).then(response=> {
             console.log(response.data)
-            setSchedulePlan(response.data)
+            const sortedSchedule = response.data.sort((a:scheduleDay,b:scheduleDay)=> a.dayOfWeek - b.dayOfWeek)
+            setSchedulePlan(sortedSchedule)
             setCheckIsDataLoaded(false)
         }).catch(function (error) {
             console.log(error)
