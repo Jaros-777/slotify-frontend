@@ -69,7 +69,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
 
         <Route path="/:businessName" element={<Reservation />} />
 
-        <Route path="/*" element={<NotFound />} />
+        <Route path="/not-found" element={<NotFound />} />
       </Routes >
     </DataContext.Provider >
   );

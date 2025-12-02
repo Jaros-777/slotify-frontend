@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Image, Share2, Globe } from "lucide-react"
 import { useEffect, useState } from "react"
 import type { ServiceType } from "../types/ServiceType"
@@ -6,13 +6,26 @@ import axios from "axios"
 import type { BusinessProfileType } from "../types/BusinessProfileType"
 import { FooterAdmin } from "../../../../components/Footer/FooterAdmin"
 import FacebookLogo from "../Booking/components/assets/Facebook_Logo_Primary.png"
+import type { scheduleDay } from "../Settings/components/Availability/utlis/scheduleType"
 
+
+const dayTypes = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+]
 
 export const Reservation = () => {
     const { businessName } = useParams<{ businessName: string }>()
     const [businessDetail, setBusinessDetail] = useState<Partial<BusinessProfileType>>({})
     const [serviceData, setServiceData] = useState<Partial<ServiceType[]>>([])
     const [loadDetails, setLoadDetails] = useState<boolean>(true)
+    const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>([])
+    const navigate = useNavigate()
 
 
     const handleValidPage = async () => {
@@ -23,10 +36,13 @@ export const Reservation = () => {
                 setBusinessDetail(response.data.businessProfileDTO)
                 const serData = response.data.servicesDTO
                 setServiceData(serData.filter((service: { isEditable: boolean }) => service.isEditable === true))
+                const sortedSchedule = response.data.availabilityDTO.sort((a: scheduleDay, b: scheduleDay) => a.dayOfWeek - b.dayOfWeek)
+                setSchedulePlan(sortedSchedule)
                 setLoadDetails(false)
             })
             .catch((error) => {
                 console.log(error)
+                navigate("/not-found")
             })
     }
 
@@ -139,24 +155,24 @@ export const Reservation = () => {
                                 : null}
                             <h2 className="font-bold mt-10 text-lg">Opening hours</h2>
                             <div className="flex">
-                                <div className="w-30 mt-2">
-                                    <p className="mt-2 font-medium">Monday</p>
-                                    <p className="mt-2 font-medium">Tuesday</p>
-                                    <p className="mt-2 font-medium">Wednesday</p>
-                                    <p className="mt-2 font-medium">Thursday</p>
-                                    <p className="mt-2 font-medium">Friday</p>
-                                    <p className="mt-2 font-medium">Saturday</p>
-                                    <p className="mt-2 font-medium">Sunday</p>
-                                </div>
-                                <div className="mt-2">
-                                    <p className="mt-2">08:00 - 20:00</p>
-                                    <p className="mt-2">08:00 - 20:00</p>
-                                    <p className="mt-2">08:00 - 20:00</p>
-                                    <p className="mt-2">08:00 - 20:00</p>
-                                    <p className="mt-2">08:00 - 20:00</p>
-                                    <p className="mt-2">08:00 - 20:00</p>
-                                    <p className="mt-2">08:00 - 20:00</p>
-                                </div>
+                                <ul className="w-30 mt-2 decoration-none">
+                                    {schedulePlan.map(e => (
+                                        <li key={e.id} className="decoration-none">
+                                            <p className="mt-2 font-medium">{dayTypes[e.dayOfWeek]}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <ul className="mt-2 decoration-none">
+                                    {schedulePlan.map(e => (
+                                        <li key={e.id} className="decoration-none">
+                                            {e.isClose ?
+                                                <p className="mt-2">Closed</p>
+                                                :
+                                                <p className="mt-2">{e.openHour} - {e.closeHour}</p>
+                                            }
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
                     </div>

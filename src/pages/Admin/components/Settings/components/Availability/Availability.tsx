@@ -38,8 +38,7 @@ export const Availability = () => {
                     'Authorization': `Bearer ${userToken}`
                 }
             }
-        ).then(response=> {
-        }).catch(function (error) {
+        ).catch(function (error) {
             console.log(error)
         })
         window.location.reload()
