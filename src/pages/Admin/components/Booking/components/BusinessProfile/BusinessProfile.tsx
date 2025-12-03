@@ -1,9 +1,11 @@
-import { Camera, Image, Info, Search, X } from "lucide-react";
+import { Camera, Info, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { BusinessProfileType } from "../../../types/BusinessProfileType";
 import axios from "axios";
 import { useData } from "../../../../../../AppRouter";
+import ImagePic from "../assets/empty-picture.png"
+import { ImageFileContainer } from "./components/ImageFileContainer";
 
 export const BusinessProfile = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
@@ -13,6 +15,8 @@ export const BusinessProfile = () => {
     const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({})
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const { userToken } = useData();
+    const [profilePic, setProfilePic] = useState<File | null>(null)
+    const [showImageFileContainer, setShowImageFileContainer] = useState<boolean>(false)
 
     const handleFetchBusinessProfileData = async (token: string | boolean) => {
         setIsLoading(true)
@@ -53,7 +57,7 @@ export const BusinessProfile = () => {
                 }
             }
         )
-            .then(function (response) {
+            .then(response => {
                 window.scrollTo(0, 0)
                 window.location.reload()
 
@@ -78,18 +82,25 @@ export const BusinessProfile = () => {
 
     return (
         <div className="flex flex-col items-center w-full">
-            <div className=" bg-white p-6 flex items-center w-full">
-                <div className="border-2 border-gray-300 w-24 h-24 rounded-4xl flex items-center justify-center relative">
-                    <Image className="w-full h-[60%] text-gray-400" />
+            {showImageFileContainer ?
+                <ImageFileContainer file={profilePic} setShowImageFileContainer={setShowImageFileContainer} setProfilePic={setProfilePic} /> : null
+            }
 
-                    <Camera className="w-[50%] h-[50%] bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
+            <div className=" bg-white p-6 flex items-center w-full">
+                <div className="relative w-24 h-24 rounded-4xl border-2 border-gray-300 flex items-center justify-center">
+                    
+                    <div className="w-full h-full overflow-hidden rounded-4xl">
+                        <img className="h-full aspect-square object-fill overflow-hidden" src={profilePic ? URL.createObjectURL(profilePic) : ImagePic} alt="Profile picture" />
+                    </div>
+
+                    <Camera className="w-[50%] h-[50%] z-50 bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
                         onClick={handleAddImg}
                     />
                     <input
                         type="file"
                         className="hidden"
                         ref={fileInputRef}
-                        onChange={handleFileChange}
+                        onChange={(e) => { setProfilePic(e.target.files?.[0] ?? null); setShowImageFileContainer(true); if (e.target) e.target.value = ""; }}
                         accept="image/*"
                     ></input>
                 </div>
