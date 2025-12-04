@@ -1,41 +1,98 @@
 import Cropper from "react-easy-crop";
 import { X, Plus, Minus, RotateCw, RotateCcw } from 'lucide-react';
-import { useState } from 'react';
-import { getCroppedFile } from "./cropImage";
+import { useEffect, useState } from 'react';
+import { getCroppedImg, readFile, getRotatedImage } from "./cropImage";
+import { getOrientation } from 'get-orientation/browser'
 
 interface propsImage {
     file: File | null
     setShowImageFileContainer: React.Dispatch<React.SetStateAction<boolean>>
-    setProfilePic: React.Dispatch<React.SetStateAction<File | null>>
+    setPic: React.Dispatch<React.SetStateAction<File | null>>
+    aspectRatio: number
 }
 
 interface positionType {
     x: number,
     y: number
 }
+export interface CroppedArea {
+    x: number;  
+    y: number;    
+    width: number; 
+    height: number;
+}
+export interface CroppedAreaPixels {
+    x: number; 
+    y: number;   
+    width: number;
+    height: number; 
+}
+export interface CroppedAreaPixels {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
 
-export const ImageFileContainer = ({ file, setShowImageFileContainer, setProfilePic }: propsImage) => {
+const ORIENTATION_TO_ANGLE: Record<number, number> = {
+    3: 180,
+    6: 90,
+    8: -90,
+};
+
+export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic,aspectRatio }: propsImage) => {
     const [crop, setCrop] = useState<positionType>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState<number>(1);
     const [rotation, setRotation] = useState<number>(0);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<{x:number,y:number,width:number,height:number}|null>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
+    const [imageSrc, setImageSrc] = useState<string>("");
 
+    useEffect(() => {
+        const load = async () => {
+            if (!file) return;
 
-    const handleSaveImg = async() => {
-        if (!file || !croppedAreaPixels) return;
+            let imgData = await readFile(file);
 
-        const croppedFile = await getCroppedFile(file, croppedAreaPixels, rotation);
+            try {
+                const orientation: number = await getOrientation(file);
+                const rot = ORIENTATION_TO_ANGLE[orientation] ?? 0;
+                if (rot) {
+                    imgData = await getRotatedImage(imgData as string, rot);
+                }
+            } catch (err) {
+                console.warn("Orientation detection failed", err);
+            }
 
-        setProfilePic(croppedFile);
+            setImageSrc(imgData as string);
+        };
+
+        load();
+    }, [file]);
+
+    const onCropComplete = (_: any, croppedAreaPx: CroppedAreaPixels) => {
+        setCroppedAreaPixels(croppedAreaPx);
+    };
+
+    const handleSave = async () => {
+        if (!imageSrc || !croppedAreaPixels || !file) return;
+
+        const cropped = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
+        if (!cropped) return;
+
+        const response = await fetch(cropped);
+        const blob = await response.blob();
+        const croppedFile = new File([blob], file.name, { type: "image/png" });
+
+        setPic(croppedFile);
         setShowImageFileContainer(false);
-    }
+    };
 
 
     if (!file) return null;
-    
+
 
     return (
-        <div className="bg-gray-400/50 absolute h-full w-full top-0 left-0 z-50 overflow-hidden flex items-center justify-center">
+        <div className="bg-gray-400/50 absolute h-full w-full top-0 left-0 z-100 overflow-hidden flex items-center justify-center">
             <div className="bg-white w-3/4 rounded-2xl">
                 <div className='flex justify-between py-4 px-8'>
                     <p className='font-bold'>Reposition</p>
@@ -47,11 +104,11 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setProfile
                         crop={crop}
                         zoom={zoom}
                         rotation={rotation}
-                        aspect={1}
+                        aspect={aspectRatio}
                         onCropChange={setCrop}
                         onZoomChange={setZoom}
                         onRotationChange={setRotation}
-                        onCropComplete={(croppedAreaPx) => setCroppedAreaPixels(croppedAreaPx!)}
+                        onCropComplete={onCropComplete}
                         style={{
                             containerStyle: {
                                 width: "100%",
@@ -91,8 +148,8 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setProfile
                     </div>
                 </div>
                 <div className='p-8 flex justify-end border-t border-gray-300'>
-                    <button className=" bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => setShowImageFileContainer(false)}>CANCEL</button>
-                    <button className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200" onClick={handleSaveImg}>SAVE</button>
+                    <button className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => setShowImageFileContainer(false)}>CANCEL</button>
+                    <button className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200" onClick={handleSave}>SAVE</button>
                 </div>
             </div>
         </div>

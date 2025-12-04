@@ -1,22 +1,24 @@
-import { Camera, Info, Search, X } from "lucide-react";
+import { Camera, Info, Search, X, Image } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { BusinessProfileType } from "../../../types/BusinessProfileType";
 import axios from "axios";
 import { useData } from "../../../../../../AppRouter";
-import ImagePic from "../assets/empty-picture.png"
 import { ImageFileContainer } from "./components/ImageFileContainer";
 
 export const BusinessProfile = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
-    const fileInputRef = useRef<HTMLInputElement | null>(null)
+    const fileInputRefProfilePic = useRef<HTMLInputElement | null>(null)
+    const fileInputRefBackgroundPic = useRef<HTMLInputElement | null>(null)
 
     const [showAddressForm, setShowAddressForm] = useState<boolean>(false)
     const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({})
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const { userToken } = useData();
     const [profilePic, setProfilePic] = useState<File | null>(null)
-    const [showImageFileContainer, setShowImageFileContainer] = useState<boolean>(false)
+    const [showProfileImageFileContainer, setShowProfileImageFileContainer] = useState<boolean>(false)
+    const [backgroundPic, setBackgroundPic] = useState<File | null>(null)
+    const [showBackgroundImageFileContainer, setShowBackgroundmageFileContainer] = useState<boolean>(false)
 
     const handleFetchBusinessProfileData = async (token: string | boolean) => {
         setIsLoading(true)
@@ -37,14 +39,11 @@ export const BusinessProfile = () => {
     }
 
 
-    const handleAddImg = () => {
-        fileInputRef.current?.click()
+    const handleAddProfilePic = () => {
+        fileInputRefProfilePic.current?.click()
     }
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (file) {
-            // console.log("Selected file:", file.name)
-        }
+    const handleAddBackgroundPic = () => {
+        fileInputRefBackgroundPic.current?.click()
     }
 
     const handleUpdateBusinessProfile = () => {
@@ -82,25 +81,50 @@ export const BusinessProfile = () => {
 
     return (
         <div className="flex flex-col items-center w-full">
-            {showImageFileContainer ?
-                <ImageFileContainer file={profilePic} setShowImageFileContainer={setShowImageFileContainer} setProfilePic={setProfilePic} /> : null
+            {showProfileImageFileContainer ?
+                <ImageFileContainer file={profilePic} setShowImageFileContainer={setShowProfileImageFileContainer} setPic={setProfilePic} aspectRatio={1}/> : null
+            }
+            {showBackgroundImageFileContainer ?
+                <ImageFileContainer file={backgroundPic} setShowImageFileContainer={setShowBackgroundmageFileContainer} setPic={setBackgroundPic} aspectRatio={4} /> : null
             }
 
+            <div className="h-70 relative w-full flex justify-center items-center">
+                {backgroundPic ?
+                    <img className="h-full w-full object-contain overflow-hidden" src={URL.createObjectURL(backgroundPic)} alt="Background picture" />
+                    :
+                    <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
+                }
+                <Camera className="w-[5%] h-auto p-2 aspect-square z-50 bg-white rounded-2xl absolute top-0 right-0 text-blue-600 border-2 border-gray-300 cursor-pointer"
+                    onClick={handleAddBackgroundPic}
+                />
+                <input
+                    type="file"
+                    className="hidden"
+                    ref={fileInputRefBackgroundPic}
+                    onChange={(e) => { setBackgroundPic(e.target.files?.[0] ?? null); setShowBackgroundmageFileContainer(true); if (e.target) e.target.value = ""; }}
+                    accept="image/*"
+                ></input>
+
+            </div>
             <div className=" bg-white p-6 flex items-center w-full">
-                <div className="relative w-24 h-24 rounded-4xl border-2 border-gray-300 flex items-center justify-center">
-                    
-                    <div className="w-full h-full overflow-hidden rounded-4xl">
-                        <img className="h-full aspect-square object-fill overflow-hidden" src={profilePic ? URL.createObjectURL(profilePic) : ImagePic} alt="Profile picture" />
+                <div className="relative w-24 h-24 rounded-full border-2 border-blue-600 flex items-center justify-center">
+
+                    <div className="w-full h-full overflow-hidden rounded-full flex items-center justify-center">
+                        {profilePic ?
+                            <img className="h-full aspect-square object-fill overflow-hidden" src={URL.createObjectURL(profilePic)} alt="Profile picture" />
+                            :
+                            <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
+                        }
                     </div>
 
                     <Camera className="w-[50%] h-[50%] z-50 bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
-                        onClick={handleAddImg}
+                        onClick={handleAddProfilePic}
                     />
                     <input
                         type="file"
                         className="hidden"
-                        ref={fileInputRef}
-                        onChange={(e) => { setProfilePic(e.target.files?.[0] ?? null); setShowImageFileContainer(true); if (e.target) e.target.value = ""; }}
+                        ref={fileInputRefProfilePic}
+                        onChange={(e) => { setProfilePic(e.target.files?.[0] ?? null); setShowProfileImageFileContainer(true); if (e.target) e.target.value = ""; }}
                         accept="image/*"
                     ></input>
                 </div>
