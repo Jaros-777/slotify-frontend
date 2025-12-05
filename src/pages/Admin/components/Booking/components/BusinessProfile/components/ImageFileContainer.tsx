@@ -1,5 +1,5 @@
 import Cropper from "react-easy-crop";
-import { X, Plus, Minus, RotateCw, RotateCcw } from 'lucide-react';
+import { X, Plus, Minus, RotateCw, RotateCcw, Loader } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getCroppedImg, readFile, getRotatedImage } from "./cropImage";
 import { getOrientation } from 'get-orientation/browser'
@@ -16,16 +16,16 @@ interface positionType {
     y: number
 }
 export interface CroppedArea {
-    x: number;  
-    y: number;    
-    width: number; 
+    x: number;
+    y: number;
+    width: number;
     height: number;
 }
 export interface CroppedAreaPixels {
-    x: number; 
-    y: number;   
+    x: number;
+    y: number;
     width: number;
-    height: number; 
+    height: number;
 }
 export interface CroppedAreaPixels {
     x: number;
@@ -40,12 +40,13 @@ const ORIENTATION_TO_ANGLE: Record<number, number> = {
     8: -90,
 };
 
-export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic,aspectRatio }: propsImage) => {
+export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic, aspectRatio }: propsImage) => {
     const [crop, setCrop] = useState<positionType>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState<number>(1);
     const [rotation, setRotation] = useState<number>(0);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
     const [imageSrc, setImageSrc] = useState<string>("");
+    const [showSavingState, setShowSavingState] = useState<boolean>(false)
 
     useEffect(() => {
         const load = async () => {
@@ -74,6 +75,7 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic,asp
     };
 
     const handleSave = async () => {
+        setShowSavingState(true)
         if (!imageSrc || !croppedAreaPixels || !file) return;
 
         const cropped = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
@@ -84,6 +86,7 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic,asp
         const croppedFile = new File([blob], file.name, { type: "image/png" });
 
         setPic(croppedFile);
+        setShowSavingState(false)
         setShowImageFileContainer(false);
     };
 
@@ -149,7 +152,16 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic,asp
                 </div>
                 <div className='p-8 flex justify-end border-t border-gray-300'>
                     <button className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => setShowImageFileContainer(false)}>CANCEL</button>
-                    <button className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200" onClick={handleSave}>SAVE</button>
+                    <button
+                        className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
+                        onClick={handleSave}
+                    >
+                        {showSavingState?
+                        <Loader className="animate-spin"></Loader>
+                        :
+                        <p>SAVE</p>
+                    }
+                    </button>
                 </div>
             </div>
         </div>

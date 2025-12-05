@@ -1,4 +1,4 @@
-import { Camera, Info, Search, X, Image } from "lucide-react";
+import { Camera, Info, Search, X, Image, Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { BusinessProfileType } from "../../../types/BusinessProfileType";
@@ -19,6 +19,7 @@ export const BusinessProfile = () => {
     const [showProfileImageFileContainer, setShowProfileImageFileContainer] = useState<boolean>(false)
     const [backgroundPic, setBackgroundPic] = useState<File | null>(null)
     const [showBackgroundImageFileContainer, setShowBackgroundmageFileContainer] = useState<boolean>(false)
+    const [showSavingState, setShowSavingState] = useState<boolean>(false)
 
     const handleFetchBusinessProfileData = async (token: string | boolean) => {
         setIsLoading(true)
@@ -41,15 +42,40 @@ export const BusinessProfile = () => {
 
     const handleAddProfilePic = () => {
         fileInputRefProfilePic.current?.click()
+        window.scrollTo(0, 0)
     }
     const handleAddBackgroundPic = () => {
         fileInputRefBackgroundPic.current?.click()
     }
 
-    const handleUpdateBusinessProfile = () => {
-        console.log(currentBusinessProfile)
-        axios.put("http://localhost:8080/business-profile",
-            currentBusinessProfile,
+    const handleUpdateBusinessProfile = async () => {
+        setShowSavingState(true)
+
+        // axios.put("http://localhost:8080/business-profile",
+        //     currentBusinessProfile,
+        //     {
+        //         headers: {
+        //             'Authorization': `Bearer ${userToken}`
+        //         }
+        //     }
+        // )
+        //     .then(response => {
+        //         window.scrollTo(0, 0)
+        //         window.location.reload()
+
+        //     }).catch(function (error) {
+        //         console.log(error);
+        //     })
+
+        const formData = new FormData()
+        if (profilePic)
+            formData.append("files", profilePic)
+        if (backgroundPic)
+            formData.append("files", backgroundPic)
+        console.log(formData)
+
+        axios.post("http://localhost:8080/business-profile/pictures",
+            formData,
             {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
@@ -57,13 +83,16 @@ export const BusinessProfile = () => {
             }
         )
             .then(response => {
-                window.scrollTo(0, 0)
-                window.location.reload()
+                console.log(response.data)
 
             }).catch(function (error) {
                 console.log(error);
             })
+
+        setShowSavingState(false)
     }
+
+
 
     useEffect(() => {
         (async () => {
@@ -82,7 +111,7 @@ export const BusinessProfile = () => {
     return (
         <div className="flex flex-col items-center w-full">
             {showProfileImageFileContainer ?
-                <ImageFileContainer file={profilePic} setShowImageFileContainer={setShowProfileImageFileContainer} setPic={setProfilePic} aspectRatio={1}/> : null
+                <ImageFileContainer file={profilePic} setShowImageFileContainer={setShowProfileImageFileContainer} setPic={setProfilePic} aspectRatio={1} /> : null
             }
             {showBackgroundImageFileContainer ?
                 <ImageFileContainer file={backgroundPic} setShowImageFileContainer={setShowBackgroundmageFileContainer} setPic={setBackgroundPic} aspectRatio={4} /> : null
@@ -124,6 +153,7 @@ export const BusinessProfile = () => {
                         type="file"
                         className="hidden"
                         ref={fileInputRefProfilePic}
+                        // onChange={(e) => { setProfilePic(e.target.files?.[0] ?? null); setShowProfileImageFileContainer(true); if (e.target) e.target.value = ""; }}
                         onChange={(e) => { setProfilePic(e.target.files?.[0] ?? null); setShowProfileImageFileContainer(true); if (e.target) e.target.value = ""; }}
                         accept="image/*"
                     ></input>
@@ -246,7 +276,17 @@ export const BusinessProfile = () => {
                     value={currentBusinessProfile.facebookURL}
                     onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, facebookURL: e.target.value })}
                 />
-                <button type="submit" className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">SAVE</button>
+                <button
+                    className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
+                    type="submit"
+                >
+                    {showSavingState ?
+                        <Loader className="animate-spin"></Loader>
+                        :
+                        <p>SAVE</p>
+                    }
+                </button>
+                {/* <button type="submit" className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">SAVE</button> */}
 
 
 
