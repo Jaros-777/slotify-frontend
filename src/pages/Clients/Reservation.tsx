@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { Image, Share2, Globe } from "lucide-react"
 import { useEffect, useState } from "react"
-import type { ServiceType } from "../types/ServiceType"
+import type { ServiceType } from "../Admin/components/types/ServiceType"
 import axios from "axios"
-import type { BusinessProfileType } from "../types/BusinessProfileType"
-import { FooterAdmin } from "../../../../components/Footer/FooterAdmin"
-import FacebookLogo from "../Booking/components/assets/Facebook_Logo_Primary.png"
-import type { scheduleDay } from "../Settings/components/Availability/utlis/scheduleType"
+import type { BusinessProfileType } from "../Admin/components/types/BusinessProfileType"
+import { FooterAdmin } from "../../components/Footer/FooterAdmin"
+import FacebookLogo from "../Admin/components/Booking/components/assets/Facebook_Logo_Primary.png"
+import type { scheduleDay } from "../Admin//components/Settings/components/Availability/utlis/scheduleType"
 
 
 const dayTypes = [
@@ -25,6 +25,7 @@ export const Reservation = () => {
     const [serviceData, setServiceData] = useState<Partial<ServiceType[]>>([])
     const [loadDetails, setLoadDetails] = useState<boolean>(true)
     const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>([])
+    const [currentDayOfWeek, setCurrentDayOfWeek] = useState<number>(0)
     const navigate = useNavigate()
 
 
@@ -46,9 +47,11 @@ export const Reservation = () => {
             })
     }
 
+
     useEffect(() => {
         (async () => {
             await handleValidPage()
+            setCurrentDayOfWeek((new Date().getDay() + 6 )% 7)
 
         })();
     }, []);
@@ -68,15 +71,34 @@ export const Reservation = () => {
 
             </nav>
             <div className="w-full flex flex-col items-center ">
+                <section className="h-70 relative w-full flex justify-center items-center">
+                    {
+                        businessDetail.backgroundPictureURL ?
+                            <img className="h-full w-full object-contain overflow-hidden" src={businessDetail.backgroundPictureURL} alt="Background picture" />
+                            :
+                            <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
+
+                    }
+
+                </section>
                 <section className="flex flex-col items-center w-full p-4 pb-8 border-b border-gray-300 shadow-2xl">
                     <div className="flex justify-between px-4 py-2 w-[80rem]">
                         <div className="flex mx-4 items-center">
-                            <div className="bg-gray-200 p-8 rounded-2xl">
-                                <Image></Image>
+
+                            <div className="relative w-24 h-24 rounded-full border-2 border-blue-600 flex items-center justify-center">
+                                {
+                                    businessDetail.profilePictureURL ?
+                                        <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={businessDetail.profilePictureURL} alt="Background picture" />
+                                        :
+                                        <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
+
+                                }
                             </div>
+
+
                             <div className="ml-6">
                                 <p className="font-bold text-xl">{businessDetail.businessName}</p>
-                                <p className="text-sm"><span className="text-green-700 font-bold">Opening hours </span>(8:00-20:00)</p>
+                                <p className="text-sm"><span className="text-green-700 font-bold" >Opening hours </span>({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
                             </div>
                         </div>
                         {/* <div className="flex flex-col justify-center items-center">

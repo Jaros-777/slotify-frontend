@@ -12,7 +12,7 @@ import { Services } from "./pages/Admin/components/Settings/components/Service/S
 import { ServiceForm } from "./pages/Admin/components/Settings/components/Service/components/ServiceForm.tsx";
 import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking/GetBooking.tsx";
 import { BusinessProfile } from "./pages/Admin/components/Booking/components/BusinessProfile/BusinessProfile.tsx";
-import { Reservation } from "./pages/Admin/components/Clients/Reservation.tsx";
+import { Reservation } from "./pages/Clients/Reservation.tsx";
 import { Availability } from "./pages/Admin/components/Settings/components/Availability/Availability.tsx";
 
 import { NotFound } from "./pages/NotFound.tsx";
