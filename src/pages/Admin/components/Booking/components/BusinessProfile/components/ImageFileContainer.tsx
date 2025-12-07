@@ -150,18 +150,21 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic, as
                         ><RotateCw className='text-gray-500' /></button>
                     </div>
                 </div>
-                <div className='p-8 flex justify-end border-t border-gray-300'>
-                    <button className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => setShowImageFileContainer(false)}>CANCEL</button>
-                    <button
-                        className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
-                        onClick={handleSave}
-                    >
-                        {showSavingState?
-                        <Loader className="animate-spin"></Loader>
-                        :
-                        <p>SAVE</p>
-                    }
-                    </button>
+                <div className='p-8 flex flex-col justify-end border-t border-gray-300'>
+                    <p className="text-end mb-4 text-red-500">The change won't be visible immediately. It may take up to 5 minutes.</p>
+                    <div className="flex justify-end">
+                        <button className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => setShowImageFileContainer(false)}>CANCEL</button>
+                        <button
+                            className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
+                            onClick={handleSave}
+                        >
+                            {showSavingState ?
+                                <Loader className="animate-spin"></Loader>
+                                :
+                                <p>SAVE</p>
+                            }
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

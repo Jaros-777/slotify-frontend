@@ -7,5 +7,7 @@ export interface BusinessProfileType{
     email: string,
     phone:number | undefined,
     websiteURL: string,
-    facebookURL:string
+    facebookURL:string,
+    profilePictureURL:string,
+    backgroundPictureURL:string;
 }

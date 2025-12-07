@@ -31,8 +31,10 @@ export const BusinessProfile = () => {
             }
         )
             .then(function (response) {
+                console.log(response.data)
                 setCurrentBusinessProfile(response.data)
                 setIsLoading(false)
+                console.log(response.data.profilePictureURL)
 
             }).catch(function (error) {
                 console.log(error);
@@ -51,28 +53,27 @@ export const BusinessProfile = () => {
     const handleUpdateBusinessProfile = async () => {
         setShowSavingState(true)
 
-        // axios.put("http://localhost:8080/business-profile",
-        //     currentBusinessProfile,
-        //     {
-        //         headers: {
-        //             'Authorization': `Bearer ${userToken}`
-        //         }
-        //     }
-        // )
-        //     .then(response => {
-        //         window.scrollTo(0, 0)
-        //         window.location.reload()
+        axios.put("http://localhost:8080/business-profile",
+            currentBusinessProfile,
+            {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            }
+        )
+            .then(response => {
+                window.scrollTo(0, 0)
+                window.location.reload()
 
-        //     }).catch(function (error) {
-        //         console.log(error);
-        //     })
+            }).catch(function (error) {
+                console.log(error);
+            })
 
         const formData = new FormData()
         if (profilePic)
             formData.append("files", profilePic)
         if (backgroundPic)
             formData.append("files", backgroundPic)
-        console.log(formData)
 
         axios.post("http://localhost:8080/business-profile/pictures",
             formData,
@@ -83,7 +84,6 @@ export const BusinessProfile = () => {
             }
         )
             .then(response => {
-                console.log(response.data)
 
             }).catch(function (error) {
                 console.log(error);
@@ -121,8 +121,13 @@ export const BusinessProfile = () => {
                 {backgroundPic ?
                     <img className="h-full w-full object-contain overflow-hidden" src={URL.createObjectURL(backgroundPic)} alt="Background picture" />
                     :
-                    <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
+                    currentBusinessProfile.backgroundPictureURL ?
+                        <img className="h-full w-full object-contain overflow-hidden" src={currentBusinessProfile.backgroundPictureURL} alt="Background picture" />
+                        :
+                        <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
+
                 }
+
                 <Camera className="w-[5%] h-auto p-2 aspect-square z-50 bg-white rounded-2xl absolute top-0 right-0 text-blue-600 border-2 border-gray-300 cursor-pointer"
                     onClick={handleAddBackgroundPic}
                 />
@@ -137,14 +142,15 @@ export const BusinessProfile = () => {
             </div>
             <div className=" bg-white p-6 flex items-center w-full">
                 <div className="relative w-24 h-24 rounded-full border-2 border-blue-600 flex items-center justify-center">
-
-                    <div className="w-full h-full overflow-hidden rounded-full flex items-center justify-center">
-                        {profilePic ?
-                            <img className="h-full aspect-square object-fill overflow-hidden" src={URL.createObjectURL(profilePic)} alt="Profile picture" />
+                    {profilePic ?
+                        <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={URL.createObjectURL(profilePic)} alt="Background picture" />
+                        :
+                        currentBusinessProfile.profilePictureURL ?
+                            <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={currentBusinessProfile.profilePictureURL} alt="Background picture" />
                             :
                             <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
-                        }
-                    </div>
+
+                    }
 
                     <Camera className="w-[50%] h-[50%] z-50 bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
                         onClick={handleAddProfilePic}
