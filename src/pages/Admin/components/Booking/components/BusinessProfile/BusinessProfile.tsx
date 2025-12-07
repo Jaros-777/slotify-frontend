@@ -31,10 +31,8 @@ export const BusinessProfile = () => {
             }
         )
             .then(function (response) {
-                console.log(response.data)
                 setCurrentBusinessProfile(response.data)
                 setIsLoading(false)
-                console.log(response.data.profilePictureURL)
 
             }).catch(function (error) {
                 console.log(error);
@@ -62,34 +60,43 @@ export const BusinessProfile = () => {
             }
         )
             .then(response => {
-                window.scrollTo(0, 0)
-                window.location.reload()
+                console.log(response.data)
 
             }).catch(function (error) {
                 console.log(error);
             })
 
-        const formData = new FormData()
-        if (profilePic)
-            formData.append("files", profilePic)
-        if (backgroundPic)
-            formData.append("files", backgroundPic)
-
-        axios.post("http://localhost:8080/business-profile/pictures",
-            formData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${userToken}`
-                }
+        if (profilePic != null || backgroundPic != null) {
+            const formData = new FormData()
+            if (profilePic != null) {
+                formData.append("profilePic", profilePic)
+                console.log("Profile picture sended")
             }
-        )
-            .then(response => {
 
-            }).catch(function (error) {
-                console.log(error);
-            })
+            if (backgroundPic != null) {
+                formData.append("backgroundPic", backgroundPic)
+                console.log("Background picture sended")
+            }
+
+            axios.post("http://localhost:8080/business-profile/pictures",
+                formData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }
+            )
+                .then(response => {
+
+                }).catch(function (error) {
+                    console.log(error);
+                })
+        }
+
 
         setShowSavingState(false)
+        window.scrollTo(0, 0)
+        window.location.reload()
     }
 
 
