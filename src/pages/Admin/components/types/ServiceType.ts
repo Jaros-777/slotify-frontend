@@ -5,4 +5,5 @@ export interface ServiceType {
   duration:number;
   description: string;
   isEditable:boolean;
+  servicePictureURL:string | null
 }

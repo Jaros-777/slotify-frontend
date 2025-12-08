@@ -60,7 +60,6 @@ export const BusinessProfile = () => {
             }
         )
             .then(response => {
-                console.log(response.data)
 
             }).catch(function (error) {
                 console.log(error);
@@ -70,12 +69,10 @@ export const BusinessProfile = () => {
             const formData = new FormData()
             if (profilePic != null) {
                 formData.append("profilePic", profilePic)
-                console.log("Profile picture sended")
             }
 
             if (backgroundPic != null) {
                 formData.append("backgroundPic", backgroundPic)
-                console.log("Background picture sended")
             }
 
             axios.post("http://localhost:8080/business-profile/pictures",
@@ -95,8 +92,8 @@ export const BusinessProfile = () => {
 
 
         setShowSavingState(false)
-        window.scrollTo(0, 0)
-        window.location.reload()
+        // window.scrollTo(0, 0)
+        // window.location.reload()
     }
 
 
@@ -135,7 +132,7 @@ export const BusinessProfile = () => {
 
                 }
 
-                <Camera className="w-[5%] h-auto p-2 aspect-square z-50 bg-white rounded-2xl absolute top-0 right-0 text-blue-600 border-2 border-gray-300 cursor-pointer"
+                <Camera className="w-14 h-auto p-2 aspect-square z-50 bg-white rounded-2xl absolute top-0 right-0 text-blue-600 border-2 border-gray-300 cursor-pointer"
                     onClick={handleAddBackgroundPic}
                 />
                 <input

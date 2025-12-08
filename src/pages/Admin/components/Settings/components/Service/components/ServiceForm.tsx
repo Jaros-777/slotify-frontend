@@ -1,11 +1,12 @@
 import axios from "axios";
-import { Camera, Image } from "lucide-react";
+import { Camera, Image, Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useData } from "../../../../../../../AppRouter";
 import type { ServiceType } from "../../../../types/ServiceType";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCheckIsLogged } from "../../../../utlis/checkIsLoged";
 import { useLoadServiceData } from "../../../../utlis/loadServiceData";
+import { ImageFileContainer } from "../../../../Booking/components/BusinessProfile/components/ImageFileContainer";
 
 interface durationState {
     durationHours: number,
@@ -26,7 +27,7 @@ export const ServiceForm = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
     const { loadServiceData, isDataLoading } = useLoadServiceData();
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null)
+    const fileInputRefServicePic = useRef<HTMLInputElement | null>(null)
     const { userToken, serviceData } = useData();
     const [selecetedDuration, setSelectedDuration] = useState<durationState>({ durationHours: 0, durationMinutes: 15 })
     const [currentService, setCurrentService] = useState<Partial<ServiceType>>(
@@ -38,19 +39,29 @@ export const ServiceForm = () => {
         }
     )
     const navigate = useNavigate();
+    const [showPictureImageFileContainer, setShowPictureImageFileContainer] = useState<boolean>(false)
+    const [servicePic, setServicePic] = useState<File | null>(null)
+    const [showSavingState, setShowSavingState] = useState<boolean>(false)
 
-    const handleAddImg = () => {
-        fileInputRef.current?.click()
-    }
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (file) {
-            console.log("Selected file:", file.name)
-        }
+
+
+    // const handleAddImg = () => {
+    //     fileInputRefServicePic.current?.click()
+    // }
+    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0]
+    //     if (file) {
+    //         console.log("Selected file:", file.name)
+    //     }
+    // }
+
+    const handleAddServicePic = () => {
+        fileInputRefServicePic.current?.click()
+        window.scrollTo(0, 0)
     }
 
     const handleAddUpdateNewService = () => {
-
+        setShowSavingState(true)
 
         let payload: payload = {
             name: currentService.name,
@@ -89,9 +100,32 @@ export const ServiceForm = () => {
             })
         }
 
-        window.scrollTo(0,0)
-        navigate("/admin/settings/services")
-        window.location.reload()
+        if (servicePic != null) {
+            const formData = new FormData()
+            if (servicePic != null && id != null) {
+                formData.append("servicePic", servicePic)
+                formData.append("id", id)
+            }
+            axios.post("http://localhost:8080/service/picture",
+                formData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }
+            )
+                .then(response => {
+
+                }).catch(function (error) {
+                    console.log(error);
+                })
+
+
+        }
+        setShowSavingState(false)
+        window.scrollTo(0, 0)
+        // navigate("/admin/settings/services")
+        // window.location.reload()
 
 
     }
@@ -104,7 +138,7 @@ export const ServiceForm = () => {
                 }
             }
         ).then(() => {
-            window.scrollTo(0,0)
+            window.scrollTo(0, 0)
             navigate("/admin/settings/services")
         }).catch((error) => {
             console.log(error)
@@ -114,7 +148,7 @@ export const ServiceForm = () => {
     useEffect(() => {
         (async () => {
             const token = await checkIsLogged();
-            if (token && id!= undefined) {
+            if (token && id != undefined) {
                 await loadServiceData(token);
 
             }
@@ -123,13 +157,14 @@ export const ServiceForm = () => {
     }, []);
 
     useEffect(() => {
-        if (serviceData.length >0 && id != undefined) {
+        if (serviceData.length > 0 && id != undefined) {
             const curService = serviceData.filter(service => service.id.toString() === id)[0];
             setCurrentService(curService)
             setSelectedDuration({
                 durationHours: Math.floor(curService.duration / 3600),
                 durationMinutes: Math.floor((curService.duration % 3600) / 60)
             })
+            console.log(currentService)
 
         }
 
@@ -138,26 +173,38 @@ export const ServiceForm = () => {
     if (isAuthLoading) {
         return <p className="mt-20">Checking authentication...</p>;
     }
-    if (isDataLoading && id!= undefined ) {
+    if (isDataLoading && id != undefined) {
         return <p className="mt-20">Loading data...</p>;
     }
 
     return (
         <div className="bg-gray-200 pb-20 flex flex-col items-center">
+            {showPictureImageFileContainer ?
+                <ImageFileContainer file={servicePic} setShowImageFileContainer={setShowPictureImageFileContainer} setPic={setServicePic} aspectRatio={1} /> : null
+            }
             <div className="bg-white p-6 flex items-center w-full">
-                <div className="border-2 border-blue-600 w-24 h-24 rounded-4xl flex items-center justify-center relative">
-                    <Image className="w-full h-[60%] text-gray-400" />
+                <div className="relative w-24 h-24 rounded-full border-2 border-blue-600 flex items-center justify-center">
+                    {servicePic ?
+                        <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={URL.createObjectURL(servicePic)} alt="Background picture" />
+                        :
+                        currentService.servicePictureURL ?
+                            <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={currentService.servicePictureURL} alt="Background picture" />
+                            :
+                            <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
 
-                    <Camera className="w-[50%] h-[50%] bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
-                        onClick={handleAddImg}
+                    }
+
+                    <Camera className="w-[50%] h-[50%] z-50 bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
+                        onClick={handleAddServicePic}
                     />
                     <input
                         type="file"
                         className="hidden"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
+                        ref={fileInputRefServicePic}
+                        onChange={(e) => { setServicePic(e.target.files?.[0] ?? null); setShowPictureImageFileContainer(true); if (e.target) e.target.value = ""; }}
                         accept="image/*"
                     ></input>
+
                 </div>
                 <h1 className="text-2xl font-bold ml-12">{id ? currentService.name : "Add new service"}</h1>
                 {id ?
@@ -225,7 +272,18 @@ export const ServiceForm = () => {
                     />
                     <p className="w-1/4 font-bold">USD</p>
                 </div>
-                <button type="submit" className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">SAVE</button>
+                {/* <button type="submit" className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200">SAVE</button> */}
+                <button
+                    className="mt-12 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
+                    type="submit"
+
+                >
+                    {showSavingState ?
+                        <Loader className="animate-spin"></Loader>
+                        :
+                        <p>SAVE</p>
+                    }
+                </button>
                 <button type="button" onClick={() => navigate("/admin/settings/services")} className="mt-12 ml-12 bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200">DISCARD</button>
             </form>
         </div>
