@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom"
 import { useData } from "../../../../AppRouter"
 import { useCheckIsLogged } from "../utlis/checkIsLoged"
 import { useLoadServiceData } from "../utlis/loadServiceData"
+import { Image } from "lucide-react"
 
 
 
@@ -90,7 +91,15 @@ export const CalendarPage = () => {
 
                     <ul>
                         {serviceData.map((_, index) => (
-                            <li key={index} className="mt-2">🏿 {serviceData[index].name}</li>
+                            <li key={index} className="mt-2 flex items-center">
+                                {serviceData[index].servicePictureURL ?
+                                    <img src={serviceData[index].servicePictureURL} alt="Service picture" className="h-6 rounded-2xl" />
+                                    :
+                                    <Image className="h-6"></Image>
+
+                                }
+                                <p className="ml-2">{serviceData[index].name}</p>
+                            </li>
                         ))}
                     </ul>
                 </div>
