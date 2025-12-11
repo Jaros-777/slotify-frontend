@@ -1,14 +1,12 @@
 import { useNavigate } from "react-router-dom"
 import Logo from "../../assets/Slotify Logo.webp"
-import CalendarIcon from "./assets/calendar-icon.png"
-import ClientIcon from "./assets/client-icon.png"
-import LinkIcon from "./assets/link-icon.png"
-import SettingsIcon from "./assets/settings-icon.png"
 import { useState } from "react"
+import {CalendarDays,User,Link,Settings} from "lucide-react"
 
 
 export const NavbarAdmin = () => {
     const [showDropBar, setShowDropBar] = useState<boolean>(false)
+    const [activeSection, setActiveSection] = useState<"calendar"|"clients"|"booking"|"settings">("calendar")
 
     const navigate = useNavigate();
 
@@ -23,21 +21,21 @@ export const NavbarAdmin = () => {
             <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
             <div className="flex">
-                <button onClick={()=>{navigate("/admin/calendar");window.scrollTo(0,0)}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
-                    <img src={CalendarIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
-                    <span>Calendar</span>
+                <button onClick={()=>{navigate("/admin/calendar");window.scrollTo(0,0); setActiveSection("calendar")}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                    <CalendarDays className={activeSection === "calendar" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                    <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
                 </button>
                 <button className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
-                    <img src={ClientIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
-                    <span>Clients</span>
+                    <User className={activeSection === "clients" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                    <span className={activeSection === "clients" ? "text-blue-500" : ""}>Clients</span>
                 </button>
-                <button onClick={()=>{navigate("/admin/booking/get-booking");window.scrollTo(0,0)}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
-                    <img src={LinkIcon} alt="Calendar" className="mr-4 h-[1.5em]" />
-                    <span>Online booking</span>
+                <button onClick={()=>{navigate("/admin/booking/get-booking");window.scrollTo(0,0); setActiveSection("booking")}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                    <Link className={activeSection === "booking" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                    <span className={activeSection === "booking" ? "text-blue-500" : ""}>Online booking</span>
                 </button>
-                <button onClick={()=>{navigate("/admin/settings/services");window.scrollTo(0,0)}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
-                    <img src={SettingsIcon} alt="Settings" className="mr-4 h-[1.5em]" />
-                    <span>Settings</span>
+                <button onClick={()=>{navigate("/admin/settings/services");window.scrollTo(0,0); setActiveSection("settings")}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                    <Settings className={activeSection === "settings" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                    <span className={activeSection === "settings" ? "text-blue-500" : ""}>Settings</span>
                 </button>
             </div>
 
