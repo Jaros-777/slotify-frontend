@@ -104,7 +104,7 @@ export const ServiceForm = () => {
             const formData = new FormData()
             if (servicePic != null && id != null) {
                 formData.append("servicePic", servicePic)
-                formData.append("id", id)
+                formData.append("id", id.toString())
             }
             axios.post("http://localhost:8080/service/picture",
                 formData,
@@ -124,7 +124,7 @@ export const ServiceForm = () => {
         }
         setShowSavingState(false)
         window.scrollTo(0, 0)
-        // navigate("/admin/settings/services")
+        navigate("/admin/settings/services")
         // window.location.reload()
 
 
