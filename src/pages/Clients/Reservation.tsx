@@ -51,7 +51,7 @@ export const Reservation = () => {
     useEffect(() => {
         (async () => {
             await handleValidPage()
-            setCurrentDayOfWeek((new Date().getDay() + 6 )% 7)
+            setCurrentDayOfWeek((new Date().getDay() + 6) % 7)
 
         })();
     }, []);
@@ -85,7 +85,7 @@ export const Reservation = () => {
                     <div className="flex justify-between px-4 py-2 w-[80rem]">
                         <div className="flex mx-4 items-center">
 
-                            <div className="relative w-24 h-24 rounded-full border-2 border-blue-600 flex items-center justify-center">
+                            <div className="relative w-24 h-24 rounded-full flex items-center justify-center">
                                 {
                                     businessDetail.profilePictureURL ?
                                         <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={businessDetail.profilePictureURL} alt="Background picture" />
@@ -115,8 +115,12 @@ export const Reservation = () => {
                     <ul className="mt-4 border border-gray-300 rounded-md">
                         {serviceData.map((e) => (
                             <li key={e?.id} className="flex p-4 border-b border-gray-300 items-center">
-                                <div className="h-24 w-24 bg-green-100 p-2 rounded-2xl">
-                                    <Image className="h-full w-full text-green-600"></Image>
+                                <div className="w-24 bg-green-100  rounded-full overflow-hidden">
+                                    {e?.servicePictureURL ?
+                                        <img src={e.servicePictureURL} alt="Service picture" />
+                                        :
+                                        <Image className="h-full w-full p-2 text-green-600"></Image>
+                                    }
                                 </div>
                                 <div className="ml-6">
                                     <p className="font-bold text-lg">{e?.name}</p>

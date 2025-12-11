@@ -19,7 +19,6 @@ export const Services = () => {
             const token = await checkIsLogged();
             if (token) {
                 await loadServiceData(token);
-
             }
         })();
     }, []);
@@ -59,8 +58,13 @@ export const Services = () => {
                             className="flex my-2 w-[90%] bg-white p-4 items-center rounded-md cursor-pointer"
                             onClick={() => navigate(`/admin/settings/services/form/${e.id}`)}
                         >
-                            <div className="border border-black w-12 h-12 rounded-md flex items-center justify-center">
-                                <p className="text-gray-500 font-bold">{e.name.slice(0, 2)}</p>
+                            <div className="border border-black w-12 h-12 rounded-full overflow-hidden flex items-center justify-center">
+                                {e.servicePictureURL ?
+                                    <img src={e.servicePictureURL} alt="Service image" />
+                                    :
+                                    <p className="text-gray-500 font-bold">{e.name.slice(0, 2)}</p>
+                                }
+
                             </div>
                             <div className="ml-8">
                                 <div>

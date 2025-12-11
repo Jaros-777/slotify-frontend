@@ -145,7 +145,7 @@ export const BusinessProfile = () => {
 
             </div>
             <div className=" bg-white p-6 flex items-center w-full">
-                <div className="relative w-24 h-24 rounded-full border-2 border-blue-600 flex items-center justify-center">
+                <div className="relative w-24 h-24 rounded-full flex items-center justify-center">
                     {profilePic ?
                         <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={URL.createObjectURL(profilePic)} alt="Background picture" />
                         :
