@@ -128,8 +128,13 @@ export const Reservation = () => {
                                 </div>
                                 <div className="ml-auto flex items-center">
                                     <p className="font-bold">{e?.price} USD</p>
-                                    <button className="border border-blue-300 text-blue-400 font-bold px-4 py-2 rounded-md ml-4 cursor-pointer duration-200 
-                                hover:bg-blue-200">Reservation</button>
+                                    <button
+                                        className="border border-blue-300 text-blue-400 font-bold px-4 py-2 rounded-md ml-4 cursor-pointer duration-200 
+                                hover:bg-blue-200"
+                                    onClick={()=>navigate(`/${businessName}/order/${e?.id}`)}
+                                >
+                                        Reservation
+                                    </button>
                                 </div>
                             </li>
                         ))}

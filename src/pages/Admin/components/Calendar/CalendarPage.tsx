@@ -96,7 +96,6 @@ export const CalendarPage = () => {
                                     <img src={serviceData[index].servicePictureURL} alt="Service picture" className="h-6 rounded-2xl" />
                                     :
                                     <Image className="h-6"></Image>
-
                                 }
                                 <p className="ml-2">{serviceData[index].name}</p>
                             </li>

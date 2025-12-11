@@ -13,6 +13,7 @@ import { ServiceForm } from "./pages/Admin/components/Settings/components/Servic
 import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking/GetBooking.tsx";
 import { BusinessProfile } from "./pages/Admin/components/Booking/components/BusinessProfile/BusinessProfile.tsx";
 import { Reservation } from "./pages/Clients/Reservation.tsx";
+import { Order } from "./pages/Clients/components/Order/Order.tsx";
 import { Availability } from "./pages/Admin/components/Settings/components/Availability/Availability.tsx";
 
 import { NotFound } from "./pages/NotFound.tsx";
@@ -68,6 +69,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
         </Route>
 
         <Route path="/:businessName" element={<Reservation />} />
+        <Route path="/:businessName/order/:serviceId" element={<Order />} />
 
         <Route path="/not-found" element={<NotFound />} />
       </Routes >
