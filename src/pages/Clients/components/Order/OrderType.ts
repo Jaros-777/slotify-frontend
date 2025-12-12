@@ -2,7 +2,7 @@ import type { scheduleDay } from "../../../Admin/components/Settings/components/
 import type { ServiceType } from "../../../Admin/components/types/ServiceType";
 
 export interface OrderType{
-    availabiltyDTO: scheduleDay,
+    availabiltyDTO: scheduleDay[],
     bussinessName:string,
     bussinessPictureUrl:string,
     serviceDTO: ServiceType

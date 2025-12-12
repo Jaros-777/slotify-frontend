@@ -1,0 +1,20 @@
+.react-calendar {
+    margin: 0;
+}
+.react-calendar__month-view__days__day{
+    padding: 0;
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+}
+
+.react-calendar__navigation__label {
+  pointer-events: none; /* całkowicie blokuje kliknięcia */
+}
+
+.react-calendar__navigation button:disabled{
+    background-color: rgb(255, 255, 255);
+    border-radius: 100%;
+}
+.react-calendar__navigation button{
+    border-radius: 100%;
+}
