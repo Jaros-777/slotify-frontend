@@ -4,44 +4,25 @@ import "./OrderCalendar.css"
 import type { OrderResponse } from '../../../types/OrderResponse';
 import type { scheduleDay } from '../../../../Admin/components/Settings/components/Availability/utlis/scheduleType';
 import { useState } from 'react';
+import { FinishedReservation } from './FinishedReservation';
+import { dayTypes, monthTypes } from '../types/dayAndMonthNames';
 
 
-const dayTypes = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-]
-const monthTypes = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-];
+
 
 interface timeProps {
     setReservationDetails: React.Dispatch<React.SetStateAction<OrderResponse | undefined>>
-    setCurrentSection: React.Dispatch<React.SetStateAction<"time" | "details" | "finish">>
+    reservationDetails: OrderResponse | undefined
+    setSectionFinished: React.Dispatch<React.SetStateAction<boolean>>
     availability: scheduleDay[]
     serviceDuration: number
 }
 
 
-export const SelectTime = ({ setReservationDetails, availability, serviceDuration,setCurrentSection }: timeProps) => {
+export const SelectTime = ({ setReservationDetails,reservationDetails, availability, serviceDuration, setSectionFinished }: timeProps) => {
 
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-    const [selectedTime, setSelectedTime] = useState<string| null>()
+    const [selectedTime, setSelectedTime] = useState<string | null>()
     const [openHours, setOpenHours] = useState<string[]>([])
 
     const today = new Date();
@@ -114,21 +95,21 @@ export const SelectTime = ({ setReservationDetails, availability, serviceDuratio
         setSelectedTime(time)
         if (selectedDay) {
             setReservationDetails({
+                ...reservationDetails,
                 chosenDate: selectedDay,
                 chosenTime: time
             })
-            setCurrentSection("details")
         }
+        setSectionFinished(true)
 
     }
 
 
 
     return (
-        <div className="">
-
+        <>
             <h1 className='pl-4 py-2 font-bold text-xl'>Select a time</h1>
-            <div className='border border-gray-300 ml-6'>
+            <div className='border border-gray-300 rounded-md ml-6 w-5/6'>
                 <h2 className='pl-4 py-4 font-bold text-l'>Date and time</h2>
                 <div className='border-t border-gray-300 flex'>
                     <Calendar
@@ -143,7 +124,7 @@ export const SelectTime = ({ setReservationDetails, availability, serviceDuratio
                             if (isOpenDay(value) && !isPastDay(value)) {
                                 setSelectedDay(value);
                                 setSelectedTime(null)
-                                setCurrentSection("time")
+                                setSectionFinished(false)
                                 availabilityHours(backendDay, value);
                             }
                         }}
@@ -190,7 +171,7 @@ export const SelectTime = ({ setReservationDetails, availability, serviceDuratio
 
                 </div>
             </div>
-        </div>
+        </>
 
     )
 }

@@ -1,17 +1,22 @@
-import { Check } from "lucide-react"
+import { Check, LockKeyhole, Dot } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Image } from "lucide-react"
 import axios from "axios"
 import { useParams } from "react-router-dom"
 import type { OrderType } from "./OrderType"
 import { SelectTime } from "./components/SelectTime"
+import { ClientDetails } from "./components/ClientDetails"
+import { FinishedReservation } from "./components/FinishedReservation"
 import type { OrderResponse } from "../../types/OrderResponse"
+import { monthTypes } from "./types/dayAndMonthNames"
+import { FooterAdmin } from "../../../../components/Footer/FooterAdmin"
 
 
 export const Order = () => {
     const { serviceId } = useParams()
     const [orderData, setOrderData] = useState<OrderType>()
     const [currentSection, setCurrentSection] = useState<"time" | "details" | "finish">("time")
+    const [sectionFinished, setSectionFinished] = useState<boolean>(false)
     const [loadDetails, setLoadDetails] = useState<boolean>(true)
     const [reservationDetails, setReservationDetails] = useState<OrderResponse>()
 
@@ -25,6 +30,10 @@ export const Order = () => {
             }).catch(function (error) {
                 console.log(error);
             })
+    }
+
+    const postReservation = async () => {
+        setCurrentSection("finish")
     }
 
     useEffect(() => {
@@ -41,7 +50,7 @@ export const Order = () => {
 
     return (
         <>
-            <div className="h-screen">
+            <div className="h-full">
                 <div className="border-b border-gray-300 py-6 flex items-center justify-center sticky top-0 right-0 bg-white">
                     <div className="p-2 h-10 flex items-center justify-center aspect-square rounded-full bg-blue-500 mx-4">
                         {currentSection === "details" || currentSection == "finish" ?
@@ -66,12 +75,24 @@ export const Order = () => {
                 <div className="flex">
 
                     <div className="w-3/5 p-6">
-                        <SelectTime
-                            setReservationDetails={setReservationDetails}
-                            availability={orderData.availabiltyDTO}
-                            serviceDuration={orderData.serviceDTO.duration}
-                            setCurrentSection={setCurrentSection}
-                        ></SelectTime>
+                        {currentSection === "time" ?
+                            <SelectTime
+                                setReservationDetails={setReservationDetails}
+                                reservationDetails={reservationDetails}
+                                availability={orderData.availabiltyDTO}
+                                serviceDuration={orderData.serviceDTO.duration}
+                                setSectionFinished={setSectionFinished}
+                            ></SelectTime>
+                            : currentSection === "details" ?
+                                <ClientDetails
+                                    onSuccess={postReservation}
+                                    setReservationDetails={setReservationDetails}
+                                    reservationDetails={reservationDetails}
+                                ></ClientDetails>
+                                :
+                                <FinishedReservation mail={reservationDetails?.email}></FinishedReservation>
+                        }
+
                     </div>
                     <div className="ml-auto w-2/5">
                         <div className="bg-gray-200 px-6 py-10 min-h-full">
@@ -80,35 +101,57 @@ export const Order = () => {
                                 <div className="flex items-center">
                                     {
                                         orderData.bussinessPictureUrl ?
-                                            <img className="h-20 rounded-2xl object-contain overflow-hidden" src={orderData.bussinessPictureUrl} alt="Background picture" />
+                                            <img className="w-20 rounded-2xl object-contain overflow-hidden" src={orderData.bussinessPictureUrl} alt="Background picture" />
                                             :
-                                            <Image className="aspect-square text-gray-400" />
+                                            <Image className="w-20 aspect-square text-gray-400" />
 
                                     }
                                     <p className="ml-10 font-bold">{orderData.bussinessName}</p>
                                 </div>
-                                <div className="flex mt-6 items-center border-t-2 py-6 border-gray-300">
+                                <div className="flex mt-6 items-center border-t-2 py-6 border-gray-300 w-full">
                                     {
                                         orderData.serviceDTO.servicePictureURL ?
-                                            <img className="h-20 rounded-2xl object-contain overflow-hidden" src={orderData.serviceDTO.servicePictureURL} alt="Background picture" />
+                                            <img className="h-20 w-20 aspect-square rounded-2xl object-contain overflow-hidden" src={orderData.serviceDTO.servicePictureURL} alt="Background picture" />
                                             :
-                                            <Image className="aspect-square text-gray-400" />
+                                            <Image className="h-20 w-20 aspect-square text-gray-400" />
 
                                     }
-                                    <div className="ml-10">
-                                        <p className="font-medium">{orderData.serviceDTO.name}</p>
-                                        <p className="mt-4">{orderData.serviceDTO.duration / 60} minutes</p>
-                                    </div>
-                                    <div className="ml-auto">
-                                        <p className="font-bold">{orderData.serviceDTO.price} USD</p>
+                                    <div className="flex-1 ml-10">
+                                        <div className="flex w-full justify-between">
+                                            <p className="font-medium">{orderData.serviceDTO.name}</p>
+                                            <p className="font-bold">{orderData.serviceDTO.price} USD</p>
+                                        </div>
+                                        <div className="flex w-full items-center mt-2">
+                                            <p className="">{orderData.serviceDTO.duration / 60} minutes</p>
+                                            {currentSection !== "time" && reservationDetails ?
+                                                <>
+                                                    <Dot></Dot>
+                                                    <p className="">{monthTypes[reservationDetails.chosenDate.getMonth()]} {reservationDetails.chosenDate.getDay()}, {reservationDetails.chosenDate.getFullYear()} at {reservationDetails.chosenTime} </p>
+                                                </>
+                                                : null
+                                            }
+
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex font-bold border-t-2 pt-6 border-gray-300">
                                     <p>Total</p>
                                     <p className="ml-auto">{orderData.serviceDTO.price} USD</p>
                                 </div>
+                                {sectionFinished && currentSection === "time" ?
+                                    <button
+                                        onClick={() => { setCurrentSection("details"); setSectionFinished(false) }}
+                                        className="bg-blue-500 text-white font-medium w-full px-4 py-2 mt-6 rounded-md cursor-pointer duration-200 hover:bg-blue-600">CONTINUE</button>
+                                    : null
+                                }
                                 {currentSection === "details" ?
-                                    <button className="bg-blue-500 text-white font-medium w-full px-4 py-2 mt-6 rounded-xl cursor-pointer">CONTINUE</button>
+                                    <button
+                                        type="submit"
+                                        form="client-details-form"
+                                        className="bg-blue-500 text-white font-medium w-full px-4 py-2 mt-6 rounded-md cursor-pointer flex justify-center items-center duration-200 hover:bg-blue-600">
+                                        <LockKeyhole className="mr-4 h-[1.5em]"></LockKeyhole>
+                                        <span> CONFIRM BOOKING</span>
+                                    </button>
                                     : null
                                 }
                             </div>
@@ -116,6 +159,7 @@ export const Order = () => {
                     </div>
                 </div>
             </div>
+            {/* <FooterAdmin></FooterAdmin> */}
         </>
     )
 }
