@@ -125,9 +125,6 @@ export const ServiceForm = () => {
         setShowSavingState(false)
         window.scrollTo(0, 0)
         navigate("/admin/settings/services")
-        // window.location.reload()
-
-
     }
 
     const handleDeleteService = () => {
@@ -164,7 +161,6 @@ export const ServiceForm = () => {
                 durationHours: Math.floor(curService.duration / 3600),
                 durationMinutes: Math.floor((curService.duration % 3600) / 60)
             })
-            console.log(currentService)
 
         }
 
