@@ -98,7 +98,12 @@ export const Reservation = () => {
 
                             <div className="ml-6">
                                 <p className="font-bold text-xl">{businessDetail.businessName}</p>
-                                <p className="text-sm"><span className="text-green-700 font-bold" >Opening hours </span>({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
+                                {schedulePlan[currentDayOfWeek].isClose?
+                                <p className="text-sm text-red-700 font-bold mt-2">Closed</p>
+                                :
+                                <p className="text-sm mt-2"><span className="text-green-700 font-bold" >Opening hours </span>({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
+                                
+                             }
                             </div>
                         </div>
                         {/* <div className="flex flex-col justify-center items-center">
