@@ -9,6 +9,7 @@ import { ClientDetails } from "./components/ClientDetails"
 import { FinishedReservation } from "./components/FinishedReservation"
 import type { OrderResponse } from "../../types/OrderResponse"
 import { monthTypes } from "./types/dayAndMonthNames"
+import { toLocalDateTimeString } from "../../../Admin/components/Calendar/components/BigCalendar/utils/dateUtils"
 import { FooterAdmin } from "../../../../components/Footer/FooterAdmin"
 
 
@@ -19,6 +20,7 @@ export const Order = () => {
     const [sectionFinished, setSectionFinished] = useState<boolean>(false)
     const [loadDetails, setLoadDetails] = useState<boolean>(true)
     const [reservationDetails, setReservationDetails] = useState<OrderResponse>()
+    const {businessName} = useParams()
 
     const fetchServiceDetails = async () => {
         await axios.get(`http://localhost:8080/order/${serviceId}`
@@ -26,6 +28,12 @@ export const Order = () => {
             .then(function (response) {
                 setOrderData(response.data)
                 setLoadDetails(false)
+                setReservationDetails({
+                    ...reservationDetails,
+                    serviceId: response.data.serviceDTO.id,
+                    loggedClient: false,
+                    agreements: false
+                })
 
             }).catch(function (error) {
                 console.log(error);
@@ -34,6 +42,20 @@ export const Order = () => {
 
     const postReservation = async () => {
         setCurrentSection("finish")
+        if (reservationDetails?.chosenDate) {
+            const payload = {
+                ...reservationDetails,
+                chosenDate: toLocalDateTimeString(reservationDetails.chosenDate)
+            }
+            console.log(payload)
+
+            axios.post("http://localhost:8080/order",
+                payload,
+            ).then(function (response) {
+            }).catch(function (error) {
+            })
+
+        }
     }
 
     useEffect(() => {
@@ -90,7 +112,7 @@ export const Order = () => {
                                     reservationDetails={reservationDetails}
                                 ></ClientDetails>
                                 :
-                                <FinishedReservation mail={reservationDetails?.email}></FinishedReservation>
+                                <FinishedReservation businessName={businessName} mail={reservationDetails?.email}></FinishedReservation>
                         }
 
                     </div>
@@ -123,10 +145,24 @@ export const Order = () => {
                                         </div>
                                         <div className="flex w-full items-center mt-2">
                                             <p className="">{orderData.serviceDTO.duration / 60} minutes</p>
-                                            {currentSection !== "time" && reservationDetails ?
+                                            {currentSection !== "time" && reservationDetails?.chosenDate ?
                                                 <>
                                                     <Dot></Dot>
-                                                    <p className="">{monthTypes[reservationDetails.chosenDate.getMonth()]} {reservationDetails.chosenDate.getDay()}, {reservationDetails.chosenDate.getFullYear()} at {reservationDetails.chosenTime} </p>
+                                                    <p>
+                                                        {monthTypes[reservationDetails.chosenDate.getMonth()]}
+                                                        {" "}
+                                                        {reservationDetails.chosenDate.getDate()}, {reservationDetails.chosenDate.getFullYear()}
+                                                        {" at "}
+                                                        {reservationDetails.chosenDate.getHours() < 10 ?
+                                                            0 : null
+                                                        }
+                                                        {reservationDetails.chosenDate.getHours()}
+                                                        :
+                                                        {reservationDetails.chosenDate.getMinutes()}
+                                                        {reservationDetails.chosenDate.getMinutes() < 10 ?
+                                                            0 : null
+                                                        }
+                                                         </p>
                                                 </>
                                                 : null
                                             }

@@ -19,7 +19,7 @@ interface timeProps {
 }
 
 
-export const SelectTime = ({ setReservationDetails,reservationDetails, availability, serviceDuration, setSectionFinished }: timeProps) => {
+export const SelectTime = ({ setReservationDetails, reservationDetails, availability, serviceDuration, setSectionFinished }: timeProps) => {
 
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>()
@@ -56,6 +56,7 @@ export const SelectTime = ({ setReservationDetails,reservationDetails, availabil
         const now = new Date();
         const todayBackendDay = (now.getDay() + 6) % 7;
         const isToday = day === todayBackendDay;
+
 
         const [startHour, startMin] = currentDay.openHour.split(":").map(Number);
         const [endHour, endMin] = currentDay.closeHour.split(":").map(Number);
@@ -94,10 +95,13 @@ export const SelectTime = ({ setReservationDetails,reservationDetails, availabil
     const handleSelectTime = (time: string) => {
         setSelectedTime(time)
         if (selectedDay) {
+            const [hours, minutes] = time.split(":").map(Number)
+            const dateWithTime = new Date(selectedDay)
+            dateWithTime.setHours(hours, minutes, 0, 0)
+
             setReservationDetails({
                 ...reservationDetails,
-                chosenDate: selectedDay,
-                chosenTime: time
+                chosenDate: dateWithTime
             })
         }
         setSectionFinished(true)
@@ -150,7 +154,7 @@ export const SelectTime = ({ setReservationDetails,reservationDetails, availabil
                         {selectedDay && (
                             <>
                                 <div className="mt-4 p-3 rounded-xl  text-center">
-                                    <p className='font-bold'>{dayTypes[selectedDay.getDay() - 1]}, {monthTypes[selectedDay.getMonth()]} {selectedDay.getDate()}, {selectedDay.getFullYear()}</p>
+                                    <p className='font-bold'>{dayTypes[selectedDay.getDay()]}, {monthTypes[selectedDay.getMonth()]} {selectedDay.getDate()}, {selectedDay.getFullYear()}</p>
                                 </div>
                                 <ul className='grid grid-cols-3 w-full items-center'>
                                     {openHours.map((e, index) => (

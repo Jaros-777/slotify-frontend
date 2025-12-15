@@ -1,10 +1,13 @@
 import { Check } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 interface reservationProps{
     mail: string | undefined
+    businessName: string | undefined
 }
 
-export const FinishedReservation = ({mail}:reservationProps) => {
+export const FinishedReservation = ({mail, businessName}:reservationProps) => {
+    const navigate = useNavigate()
 
     return (
         <div className="flex flex-col items-center">
@@ -21,7 +24,7 @@ export const FinishedReservation = ({mail}:reservationProps) => {
                     <button className="border border-blue-500 rounded-md px-4 py-2 font-medium text-md text-blue-500 w-full mr-2 cursor-pointer duration-200 hover:border-blue-900 hover:text-blue-900">ADD TO CALENDAR</button>
                     <button className="border border-blue-500 rounded-md px-4 py-2 font-medium text-blue-500 w-full ml-2 cursor-pointer duration-200 hover:border-blue-900 hover:text-blue-900">CHANGE BOOKING</button>
                 </div>
-                <button className="bg-blue-500 rounded-md px-4 py-2 font-medium text-white w-full mt-4 duration-200 hover:bg-blue-600 cursor-pointer">BACK TO BOOKING WEBSITE</button>
+                <button onClick={()=>navigate(`/${businessName}`)} className="bg-blue-500 rounded-md px-4 py-2 font-medium text-white w-full mt-4 duration-200 hover:bg-blue-600 cursor-pointer">BACK TO BOOKING WEBSITE</button>
             </div>
         </div>
 

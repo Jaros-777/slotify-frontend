@@ -47,6 +47,27 @@ export const Reservation = () => {
             })
     }
 
+    function currentOpenCompanyStatus() {
+        if (!schedulePlan[currentDayOfWeek]) return false;
+
+        const currentTime = new Date();
+        const todayAvailability = schedulePlan[currentDayOfWeek];
+
+        if (todayAvailability.isClose) return false;
+
+        const [openHours, openMinutes] = todayAvailability.openHour.split(":").map(Number);
+        const [closeHours, closeMinutes] = todayAvailability.closeHour.split(":").map(Number);
+
+        const openTime = new Date(currentTime);
+        openTime.setHours(openHours, openMinutes, 0, 0);
+
+        const closeTime = new Date(currentTime);
+        closeTime.setHours(closeHours, closeMinutes, 0, 0);
+
+        return currentTime >= openTime && currentTime <= closeTime;
+    }
+
+
 
     useEffect(() => {
         (async () => {
@@ -91,7 +112,6 @@ export const Reservation = () => {
                                         <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={businessDetail.profilePictureURL} alt="Background picture" />
                                         :
                                         <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
-
                                 }
                             </div>
 
@@ -99,10 +119,10 @@ export const Reservation = () => {
                             <div className="ml-6">
                                 <p className="font-bold text-xl">{businessDetail.businessName}</p>
                                 <div className="flex mt-2">
-                                    {schedulePlan[currentDayOfWeek].isClose ?
-                                        <p className="text-sm text-red-700 font-bold">Closed</p>
-                                        :
+                                    {currentOpenCompanyStatus() ?
                                         <p className="text-sm text-green-700 font-bold">Open</p>
+                                        :
+                                        <p className="text-sm text-red-700 font-bold">Closed</p>
                                     }
                                     <p className="text-sm ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
                                 </div>
