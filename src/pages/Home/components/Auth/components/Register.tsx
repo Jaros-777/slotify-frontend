@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import { useEffect, useState } from "react"
+import {useState } from "react"
+import { Loader } from "lucide-react"
 
 interface userDetailsType {
     name: string,
@@ -17,6 +18,7 @@ export const Register = () => {
         password: ""
     })
     const [showError, setShowError] = useState<boolean>(false)
+    const [loadingState, setLoadingState] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
@@ -43,7 +45,7 @@ export const Register = () => {
                 null
             }
 
-            <form action="" className="mt-12 flex flex-col">
+            <form onSubmit={handleRegister} className="mt-12 flex flex-col">
                 <label className=" text-text-gray block font-medium">Full name</label>
                 <input type="text" required
                     className="border-1 border-gray-300 rounded-sm w-full py-1 px-2 mt-2 
@@ -76,7 +78,13 @@ export const Register = () => {
                     value={userAuthData.password}
                     onChange={(e) => setUserAuthData({ ...userAuthData, password: e.target.value })}
                 />
-                <button className="mt-8 bg-blue-500 text-white px-6 py-2 rounded-md font-medium cursor-pointer hover:bg-blue-600 duration-200" onClick={handleRegister}>CREATE ACCOUNT</button>
+                {loadingState ?
+                    <div className="mt-8 bg-blue-500 text-white py-2 box-content rounded-md font-medium cursor-pointer">
+                        <Loader className=" w-full animate-spin "></Loader>
+                    </div>
+                    :
+                    <button type="submit" className="mt-8 bg-blue-500 text-white px-6 py-2 rounded-md font-medium cursor-pointer hover:bg-blue-600 duration-200" >CREATE ACCOUNT</button>
+                }
             </form>
         </section>
     )
