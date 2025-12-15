@@ -98,12 +98,14 @@ export const Reservation = () => {
 
                             <div className="ml-6">
                                 <p className="font-bold text-xl">{businessDetail.businessName}</p>
-                                {schedulePlan[currentDayOfWeek].isClose?
-                                <p className="text-sm text-red-700 font-bold mt-2">Closed</p>
-                                :
-                                <p className="text-sm mt-2"><span className="text-green-700 font-bold" >Opening hours </span>({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
-                                
-                             }
+                                <div className="flex mt-2">
+                                    {schedulePlan[currentDayOfWeek].isClose ?
+                                        <p className="text-sm text-red-700 font-bold">Closed</p>
+                                        :
+                                        <p className="text-sm text-green-700 font-bold">Open</p>
+                                    }
+                                    <p className="text-sm ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
+                                </div>
                             </div>
                         </div>
                         {/* <div className="flex flex-col justify-center items-center">
@@ -136,8 +138,8 @@ export const Reservation = () => {
                                     <button
                                         className="border border-blue-300 text-blue-400 font-bold px-4 py-2 rounded-md ml-4 cursor-pointer duration-200 
                                 hover:bg-blue-200"
-                                    onClick={()=>navigate(`/${businessName}/order/${e?.id}`)}
-                                >
+                                        onClick={() => navigate(`/${businessName}/order/${e?.id}`)}
+                                    >
                                         Reservation
                                     </button>
                                 </div>
