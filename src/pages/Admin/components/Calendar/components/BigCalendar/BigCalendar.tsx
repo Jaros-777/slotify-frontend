@@ -8,7 +8,7 @@ import { enGB } from "date-fns/locale/en-GB";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import "./BigCalendar.css"
-import type { EventType } from "../types/EventType";
+import type { EventType, BookingStatus } from "../types/EventType";
 import { CustomEvent } from "./components/CustomEvent";
 import { CustomToolbar } from "./components/CustomToolbar";
 import type { ServiceType } from "../../../types/ServiceType";
@@ -44,6 +44,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
+  const [showEventDescription, setShowEventDescription] = useState<boolean>(false)
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
     const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
@@ -60,6 +61,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
     });
 
     setSelectedDuration(diffInMinutes);
+    setShowEventDescription(false)
     setIsModalOpen(true);
   };
 
@@ -173,6 +175,19 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
     setUserToken(token)
   }, [])
 
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
+
+
 
   return (
     <div className="h-180 p-4 pb-0 w-full">
@@ -194,6 +209,9 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
           const durationInMinutes = (event.endDate.getTime() - event.startDate.getTime()) / 60000;
           setSelectedDuration(durationInMinutes);
           setIsModalOpen(true);
+          if (event.description != null) {
+            setShowEventDescription(true)
+          }
         }}
         scrollToTime={new Date(2025, 0, 1, 8, 0, 0)}
         components={{
@@ -203,170 +221,209 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
         onNavigate={(date) => onWeekChange(getWeekStart(date))}
       />
       {isModalOpen && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-lg p-6 w-96 flex flex-col items-start">
-            <h2 className="text-xl font-semibold mb-4 text-center">
-              Client
-            </h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleAddUpdateEvent();
-              }}
-            >
-              <input
-                type="text"
-                required
-                placeholder="Name"
-                value={newEvent.clientName || ""}
-                onChange={(e) =>
-                  setNewEvent({ ...newEvent, clientName: e.target.value })
-                }
-                className="w-full border p-2 rounded mb-4 border-gray-300"
-              />
-              <input
-                type="email"
-                placeholder="Mail"
-                value={newEvent.clientEmail || ""}
-                required
-                onChange={(e) =>
-                  setNewEvent({ ...newEvent, clientEmail: e.target.value })
-                }
-                className="w-full border p-2 rounded mb-4 border-gray-300"
-              />
-              <input
-                type="tel"
-                pattern="[0-9]+"
-                placeholder="Phone"
-                minLength={9}
-                maxLength={9}
-                value={newEvent.clientPhone || undefined}
-                onChange={(e) =>
-                  setNewEvent({ ...newEvent, clientPhone: Number(e.target.value) })
-                }
-                className="w-full border p-2 rounded mb-4 border-gray-300"
-              />
-
-
-              <p className=" font-medium">Assign service</p>
-              <select
-                value={newEvent.serviceId ?? serviceData[0].id}
-                onChange={(e) =>
-                  setNewEvent({ ...newEvent, serviceId:e.target.value })
-                }
-                className="w-full border p-2 rounded mb-4 border-gray-300"
+        <div className="fixed top-20 inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="min-h-full flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-lg p-6 w-96 flex flex-col items-start max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-semibold mb-4 text-center">
+                Client
+              </h2>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleAddUpdateEvent();
+                }}
               >
-                {serviceData.map((service) => (
-                  <option key={service.id} value={service.id}>
-                    {service.name}
+                <input
+                  type="text"
+                  required
+                  placeholder="Name"
+                  value={newEvent.clientName || ""}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, clientName: e.target.value })
+                  }
+                  className="w-full border p-2 rounded mb-4 border-gray-300"
+                />
+                <input
+                  type="email"
+                  placeholder="Mail"
+                  value={newEvent.clientEmail || ""}
+                  required
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, clientEmail: e.target.value })
+                  }
+                  className="w-full border p-2 rounded mb-4 border-gray-300"
+                />
+                <input
+                  type="tel"
+                  pattern="[0-9]+"
+                  placeholder="Phone"
+                  minLength={9}
+                  maxLength={9}
+                  value={newEvent.clientPhone || undefined}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, clientPhone: Number(e.target.value) })
+                  }
+                  className="w-full border p-2 rounded mb-4 border-gray-300"
+                />
+
+
+                <p className=" font-medium">Assign service</p>
+                <select
+                  value={newEvent.serviceId ?? serviceData[0].id}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, serviceId: e.target.value })
+                  }
+                  className="w-full border p-2 rounded mb-4 border-gray-300"
+                >
+                  {serviceData.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="flex w-full justify-between">
+                  <div>
+                    <p className=" font-medium">Date</p>
+                    <input
+                      className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
+                      type="date"
+                      value={newEvent.startDate ? newEvent.startDate.toLocaleDateString("en-CA") : ""}
+                      onChange={(e) => {
+                        if (!newEvent.startDate) return;
+                        const [year, month, day] = e.target.value.split("-").map(Number);
+                        const hours = newEvent.startDate.getHours();
+                        const minutes = newEvent.startDate.getMinutes();
+                        setNewEvent({
+                          ...newEvent,
+                          startDate: new Date(year, month - 1, day, hours, minutes),
+                          endDate: newEvent.endDate
+                            ? new Date(
+                              year,
+                              month - 1,
+                              day,
+                              newEvent.endDate.getHours(),
+                              newEvent.endDate.getMinutes()
+                            )
+                            : new Date(year, month - 1, day, hours + 0.5, minutes),
+                        });
+                      }}
+                    />
+
+                  </div>
+                  <div>
+                    <p className=" font-medium">Time</p>
+                    <select
+                      className="border-1 px-2 py-1 h-[2em] border-gray-300"
+                      value={
+                        newEvent.startDate
+                          ? `${newEvent.startDate.getHours().toString().padStart(2, "0")}:${newEvent.startDate
+                            .getMinutes()
+                            .toString()
+                            .padStart(2, "0")}`
+                          : ""
+                      }
+                      onChange={(e) => {
+                        if (!newEvent.startDate) return;
+                        const [hours, minutes] = e.target.value.split(":").map(Number);
+                        setNewEvent({
+                          ...newEvent,
+                          startDate: new Date(
+                            newEvent.startDate.getFullYear(),
+                            newEvent.startDate.getMonth(),
+                            newEvent.startDate.getDate(),
+                            hours,
+                            minutes
+                          ),
+                        });
+                      }}
+                    >
+                      {times.map((time) => (
+                        <option key={time} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <p className=" font-medium">Duration</p>
+                    <select
+                      className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
+                      value={selectedDuration}
+                      onChange={(e) => setSelectedDuration(Number(e.target.value))}
+                    >
+                      {durations.map((d) => (
+                        <option key={d.value} value={d.value}>
+                          {d.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                </div>
+                <p className="mt-4 font-medium">Booking status</p>
+                <select
+                  value={newEvent.bookingStatus}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, bookingStatus: e.target.value as BookingStatus })
+                  }
+                  className={`w-full border p-2 rounded mb-4 border-gray-300 ${newEvent.bookingStatus === "TO_BE_CONFIRMED" ? "bg-yellow-100" :null }`}
+                >
+                  <option key={0} value={"CONFIRMED"}>
+                    Confirmed
                   </option>
-                ))}
-              </select>
-              <div className="flex w-full justify-between">
-                <div>
-                  <p className=" font-medium">Date</p>
-                  <input
-                    className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
-                    type="date"
-                    value={newEvent.startDate ? newEvent.startDate.toLocaleDateString("en-CA") : ""}
-                    onChange={(e) => {
-                      if (!newEvent.startDate) return;
-                      const [year, month, day] = e.target.value.split("-").map(Number);
-                      const hours = newEvent.startDate.getHours();
-                      const minutes = newEvent.startDate.getMinutes();
-                      setNewEvent({
-                        ...newEvent,
-                        startDate: new Date(year, month - 1, day, hours, minutes),
-                        endDate: newEvent.endDate
-                          ? new Date(
-                            year,
-                            month - 1,
-                            day,
-                            newEvent.endDate.getHours(),
-                            newEvent.endDate.getMinutes()
-                          )
-                          : new Date(year, month - 1, day, hours + 0.5, minutes),
-                      });
-                    }}
-                  />
+                  <option key={1} value={"TO_BE_CONFIRMED"}>
+                    To confirm
+                  </option>
+                  <option key={2} value={"CLIENT_ARRIVED"}>
+                    Client arrived
+                  </option>
+                  <option key={3} value={"CLIENT_DID_NOT_ARRIVE"}>
+                    Client did not arrive
+                  </option>
 
-                </div>
-                <div>
-                  <p className=" font-medium">Time</p>
-                  <select
-                    className="border-1 px-2 py-1 h-[2em] border-gray-300"
-                    value={
-                      newEvent.startDate
-                        ? `${newEvent.startDate.getHours().toString().padStart(2, "0")}:${newEvent.startDate
-                          .getMinutes()
-                          .toString()
-                          .padStart(2, "0")}`
-                        : ""
-                    }
-                    onChange={(e) => {
-                      if (!newEvent.startDate) return;
-                      const [hours, minutes] = e.target.value.split(":").map(Number);
-                      setNewEvent({
-                        ...newEvent,
-                        startDate: new Date(
-                          newEvent.startDate.getFullYear(),
-                          newEvent.startDate.getMonth(),
-                          newEvent.startDate.getDate(),
-                          hours,
-                          minutes
-                        ),
-                      });
-                    }}
-                  >
-                    {times.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <p className=" font-medium">Duration</p>
-                  <select
-                    className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
-                    value={selectedDuration}
-                    onChange={(e) => setSelectedDuration(Number(e.target.value))}
-                  >
-                    {durations.map((d) => (
-                      <option key={d.value} value={d.value}>
-                        {d.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="flex w-full justify-between pt-4 mt-4 border-t-1 border-gray-300 ">
-                <div className="flex gap-3">
+                </select>
+                {showEventDescription ?
+                  <>
+                    <p className="font-medium">Description</p>
+                    <textarea
+                      value={newEvent.description || ""}
+                      onChange={(e) =>
+                        setNewEvent({ ...newEvent, description: e.target.value })
+                      }
+                      className="w-full border p-2 rounded mb-4 border-gray-300"></textarea>
+                  </>
+                  :
+                  <button className="cursor-pointer text-blue-500" onClick={() => setShowEventDescription(true)}>Add note</button>
+
+                }
+                <div className="flex w-full justify-between pt-4 mt-4 border-t-1 border-gray-300 ">
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-600 text-white rounded font-medium cursor-pointer hover:bg-blue-700 duration-200"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => { setIsModalOpen(false), setShowEventDescription(false) }}
+                      type="button"
+                      className="px-4 py-2 bg-gray-300 rounded font-medium cursor-pointer hover:bg-gray-400 duration-200"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+
+
                   <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded font-medium cursor-pointer hover:bg-blue-700 duration-200"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => handleDeleteEvent(newEvent.id)}
                     type="button"
-                    className="px-4 py-2 bg-gray-300 rounded font-medium cursor-pointer hover:bg-gray-400 duration-200"
-                  >
-                    Cancel
+                    className="px-4 py-2 text-red-500 font-medium rounded cursor-pointer hover:bg-red-700 hover:text-white duration-200">
+                    Delete
                   </button>
+
                 </div>
-
-
-                <button
-                  onClick={() => handleDeleteEvent(newEvent.id)}
-                  type="button"
-                  className="px-4 py-2 text-red-500 font-medium rounded cursor-pointer hover:bg-red-700 hover:text-white duration-200">
-                  Delete
-                </button>
-
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       )}

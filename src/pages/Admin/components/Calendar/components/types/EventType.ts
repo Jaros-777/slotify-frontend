@@ -1,3 +1,7 @@
+
+export type BookingStatus= "CONFIRMED" | "CLIENT_ARRIVED" | "CLIENT_DID_NOT_ARRIVE" | "TO_BE_CONFIRMED"
+
+
 export interface EventType {
   id: string;
   clientName: string;
@@ -6,6 +10,6 @@ export interface EventType {
   serviceId: string;
   startDate: Date;
   endDate: Date;
-  bookingStatus: "CONFIRMED" | "CLIENT_ARRIVED" | "CLIENT_DID_NOT_ARRIVE";
+  bookingStatus: BookingStatus;
   description?: string | null
 };
