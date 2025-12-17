@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import type { ServiceType } from "../Admin/components/types/ServiceType"
 import axios from "axios"
 import type { BusinessProfileType } from "../Admin/components/types/BusinessProfileType"
-import { FooterAdmin } from "../../components/Footer/FooterAdmin"
+import { FooterReservation } from "../../components/Footer/FooterReservation"
 import FacebookLogo from "../Admin/components/Booking/components/assets/Facebook_Logo_Primary.png"
 import type { scheduleDay } from "../Admin//components/Settings/components/Availability/utlis/scheduleType"
 
@@ -236,7 +236,7 @@ export const Reservation = () => {
                     </div>
                 </section>
             </div>
-            <FooterAdmin></FooterAdmin>
+            <FooterReservation></FooterReservation>
         </>
     )
 }

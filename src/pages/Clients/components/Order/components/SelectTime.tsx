@@ -153,10 +153,10 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
                     <div className='border-l border-gray-300 w-3/5'>
                         {selectedDay && (
                             <>
-                                <div className="mt-4 p-3 rounded-xl  text-center">
+                                <div className="p-3 rounded-xl  text-center">
                                     <p className='font-bold'>{dayTypes[selectedDay.getDay()]}, {monthTypes[selectedDay.getMonth()]} {selectedDay.getDate()}, {selectedDay.getFullYear()}</p>
                                 </div>
-                                <ul className='grid grid-cols-3 w-full items-center'>
+                                <ul className='grid grid-cols-3 w-full items-center py-4 px-2'>
                                     {openHours.map((e, index) => (
                                         <li
                                             key={index}

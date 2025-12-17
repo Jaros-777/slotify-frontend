@@ -10,7 +10,7 @@ import { FinishedReservation } from "./components/FinishedReservation"
 import type { OrderResponse } from "../../types/OrderResponse"
 import { monthTypes } from "./types/dayAndMonthNames"
 import { toLocalDateTimeString } from "../../../Admin/components/Calendar/components/BigCalendar/utils/dateUtils"
-import { FooterAdmin } from "../../../../components/Footer/FooterAdmin"
+import { FooterReservation } from "../../../../components/Footer/FooterReservation"
 
 
 export const Order = () => {
@@ -72,7 +72,7 @@ export const Order = () => {
 
     return (
         <>
-            <div className="h-full">
+            
                 <div className="border-b border-gray-300 py-6 flex items-center justify-center sticky top-0 right-0 bg-white">
                     <div className="p-2 h-10 flex items-center justify-center aspect-square rounded-full bg-blue-500 mx-4">
                         {currentSection === "details" || currentSection == "finish" ?
@@ -94,7 +94,7 @@ export const Order = () => {
                         <p className="text-white font-medium">3</p>
                     </div>
                 </div >
-                <div className="flex">
+                <div className="flex mb-36">
 
                     <div className="w-3/5 p-6">
                         {currentSection === "time" ?
@@ -117,7 +117,7 @@ export const Order = () => {
 
                     </div>
                     <div className="ml-auto w-2/5">
-                        <div className="bg-gray-200 px-6 py-10 min-h-full">
+                        <div className="bg-gray-200 px-6 py-10">
                             <h2 className="text-3xl font-bold">Summary</h2>
                             <div className="bg-white p-6 mt-6 rounded-2xl">
                                 <div className="flex items-center">
@@ -194,8 +194,8 @@ export const Order = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-            {/* <FooterAdmin></FooterAdmin> */}
+            
+            <FooterReservation></FooterReservation>
         </>
     )
 }
