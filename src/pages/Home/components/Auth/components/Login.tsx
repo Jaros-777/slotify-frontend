@@ -18,8 +18,8 @@ export const Login = () => {
     const navigate = useNavigate()
 
     const handleLogin = async (e: React.FormEvent) => {
-        setLoadingState(true)
         e.preventDefault()
+        setLoadingState(true)
         setShowError(false)
         axios.post("http://localhost:8080/auth/login", userAuthData)
             .then(function (response) {
@@ -30,8 +30,8 @@ export const Login = () => {
             })
             .catch(function (response) {
                 setShowError(true)
+                setLoadingState(false)
             })
-        setLoadingState(false)
     }
 
     return (
@@ -59,13 +59,14 @@ export const Login = () => {
                     value={userAuthData.password}
                     onChange={(e) => setUserAuthData({ ...userAuthData, password: e.target.value })}
                 />
-                {loadingState ?
-                    <div className="mt-8 bg-blue-500 text-white py-2 box-content rounded-md font-medium cursor-pointer">
-                        <Loader className=" w-full animate-spin "></Loader>
-                    </div>
-                    :
-                    <button type="submit" className="mt-8 bg-blue-500 text-white px-6 py-2 rounded-md font-medium cursor-pointer hover:bg-blue-600 duration-200" >LOG IN</button>
-                }
+
+                <button type="submit" className="mt-8 bg-blue-500 text-white px-6 py-2 rounded-md font-medium cursor-pointer hover:bg-blue-600 duration-200" >
+                    {loadingState ?
+                            <Loader className=" w-full animate-spin "></Loader>
+                        : "LOG IN"
+
+                    }
+                </button>
             </form>
             <button onClick={() => navigate("/forgot-password")} className="font-medium my-4 text-text-gray text-sm cursor-pointer">FORGOT YOUR PASSWORD?</button>
         </section>
