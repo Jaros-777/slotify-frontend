@@ -4,7 +4,6 @@ import "./OrderCalendar.css"
 import type { OrderResponse } from '../../../types/OrderResponse';
 import type { scheduleDay } from '../../../../Admin/components/Settings/components/Availability/utlis/scheduleType';
 import { useState } from 'react';
-import { FinishedReservation } from './FinishedReservation';
 import { dayTypes, monthTypes } from '../types/dayAndMonthNames';
 
 
@@ -16,6 +15,11 @@ interface timeProps {
     setSectionFinished: React.Dispatch<React.SetStateAction<boolean>>
     availability: scheduleDay[]
     serviceDuration: number
+}
+
+interface timeType {
+    hour: number
+    minute: number
 }
 
 
@@ -35,7 +39,6 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
         return config && !config.isClose;
     };
 
-
     const isPastDay = (date: Date) => {
         const normalized = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         const todayNormalized = new Date(
@@ -46,51 +49,56 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
         return normalized < todayNormalized;
     };
 
-    const availabilityHours = (day: number, selectedDate: Date) => {
-        const currentDay = availability.find((e) => e.dayOfWeek === day);
-        if (!currentDay || currentDay.isClose) {
-            setOpenHours([]);
-            return;
-        }
+    const availabilityHours = (day: number, chosenDate: Date) => {
+        const todayAvailability = availability.find(e => e.dayOfWeek === day)
+        if (!todayAvailability) return [];
 
-        const now = new Date();
-        const todayBackendDay = (now.getDay() + 6) % 7;
-        const isToday = day === todayBackendDay;
+        let [startHour, startMin] = todayAvailability.openHour.split(":").map(Number);
+        let [endHour, endMin] = todayAvailability.closeHour.split(":").map(Number);
+
+        const startMinutes = startHour * 60 + startMin;
+        const endMinutes = endHour * 60 + endMin;
+
+        const slotsCount = Math.ceil((endMinutes - startMinutes) / (serviceDuration / 60));
+
+        const todaySlots: timeType[] = Array.from({ length: slotsCount }, (_, i) => {
+            const totalMinutes = startMinutes + i * (serviceDuration / 60);
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            return { hour: hours, minute: minutes };
+        });
 
 
-        const [startHour, startMin] = currentDay.openHour.split(":").map(Number);
-        const [endHour, endMin] = currentDay.closeHour.split(":").map(Number);
+        let today = new Date()
+        const originalHours = today.getHours();
+        const originalMinutes = today.getMinutes();
+        today.setHours(0, 0, 0, 0)
 
-        let startTime = new Date(selectedDate);
-        startTime.setHours(startHour, startMin, 0, 0);
+        const finalSlots = [];
 
-        const endTime = new Date(selectedDate);
-        endTime.setHours(endHour, endMin, 0, 0);
+        if (today.getTime() === chosenDate.getTime()) {
 
-        if (isToday) {
-            if (endTime <= now) {
-                setOpenHours([]);
-                return;
+            today.setHours(originalHours, originalMinutes);
+            const todayMinutes = today.getHours() * 60 + today.getMinutes();
+
+            for (let slot of todaySlots) {
+                const slotMinutes = slot.hour * 60 + slot.minute;
+                if (slotMinutes >= todayMinutes) {
+                    finalSlots.push(`${slot.hour.toString().padStart(2, '0')}:${slot.minute.toString().padStart(2, '0')}`);
+                }
             }
-            if (startTime < now) {
-                startTime = new Date(now.getTime());
-                const minutes = Math.ceil(startTime.getMinutes() / 15) * 15;
-                startTime.setMinutes(minutes, 0, 0);
+
+        } else {
+
+            for (let slot of todaySlots) {
+                finalSlots.push(`${slot.hour.toString().padStart(2, '0')}:${slot.minute.toString().padStart(2, '0')}`);
+
             }
+
         }
+        setOpenHours(finalSlots)
 
-        const slots: string[] = [];
-        let current = new Date(startTime);
-
-        while (current < endTime) {
-            const hh = String(current.getHours()).padStart(2, "0");
-            const mm = String(current.getMinutes()).padStart(2, "0");
-            slots.push(`${hh}:${mm}`);
-            current.setMinutes(current.getMinutes() + serviceDuration / 60);
-        }
-
-        setOpenHours(slots);
-    };
+    }
 
     const handleSelectTime = (time: string) => {
         setSelectedTime(time)
