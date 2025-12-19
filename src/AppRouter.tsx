@@ -16,6 +16,8 @@ import { Reservation } from "./pages/Clients/Reservation.tsx";
 import { Order } from "./pages/Clients/components/Order/Order.tsx";
 import { Availability } from "./pages/Admin/components/Settings/components/Availability/Availability.tsx";
 
+import { UserProfile } from "./pages/Clients/components/ClientPanel/UserProfile.tsx";
+
 import { NotFound } from "./pages/NotFound.tsx";
 import type { ServiceType } from "./pages/Admin/components/types/ServiceType.ts";
 import { createContext, useContext, useState, type ReactNode } from "react";
@@ -71,6 +73,8 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
 
         <Route path="/:businessName" element={<Reservation />} />
         <Route path="/:businessName/order/:serviceId" element={<Order />} />
+
+        <Route path="/personal" element={<UserProfile />} />
 
         <Route path="/*" element={<NotFound />} />
       </Routes >

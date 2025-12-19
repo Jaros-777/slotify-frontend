@@ -24,15 +24,24 @@ export const Login = () => {
         setShowError(false)
             axios.post("http://localhost:8080/auth/login", userAuthData)
                 .then(function (response) {
-                    localStorage.clear()
+                    
                     if(response.data.role === "USER_COMPANY"){
+                        localStorage.clear()
                         localStorage.setItem("token", response.data.token)
                         window.scrollTo(0, 0)
                         navigate("/admin/calendar")
                     }else{
+                        localStorage.removeItem("token")
+                        localStorage.removeItem("clientToken")
                         localStorage.setItem("clientToken", response.data.token)
                         window.scrollTo(0, 0)
-                        navigate("/admin/calendar")
+                        const prevURL = localStorage.getItem("previousURL")
+                        if(prevURL){
+                            navigate(`/${prevURL}`)
+                        }else{
+                            navigate("/personal")
+                        }
+                        localStorage.removeItem("previousURL")
                     }
                     
                 })

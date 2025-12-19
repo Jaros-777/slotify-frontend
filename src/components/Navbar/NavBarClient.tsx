@@ -31,7 +31,7 @@ export const NavBarClient = () => {
                 {clientIsLogged ?
                     <p className="ml-2 cursor-pointer font-medium">Name</p>
                     :
-                    <button className="ml-2 cursor-pointer font-medium" onClick={()=> navigate("/login")}>Log in</button>
+                    <button className="ml-2 cursor-pointer font-medium" onClick={()=> {localStorage.setItem("previousURL", window.location.href.split("/")[3]);navigate("/login")}}>Log in</button>
                 }
             </div>
 
