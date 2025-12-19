@@ -51,7 +51,8 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Auth view="login" />} />
-          <Route path="/register" element={<Auth view="register" />} />
+          <Route path="/register/business" element={<Auth view="register" />} />
+          <Route path="/register/personal" element={<Auth view="register" />} />
         </Route>
 
         <Route element={<AdminLayout />}>
@@ -71,7 +72,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
         <Route path="/:businessName" element={<Reservation />} />
         <Route path="/:businessName/order/:serviceId" element={<Order />} />
 
-        <Route path="/not-found" element={<NotFound />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes >
     </DataContext.Provider >
   );

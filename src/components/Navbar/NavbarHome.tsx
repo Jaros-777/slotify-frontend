@@ -11,7 +11,7 @@ export const NavbarHome = () => {
         <header id="navbar" className="flex h-20 px-20 w-full  fixed top-0 left-0 bg-white justify-between items-center shadow-xl text-text-gray">
             <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
-            {location.pathname != "/register" && location.pathname != "/login" ?
+            {location.pathname != "/register/business" && location.pathname != "/register/personal" && location.pathname != "/login" ?
                 <>
                     <div>
                         <a href="#features" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Features</a>
@@ -21,7 +21,7 @@ export const NavbarHome = () => {
                     </div>
                     <div>
                         <button onClick={() => {navigate("/login");window.scrollTo(0,0)}} className="mr-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">LOG IN</button>
-                        <button onClick={() => {navigate("/register");window.scrollTo(0,0)}} className="bg-blue-500 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-600 duration-200"> SING UP</button>
+                        <button onClick={() => {location.pathname === "/register/bussines" ? navigate("/register/bussines") : navigate("/register/personal");window.scrollTo(0,0)}} className="bg-blue-500 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-600 duration-200"> SING UP</button>
                     </div>
                 </>
 

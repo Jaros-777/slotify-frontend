@@ -7,6 +7,7 @@ import type { BusinessProfileType } from "../Admin/components/types/BusinessProf
 import { FooterReservation } from "../../components/Footer/FooterReservation"
 import FacebookLogo from "../Admin/components/Booking/components/assets/Facebook_Logo_Primary.png"
 import type { scheduleDay } from "../Admin//components/Settings/components/Availability/utlis/scheduleType"
+import { NavBarClient } from "../../components/Navbar/NavBarClient"
 
 
 const dayTypes = [
@@ -43,7 +44,7 @@ export const Reservation = () => {
             })
             .catch((error) => {
                 console.log(error)
-                navigate("/not-found")
+                navigate("/*")
             })
     }
 
@@ -83,14 +84,7 @@ export const Reservation = () => {
 
     return (
         <>
-            <nav className="border-b border-gray-300 flex justify-between px-40 py-6">
-                <p className="font-bold">{businessDetail.businessName}</p>
-                <div>
-                    {/* <CircleUserRound/> */}
-                    <button>Log in</button>
-                </div>
-
-            </nav>
+            <NavBarClient></NavBarClient>
             <div className="w-full flex flex-col items-center ">
                 <section className="h-70 relative w-full flex justify-center items-center">
                     {

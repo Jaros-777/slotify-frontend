@@ -8,6 +8,7 @@ interface userDetailsType {
     password: string
 }
 
+
 export const Login = () => {
     const [userAuthData, setUserAuthData] = useState<userDetailsType>({
         email: "",
@@ -21,17 +22,25 @@ export const Login = () => {
         e.preventDefault()
         setLoadingState(true)
         setShowError(false)
-        axios.post("http://localhost:8080/auth/login", userAuthData)
-            .then(function (response) {
-                localStorage.clear()
-                localStorage.setItem("token", response.data.token)
-                window.scrollTo(0, 0)
-                navigate("/admin/calendar")
-            })
-            .catch(function (response) {
-                setShowError(true)
-                setLoadingState(false)
-            })
+            axios.post("http://localhost:8080/auth/login", userAuthData)
+                .then(function (response) {
+                    localStorage.clear()
+                    if(response.data.role === "USER_COMPANY"){
+                        localStorage.setItem("token", response.data.token)
+                        window.scrollTo(0, 0)
+                        navigate("/admin/calendar")
+                    }else{
+                        localStorage.setItem("clientToken", response.data.token)
+                        window.scrollTo(0, 0)
+                        navigate("/admin/calendar")
+                    }
+                    
+                })
+                .catch(function (response) {
+                    setShowError(true)
+                    setLoadingState(false)
+                })
+
     }
 
     return (
