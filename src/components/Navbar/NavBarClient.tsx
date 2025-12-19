@@ -1,7 +1,8 @@
 import { CircleUserRound, X, BookCheck, LogOut, LogIn } from "lucide-react"
 import { useEffect, useState } from "react"
-import type { ClientType } from "../../pages/Clients/components/ClientPanel/utils/clientType"
+import type { ClientType } from "../../pages/Clients/components/ClientPanel/types/clientType"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 export const NavBarClient = () => {
     const bussinessName = window.location.href.split("/")[3]
@@ -9,7 +10,6 @@ export const NavBarClient = () => {
     const [clientIsLogged, setClientIsLogged] = useState<boolean>(false)
     const [clientDetails, setClientDetails] = useState<Partial<ClientType>>({})
     const navigate = useNavigate()
-
 
     useEffect(() => {
         if (showSideBar && clientIsLogged) {
@@ -23,15 +23,49 @@ export const NavBarClient = () => {
         }
     }, [showSideBar])
 
+    const fetchData = async () => {
+        setClientIsLogged(false)
+        const token = localStorage.getItem("clientToken")
+
+        if (!token)
+            return false
+
+            await axios.get("http://localhost:8080/auth", {
+                headers: { Authorization: `Bearer ${token}` },
+            }).then(response=>{
+                setClientDetails(response.data)
+                setClientIsLogged(true)
+            }).catch(error=>{
+                console.log(error)
+            });
+
+
+    }
+
+    const Logout=()=>{
+        localStorage.clear()
+        setClientIsLogged(false)
+        window.location.reload()
+    }
+
+    useEffect(() => {
+        (async () => {
+            await fetchData()
+        })();
+        
+    }, [])
+
+
+
     return (
         <nav className="border-b border-gray-300 flex justify-between px-40 py-6 z-50">
             <p className="font-bold ">{bussinessName}</p>
             <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
                 <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-8 w-8 cursor-pointer" />
                 {clientIsLogged ?
-                    <p className="ml-2 cursor-pointer font-medium">Name</p>
+                    <p className="ml-2 cursor-pointer font-medium">{clientDetails.name}</p>
                     :
-                    <button className="ml-2 cursor-pointer font-medium" onClick={()=> {localStorage.setItem("previousURL", window.location.href.split("/")[3]);navigate("/login")}}>Log in</button>
+                    <button className="ml-2 cursor-pointer font-medium" onClick={() => { localStorage.setItem("previousURL", window.location.href.split("/")[3]); navigate("/login") }}>Log in</button>
                 }
             </div>
 
@@ -46,8 +80,8 @@ export const NavBarClient = () => {
                             <div className="flex items-center py-4">
                                 <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-12 w-12 cursor-pointer" />
                                 <div className="ml-4">
-                                    <p className="font-medium">Jan Jan</p>
-                                    <p className="text-sm">walesoh447@fftube.com</p>
+                                    <p className="font-medium">{clientDetails.name}</p>
+                                    <p className="text-sm">{clientDetails.email}</p>
                                 </div>
                             </div>
                             <div className="flex items-center mt-2 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l">
@@ -59,7 +93,10 @@ export const NavBarClient = () => {
                                 <p className="ml-4 font-medium">Bookings</p>
                             </div>
                         </div>
-                        <button className="border-t border-gray-300 flex py-4 px-2 text-red-500 cursor-pointer font-bold items-center duration-200 hover:bg-red-100">
+                        <button 
+                        className="border-t border-gray-300 flex py-4 px-2 text-red-500 cursor-pointer font-bold items-center duration-200 hover:bg-red-100"
+                        onClick={Logout}
+                        >
                             <LogOut className="mr-4 text-red-500"></LogOut>
                             Log out
                         </button>
