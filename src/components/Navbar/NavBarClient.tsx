@@ -1,0 +1,73 @@
+import { CircleUserRound, X, BookCheck, LogOut, LogIn } from "lucide-react"
+import { useEffect, useState } from "react"
+import type { ClientType } from "../../pages/Clients/components/ClientPanel/utils/clientType"
+import { useNavigate } from "react-router-dom"
+
+export const NavBarClient = () => {
+    const bussinessName = window.location.href.split("/")[3]
+    const [showSideBar, setShowSideBar] = useState<boolean>(false)
+    const [clientIsLogged, setClientIsLogged] = useState<boolean>(false)
+    const [clientDetails, setClientDetails] = useState<Partial<ClientType>>({})
+    const navigate = useNavigate()
+
+
+    useEffect(() => {
+        if (showSideBar && clientIsLogged) {
+            document.body.style.overflow = "hidden"
+        } else {
+            document.body.style.overflow = ""
+        }
+
+        return () => {
+            document.body.style.overflow = ""
+        }
+    }, [showSideBar])
+
+    return (
+        <nav className="border-b border-gray-300 flex justify-between px-40 py-6 z-50">
+            <p className="font-bold ">{bussinessName}</p>
+            <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
+                <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-8 w-8 cursor-pointer" />
+                {clientIsLogged ?
+                    <p className="ml-2 cursor-pointer font-medium">Name</p>
+                    :
+                    <button className="ml-2 cursor-pointer font-medium" onClick={()=> navigate("/login")}>Log in</button>
+                }
+            </div>
+
+            {clientIsLogged ?
+                <div className={`fixed inset-0 bg-gray-300/70 h-full w-full z-50 top-0 left-0 flex duration-300 ${showSideBar ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+                    <div className={`bg-white w-80 ml-auto p-4 flex flex-col justify-between duration-300 ${showSideBar ? "translate-x-0" : "translate-x-full"}`}>
+                        <div>
+                            <div className="flex justify-between border-b border-gray-300 pb-4 items-center">
+                                <h1 className="font-medium text-2xl">Profile</h1>
+                                <X className="cursor-pointer" onClick={() => setShowSideBar(false)}></X>
+                            </div>
+                            <div className="flex items-center py-4">
+                                <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-12 w-12 cursor-pointer" />
+                                <div className="ml-4">
+                                    <p className="font-medium">Jan Jan</p>
+                                    <p className="text-sm">walesoh447@fftube.com</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center mt-2 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l">
+                                <CircleUserRound className="h-8 w-8 cursor-pointer" />
+                                <p className="ml-4 font-medium cursor-pointer">Profile</p>
+                            </div>
+                            <div className="flex items-center mt-4 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l">
+                                <BookCheck className="h-8 w-8 cursor-pointer" />
+                                <p className="ml-4 font-medium">Bookings</p>
+                            </div>
+                        </div>
+                        <button className="border-t border-gray-300 flex py-4 px-2 text-red-500 cursor-pointer font-bold items-center duration-200 hover:bg-red-100">
+                            <LogOut className="mr-4 text-red-500"></LogOut>
+                            Log out
+                        </button>
+                    </div>
+                </div>
+                :
+                null
+            }
+        </nav>
+    )
+}
