@@ -33,7 +33,7 @@ export const Reservation = () => {
     const handleValidPage = async () => {
         setLoadDetails(true)
 
-        await axios.get(`http://localhost:8080/business-page/${businessName}`)
+        await axios.get(`${import.meta.env.VITE_APP_URL}/business-page/${businessName}`)
             .then((response) => {
                 setBusinessDetail(response.data.businessProfileDTO)
                 const serData = response.data.servicesDTO

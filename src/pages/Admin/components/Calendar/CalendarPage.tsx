@@ -33,7 +33,7 @@ export const CalendarPage = () => {
 
     async function fetchData(token?: string) {
         const localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
-        axios.get(`http://localhost:8080/events/${localDateTimeStartWeek}`,
+        axios.get(`${import.meta.env.VITE_APP_URL}/events/${localDateTimeStartWeek}`,
             {
                 headers: {
                     'Authorization': `Bearer ${token ? token : userToken}`

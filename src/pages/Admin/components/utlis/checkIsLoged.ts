@@ -21,7 +21,7 @@ export const useCheckIsLogged = () => {
     setUserToken(token);
 
     try {
-      await axios.get("http://localhost:8080/auth/validate", {
+      await axios.get(`${import.meta.env.VITE_APP_URL}/auth/validate`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setIsLogged(true);

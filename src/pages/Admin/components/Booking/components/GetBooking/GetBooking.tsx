@@ -45,12 +45,12 @@ export const GetBooking = () => {
     }
 
     const fetchBusinessName = async (token: string) => {
-        await axios.get("http://localhost:8080/business-profile/name",
+        await axios.get(`${import.meta.env.VITE_APP_URL}/business-profile/name`,
             {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                setBusinessUrl("http://localhost:5173/" + response.data.businessName.toLowerCase())
+                setBusinessUrl(`${import.meta.env.VITE_APP_URL}/` + response.data.businessName.toLowerCase())
             })
             .catch((error) => {
                 console.log(error)

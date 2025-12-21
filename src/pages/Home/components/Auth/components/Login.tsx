@@ -22,7 +22,7 @@ export const Login = () => {
         e.preventDefault()
         setLoadingState(true)
         setShowError(false)
-            axios.post("http://localhost:8080/auth/login", userAuthData)
+            axios.post(`${import.meta.env.VITE_APP_URL}/auth/login`, userAuthData)
                 .then(function (response) {
                     
                     if(response.data.role === "USER_COMPANY"){

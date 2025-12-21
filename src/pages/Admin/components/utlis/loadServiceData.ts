@@ -13,7 +13,7 @@ export const useLoadServiceData = () => {
         setIsDataLoading(true)
         const activeToken = token ?? userToken
 
-        await axios.get("http://localhost:8080/service",
+        await axios.get(`${import.meta.env.VITE_APP_URL}/service`,
             {
                 headers: {
                     'Authorization': `Bearer ${activeToken}`

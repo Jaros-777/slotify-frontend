@@ -23,7 +23,7 @@ export const BusinessProfile = () => {
 
     const handleFetchBusinessProfileData = async (token: string | boolean) => {
         setIsLoading(true)
-        await axios.get("http://localhost:8080/business-profile",
+        await axios.get(`${import.meta.env.VITE_APP_URL}/business-profile`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -51,7 +51,7 @@ export const BusinessProfile = () => {
     const handleUpdateBusinessProfile = async () => {
         setShowSavingState(true)
 
-        axios.put("http://localhost:8080/business-profile",
+        axios.put(`${import.meta.env.VITE_APP_URL}/business-profile`,
             currentBusinessProfile,
             {
                 headers: {
@@ -75,7 +75,7 @@ export const BusinessProfile = () => {
                 formData.append("backgroundPic", backgroundPic)
             }
 
-            axios.post("http://localhost:8080/business-profile/pictures",
+            axios.post(`${import.meta.env.VITE_APP_URL}/business-profile/pictures`,
                 formData,
                 {
                     headers: {

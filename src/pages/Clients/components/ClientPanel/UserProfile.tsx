@@ -3,18 +3,18 @@ import { useCheckIsLogged } from "../../../Admin/components/utlis/checkIsLoged";
 
 export const UserProfile = ()=>{
 
-    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    // const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        (async () => {
-            const token = await checkIsLogged();
-        })();
-    }, [])
+    //     (async () => {
+    //         const token = await checkIsLogged();
+    //     })();
+    // }, [])
 
-    if (isAuthLoading) {
-        return <p className="mt-20">Checking authentication...</p>;
-    }
+    // if (isAuthLoading) {
+    //     return <p className="mt-20">Checking authentication...</p>;
+    // }
 
     return(
         <>

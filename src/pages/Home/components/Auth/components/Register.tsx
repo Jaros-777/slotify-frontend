@@ -16,7 +16,6 @@ const businessInitData = {
     businessName: "",
     email: "",
     password: "",
-    phone: "",
     role: "USER_COMPANY"
 }
 const personalInitData = {
@@ -39,7 +38,7 @@ export const Register = () => {
         e.preventDefault()
         setLoadingState(true)
         setShowError(false)
-        axios.post("http://localhost:8080/auth/register", userAuthData)
+        axios.post(`${import.meta.env.VITE_APP_URL}/auth/register`, userAuthData)
             .then(function (response) {
                 navigate("/login")
             })
@@ -50,7 +49,7 @@ export const Register = () => {
     }
 
     useEffect(() => {
-        if (accountType === "bussines") {
+        if (accountType === "business") {
             setUserAuthData(businessInitData)
         } else
             setUserAuthData(personalInitData)

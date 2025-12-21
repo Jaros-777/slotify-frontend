@@ -73,7 +73,7 @@ export const ServiceForm = () => {
 
         if (id) {
             const payloadWithId = id ? { ...payload, id } : payload;
-            axios.put("http://localhost:8080/service",
+            axios.put(`${import.meta.env.VITE_APP_URL}/service`,
                 payloadWithId,
                 {
                     headers: {
@@ -86,7 +86,7 @@ export const ServiceForm = () => {
             })
 
         } else {
-            axios.post("http://localhost:8080/service",
+            axios.post(`${import.meta.env.VITE_APP_URL}/service`,
                 payload,
                 {
                     headers: {
@@ -106,7 +106,7 @@ export const ServiceForm = () => {
                 formData.append("servicePic", servicePic)
                 formData.append("id", id.toString())
             }
-            axios.post("http://localhost:8080/service/picture",
+            axios.post(`${import.meta.env.VITE_APP_URL}/service/picture`,
                 formData,
                 {
                     headers: {
@@ -128,7 +128,7 @@ export const ServiceForm = () => {
     }
 
     const handleDeleteService = () => {
-        axios.delete(`http://localhost:8080/service/delete/${id}`,
+        axios.delete(`${import.meta.env.VITE_APP_URL}/service/delete/${id}`,
             {
                 headers: {
                     'Authorization': `Bearer ${userToken}`

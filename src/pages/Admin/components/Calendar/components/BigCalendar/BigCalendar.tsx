@@ -82,7 +82,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
     };
 
     if (newEvent.id != undefined) {
-      axios.put("http://localhost:8080/events/update",
+      axios.put(`${import.meta.env.VITE_APP_URL}/events/update`,
         payload,
         {
           headers: {
@@ -95,7 +95,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
       }).catch(function (error) {
       })
     } else {
-      axios.post("http://localhost:8080/events",
+      axios.post(`${import.meta.env.VITE_APP_URL}/events`,
         payload,
         {
           headers: {
@@ -117,7 +117,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
 
 
   const handleDeleteEvent = (id: number | string | undefined) => {
-    axios.delete(`http://localhost:8080/events/delete/${id}`,
+    axios.delete(`${import.meta.env.VITE_APP_URL}/events/delete/${id}`,
       {
         headers: {
           'Authorization': `Bearer ${userToken}`

@@ -23,7 +23,7 @@ export const Order = () => {
     const {businessName} = useParams()
 
     const fetchServiceDetails = async () => {
-        await axios.get(`http://localhost:8080/order/${serviceId}`
+        await axios.get(`${import.meta.env.VITE_APP_URL}/order/${serviceId}`
         )
             .then(function (response) {
                 setOrderData(response.data)
@@ -49,7 +49,7 @@ export const Order = () => {
             }
             console.log(payload)
 
-            axios.post("http://localhost:8080/order",
+            axios.post(`${import.meta.env.VITE_APP_URL}/order`,
                 payload,
             ).then(function (response) {
             }).catch(function (error) {

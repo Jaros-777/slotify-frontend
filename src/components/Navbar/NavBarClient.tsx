@@ -30,7 +30,7 @@ export const NavBarClient = () => {
         if (!token)
             return false
 
-            await axios.get("http://localhost:8080/auth", {
+            await axios.get(`${import.meta.env.VITE_APP_URL}/auth`, {
                 headers: { Authorization: `Bearer ${token}` },
             }).then(response=>{
                 setClientDetails(response.data)

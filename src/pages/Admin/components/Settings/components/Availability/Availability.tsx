@@ -30,9 +30,8 @@ export const Availability = () => {
                 {...day, [field]:value} :
                 day
             )
-        console.log("Copy ",copy)
 
-        await axios.put("http://localhost:8080/availability", copy,
+        await axios.put(`${import.meta.env.VITE_APP_URL}/availability`, copy,
             {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
@@ -46,14 +45,13 @@ export const Availability = () => {
 
     const fetchAvailability = async (token:string)=>{
         setCheckIsDataLoaded(true)
-        await axios.get("http://localhost:8080/availability",
+        await axios.get(`${import.meta.env.VITE_APP_URL}/availability`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             }
         ).then(response=> {
-            console.log(response.data)
             const sortedSchedule = response.data.sort((a:scheduleDay,b:scheduleDay)=> a.dayOfWeek - b.dayOfWeek)
             setSchedulePlan(sortedSchedule)
             setCheckIsDataLoaded(false)
