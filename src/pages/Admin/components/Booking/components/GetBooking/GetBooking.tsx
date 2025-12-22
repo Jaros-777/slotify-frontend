@@ -18,7 +18,6 @@ export const GetBooking = () => {
     const mailto = `mailto:?subject=${mailToSendSubject}&body=${mailToSendBody}`
 
 
-
     const downloadQRCode = () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -50,7 +49,7 @@ export const GetBooking = () => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                setBusinessUrl(`${import.meta.env.VITE_APP_URL}/` + response.data.businessName.toLowerCase())
+                setBusinessUrl(`${window.location.href.split("/").slice(0,3).join("/")}/` + response.data.businessName.toLowerCase())
             })
             .catch((error) => {
                 console.log(error)
