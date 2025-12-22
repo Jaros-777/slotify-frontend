@@ -182,7 +182,7 @@ export const Reservation = () => {
                                 </div>
                                 : null}
                         </div>
-                        <div className="">
+                        <div className="min-w-60">
                             {businessDetail.websiteURL || businessDetail.facebookURL ?
                                 <div>
                                     <h2 className="font-bold mt-4 text-lg">Contact details</h2>
