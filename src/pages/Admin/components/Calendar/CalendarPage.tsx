@@ -13,10 +13,10 @@ import { Image } from "lucide-react"
 
 
 export const CalendarPage = () => {
-    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const { loadServiceData } = useLoadServiceData();
 
-    const { serviceData, setServiceData, userToken, setUserToken, isLogged } = useData();
+    const { serviceData, setServiceData, userToken, setUserToken, isAdminLogged } = useData();
     const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
     const [loadingState, setLoadingState] = useState<boolean>(false)
@@ -71,7 +71,7 @@ export const CalendarPage = () => {
     if (isAuthLoading) {
         return <p className="mt-20">Checking authentication...</p>;
     }
-    if (!isLogged) {
+    if (!isAdminLogged) {
         return <p className="mt-20">Waiting..</p>
     }
 

@@ -7,7 +7,7 @@ import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { ServiceType } from "../../../types/ServiceType";
 
 export const Services = () => {
-    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const { serviceData } = useData();
     const [serviceDataToShow, setServiceDataToShow] = useState<ServiceType[]>([])
     const { loadServiceData, isDataLoading } = useLoadServiceData();

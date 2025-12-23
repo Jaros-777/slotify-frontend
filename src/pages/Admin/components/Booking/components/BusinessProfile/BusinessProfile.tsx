@@ -7,7 +7,7 @@ import { useData } from "../../../../../../AppRouter";
 import { ImageFileContainer } from "./components/ImageFileContainer";
 
 export const BusinessProfile = () => {
-    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const fileInputRefProfilePic = useRef<HTMLInputElement | null>(null)
     const fileInputRefBackgroundPic = useRef<HTMLInputElement | null>(null)
 
@@ -180,6 +180,8 @@ export const BusinessProfile = () => {
                 <input
                     required
                     type="text"
+                    pattern="^\S*$"
+                    title="You cannot use white spaces"
                     className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
                     value={currentBusinessProfile.businessName}
                     onChange={(e) => setCurrentBusinessProfile({ ...currentBusinessProfile, businessName: e.target.value })}

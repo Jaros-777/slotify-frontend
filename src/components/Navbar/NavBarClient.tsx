@@ -3,8 +3,13 @@ import { useEffect, useState } from "react"
 import type { ClientType } from "../../pages/Clients/components/ClientPanel/types/clientType"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import Logo from "../../assets/Slotify Logo.webp"
 
-export const NavBarClient = () => {
+interface navBarTypeProps {
+    type: "reservation" | "panel"
+}
+
+export const NavBarClient = ({ type }: navBarTypeProps) => {
     const bussinessName = window.location.href.split("/")[3]
     const [showSideBar, setShowSideBar] = useState<boolean>(false)
     const [clientIsLogged, setClientIsLogged] = useState<boolean>(false)
@@ -30,19 +35,19 @@ export const NavBarClient = () => {
         if (!token)
             return false
 
-            await axios.get(`${import.meta.env.VITE_APP_URL}/auth`, {
-                headers: { Authorization: `Bearer ${token}` },
-            }).then(response=>{
-                setClientDetails(response.data)
-                setClientIsLogged(true)
-            }).catch(error=>{
-                console.log(error)
-            });
+        await axios.get(`${import.meta.env.VITE_APP_URL}/auth`, {
+            headers: { Authorization: `Bearer ${token}` },
+        }).then(response => {
+            setClientDetails(response.data)
+            setClientIsLogged(true)
+        }).catch(error => {
+            console.log(error)
+        });
 
 
     }
 
-    const Logout=()=>{
+    const Logout = () => {
         localStorage.clear()
         setClientIsLogged(false)
         window.location.reload()
@@ -52,14 +57,19 @@ export const NavBarClient = () => {
         (async () => {
             await fetchData()
         })();
-        
+
     }, [])
 
 
 
     return (
-        <nav className="border-b border-gray-300 flex justify-between px-40 py-6 z-50">
-            <p className="font-bold ">{bussinessName}</p>
+        <nav className="border-b border-gray-300 flex justify-between items-center px-40 py-6 z-50">
+            {type === "reservation" ?
+                <p className="font-bold ">{bussinessName}</p>
+                :
+                <img src={Logo} alt="Slotify logo" className="h-8" />
+
+            }
             <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
                 <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-8 w-8 cursor-pointer" />
                 {clientIsLogged ?
@@ -93,9 +103,9 @@ export const NavBarClient = () => {
                                 <p className="ml-4 font-medium">Bookings</p>
                             </div>
                         </div>
-                        <button 
-                        className="border-t border-gray-300 flex py-4 px-2 text-red-500 cursor-pointer font-bold items-center duration-200 hover:bg-red-100"
-                        onClick={Logout}
+                        <button
+                            className="border-t border-gray-300 flex py-4 px-2 text-red-500 cursor-pointer font-bold items-center duration-200 hover:bg-red-100"
+                            onClick={Logout}
                         >
                             <LogOut className="mr-4 text-red-500"></LogOut>
                             Log out

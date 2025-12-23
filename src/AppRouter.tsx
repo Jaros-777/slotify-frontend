@@ -6,6 +6,7 @@ import { AdminLayout } from "./AdminLayout.tsx";
 import { HomeLayout } from "./HomeLayout.tsx";
 import { SettingsLayout } from "./SettingsLayout.tsx";
 import { BookingLayout } from "./BookingLayout.tsx";
+import { ClientPanelLayout } from "./ClientPanelLayout.tsx";
 
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";
@@ -26,29 +27,45 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 interface DataContextType {
   userToken: string | null,
   setUserToken: (t: string | null) => void
+
+  clientToken: string | null,
+  setClientToken: (t: string | null) => void
+
   serviceData: ServiceType[]
   setServiceData: (t: ServiceType[]) => void
-  isLogged: boolean
-  setIsLogged: (t: boolean) => void
+
+  isAdminLogged: boolean
+  setIsAdminLogged: (t: boolean) => void
+
+  isClientLogged: boolean
+  setIsClientLogged: (t: boolean) => void
 }
 
 const DataContext = createContext<DataContextType>({
   userToken: null,
   setUserToken: () => { },
+  clientToken: null,
+  setClientToken: () => { },
   serviceData: [],
   setServiceData: () => { },
-  isLogged: false,
-  setIsLogged: () => { }
+
+  isAdminLogged: false,
+  setIsAdminLogged: () => { },
+
+  isClientLogged: false,
+  setIsClientLogged: () => { }
 })
 
 
 export const AppRouter = ({ }: { children: ReactNode }) => {
   const [userToken, setUserToken] = useState<string | null>("")
+  const [clientToken, setClientToken] = useState<string | null>("")
   const [serviceData, setServiceData] = useState<ServiceType[]>([])
-  const [isLogged, setIsLogged] = useState<boolean>(false)
+  const [isAdminLogged, setIsAdminLogged] = useState<boolean>(false)
+  const [isClientLogged, setIsClientLogged] = useState<boolean>(false)
 
   return (
-    <DataContext.Provider value={{ userToken, setUserToken, serviceData, setServiceData, isLogged, setIsLogged }}>
+    <DataContext.Provider value={{ userToken, setUserToken, serviceData, setServiceData, isAdminLogged, setIsAdminLogged, clientToken, setClientToken, isClientLogged, setIsClientLogged }}>
       <Routes>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
@@ -74,7 +91,10 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
         <Route path="/:businessName" element={<Reservation />} />
         <Route path="/:businessName/order/:serviceId" element={<Order />} />
 
-        <Route path="/personal" element={<UserProfile />} />
+        <Route element={<ClientPanelLayout />}>
+          <Route path="/personal" element={<UserProfile />} />
+
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes >

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { NavigationType, useNavigate, useParams } from "react-router-dom"
 import { Image, Share2, Globe } from "lucide-react"
 import { useEffect, useState } from "react"
 import type { ServiceType } from "../Admin/components/types/ServiceType"
@@ -82,8 +82,8 @@ export const Reservation = () => {
 
     return (
         <>
-            <NavBarClient></NavBarClient>
-            <div className="w-full flex flex-col items-center ">
+            <NavBarClient type="reservation" ></NavBarClient>
+            <div className="w-full flex flex-col items-center">
                 <section className="h-70 relative w-full flex justify-center items-center">
                     {
                         businessDetail.backgroundPictureURL ?

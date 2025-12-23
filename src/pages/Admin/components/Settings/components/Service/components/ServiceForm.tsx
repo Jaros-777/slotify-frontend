@@ -24,7 +24,7 @@ interface payload {
 export const ServiceForm = () => {
 
     const { id } = useParams<{ id: string }>();
-    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const { loadServiceData, isDataLoading } = useLoadServiceData();
 
     const fileInputRefServicePic = useRef<HTMLInputElement | null>(null)

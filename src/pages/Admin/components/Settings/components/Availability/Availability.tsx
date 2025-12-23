@@ -18,7 +18,7 @@ const dayTypes = [
 
 
 export const Availability = () => {
-    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const [checkIsDataLoaded, setCheckIsDataLoaded] = useState(true)
     const {userToken} = useData();
     const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>([])

@@ -3,14 +3,25 @@ import { useData } from "../../../../AppRouter";
 import axios from "axios";
 import { useCallback, useState } from "react";
 
-export const useCheckIsLogged = () => {
-  const { setUserToken, setIsLogged } = useData();
+type AuthRole = "admin" | "client"
+
+export const useCheckIsLogged = (role: AuthRole) => {
+  const { setUserToken, setIsAdminLogged, setClientToken, setIsClientLogged } = useData();
   const navigate = useNavigate();
+
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   const checkIsLogged = useCallback(async () => {
     setIsAuthLoading(true);
-    const token = localStorage.getItem("token");
+
+    let token: string | null = null;
+    if (role === "admin") {
+      token = localStorage.getItem("token");
+
+    } else {
+      token = localStorage.getItem("clientToken");
+    }
+
 
     if (!token) {
       navigate("/login");
@@ -18,13 +29,24 @@ export const useCheckIsLogged = () => {
       return false;
     }
 
-    setUserToken(token);
+    if (role === "admin") {
+      setUserToken(token);
+
+    } else {
+      setClientToken(token);
+    }
 
     try {
       await axios.get(`${import.meta.env.VITE_APP_URL}/auth/validate`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsLogged(true);
+      if (role === "admin") {
+        setIsAdminLogged(true);
+
+      } else {
+        setIsClientLogged(true)
+      }
+
       setIsAuthLoading(false);
       return token;
     } catch (error) {
@@ -33,7 +55,7 @@ export const useCheckIsLogged = () => {
       setIsAuthLoading(false);
       return false;
     }
-  }, [navigate, setUserToken, setIsLogged]);
+  }, [navigate, setUserToken, setIsAdminLogged, setClientToken, setIsClientLogged]);
 
   return { checkIsLogged, isAuthLoading };
 };

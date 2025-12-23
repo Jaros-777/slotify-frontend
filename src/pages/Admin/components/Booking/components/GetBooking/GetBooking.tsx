@@ -9,7 +9,7 @@ import axios from "axios";
 
 export const GetBooking = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const { checkIsLogged, isAuthLoading } = useCheckIsLogged();
+    const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const [showCopyInfo, setShowCopyInfo] = useState<boolean>(false)
     const [businessUrl, setBusinessUrl] = useState<string>("")
 
