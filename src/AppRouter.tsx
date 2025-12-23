@@ -22,6 +22,7 @@ import { UserProfile } from "./pages/Clients/components/ClientPanel/UserProfile.
 import { NotFound } from "./pages/NotFound.tsx";
 import type { ServiceType } from "./pages/Admin/components/types/ServiceType.ts";
 import { createContext, useContext, useState, type ReactNode } from "react";
+import type { ClientType } from "./pages/Clients/components/ClientPanel/types/clientType.ts";
 
 
 interface DataContextType {
@@ -39,13 +40,18 @@ interface DataContextType {
 
   isClientLogged: boolean
   setIsClientLogged: (t: boolean) => void
+
+  clientDetails: ClientType | null
+  setClientDetails: (t: ClientType | null) => void
 }
 
 const DataContext = createContext<DataContextType>({
   userToken: null,
   setUserToken: () => { },
+
   clientToken: null,
   setClientToken: () => { },
+
   serviceData: [],
   setServiceData: () => { },
 
@@ -53,7 +59,10 @@ const DataContext = createContext<DataContextType>({
   setIsAdminLogged: () => { },
 
   isClientLogged: false,
-  setIsClientLogged: () => { }
+  setIsClientLogged: () => { },
+
+  clientDetails: null,
+  setClientDetails: () => { },
 })
 
 
@@ -61,11 +70,12 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
   const [userToken, setUserToken] = useState<string | null>("")
   const [clientToken, setClientToken] = useState<string | null>("")
   const [serviceData, setServiceData] = useState<ServiceType[]>([])
+  const [clientDetails, setClientDetails] = useState<ClientType | null>(null)
   const [isAdminLogged, setIsAdminLogged] = useState<boolean>(false)
   const [isClientLogged, setIsClientLogged] = useState<boolean>(false)
 
   return (
-    <DataContext.Provider value={{ userToken, setUserToken, serviceData, setServiceData, isAdminLogged, setIsAdminLogged, clientToken, setClientToken, isClientLogged, setIsClientLogged }}>
+    <DataContext.Provider value={{ userToken, setUserToken, serviceData, setServiceData, isAdminLogged, setIsAdminLogged, clientToken, setClientToken, isClientLogged, setIsClientLogged,clientDetails, setClientDetails }}>
       <Routes>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />

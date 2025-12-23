@@ -4,6 +4,7 @@ import type { ClientType } from "../../pages/Clients/components/ClientPanel/type
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import Logo from "../../assets/Slotify Logo.webp"
+import { useData } from "../../AppRouter"
 
 interface navBarTypeProps {
     type: "reservation" | "panel"
@@ -13,7 +14,8 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
     const bussinessName = window.location.href.split("/")[3]
     const [showSideBar, setShowSideBar] = useState<boolean>(false)
     const [clientIsLogged, setClientIsLogged] = useState<boolean>(false)
-    const [clientDetails, setClientDetails] = useState<Partial<ClientType>>({})
+    const {clientDetails, setClientDetails} = useData()
+    // const [clientDetails, setClientDetails] = useState<Partial<ClientType>>({})
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -35,7 +37,7 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
         if (!token)
             return false
 
-        await axios.get(`${import.meta.env.VITE_APP_URL}/auth`, {
+        await axios.get(`${import.meta.env.VITE_APP_URL}/client`, {
             headers: { Authorization: `Bearer ${token}` },
         }).then(response => {
             setClientDetails(response.data)
@@ -72,14 +74,14 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
             }
             <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
                 <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-8 w-8 cursor-pointer" />
-                {clientIsLogged ?
+                {clientIsLogged && clientDetails ?
                     <p className="ml-2 cursor-pointer font-medium">{clientDetails.name}</p>
                     :
                     <button className="ml-2 cursor-pointer font-medium" onClick={() => { localStorage.setItem("previousURL", window.location.href.split("/")[3]); navigate("/login") }}>Log in</button>
                 }
             </div>
 
-            {clientIsLogged ?
+            {clientIsLogged && clientDetails ?
                 <div className={`fixed inset-0 bg-gray-300/70 h-full w-full z-50 top-0 left-0 flex duration-300 ${showSideBar ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
                     <div className={`bg-white w-80 ml-auto p-4 flex flex-col justify-between duration-300 ${showSideBar ? "translate-x-0" : "translate-x-full"}`}>
                         <div>
