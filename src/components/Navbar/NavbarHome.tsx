@@ -21,7 +21,7 @@ export const NavbarHome = () => {
                     </div>
                     <div>
                         <button onClick={() => {navigate("/login");window.scrollTo(0,0)}} className="mr-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">LOG IN</button>
-                        <button onClick={() => {location.pathname === "/register/bussines" ? navigate("/register/bussines") : navigate("/register/personal");window.scrollTo(0,0)}} className="bg-blue-500 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-600 duration-200"> SING UP</button>
+                        <button onClick={() => { navigate("/register/business")}} className="bg-blue-500 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-600 duration-200"> SING UP</button>
                     </div>
                 </>
 
