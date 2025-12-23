@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Image } from "lucide-react"
 import axios from "axios"
 import { useParams } from "react-router-dom"
-import type { OrderType } from "./OrderType"
+import type { OrderType } from "./types/OrderType"
 import { SelectTime } from "./components/SelectTime"
 import { ClientDetails } from "./components/ClientDetails"
 import { FinishedReservation } from "./components/FinishedReservation"
@@ -71,7 +71,7 @@ export const Order = () => {
     }
 
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             
                 <div className="border-b border-gray-300 py-6 flex items-center justify-center sticky top-0 right-0 bg-white">
                     <div className="p-2 h-10 flex items-center justify-center aspect-square rounded-full bg-blue-500 mx-4">
@@ -94,7 +94,7 @@ export const Order = () => {
                         <p className="text-white font-medium">3</p>
                     </div>
                 </div >
-                <div className="flex mb-36">
+                <div className="flex flex-1">
 
                     <div className="w-3/5 p-6">
                         {currentSection === "time" ?
@@ -196,6 +196,6 @@ export const Order = () => {
                 </div>
             
             <FooterReservation></FooterReservation>
-        </>
+        </div>
     )
 }
