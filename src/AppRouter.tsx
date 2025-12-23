@@ -76,7 +76,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
 
         <Route path="/personal" element={<UserProfile />} />
 
-        <Route path="/*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes >
     </DataContext.Provider >
   );

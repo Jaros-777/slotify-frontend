@@ -43,17 +43,7 @@ export const ServiceForm = () => {
     const [servicePic, setServicePic] = useState<File | null>(null)
     const [showSavingState, setShowSavingState] = useState<boolean>(false)
 
-
-
-    // const handleAddImg = () => {
-    //     fileInputRefServicePic.current?.click()
-    // }
-    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = e.target.files?.[0]
-    //     if (file) {
-    //         console.log("Selected file:", file.name)
-    //     }
-    // }
+    
 
     const handleAddServicePic = () => {
         fileInputRefServicePic.current?.click()

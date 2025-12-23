@@ -28,7 +28,7 @@ export const Reservation = () => {
     const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>([])
     const [currentDayOfWeek, setCurrentDayOfWeek] = useState<number>(0)
     const navigate = useNavigate()
-
+    const [showServiceDescription, setShowServiceDescription] = useState<string|null>()
 
     const handleValidPage = async () => {
         setLoadDetails(true)
@@ -44,7 +44,7 @@ export const Reservation = () => {
             })
             .catch((error) => {
                 console.log(error)
-                navigate("/*")
+                navigate("*")
             })
     }
 
@@ -67,8 +67,6 @@ export const Reservation = () => {
 
         return currentTime >= openTime && currentTime <= closeTime;
     }
-
-
 
     useEffect(() => {
         (async () => {
@@ -118,7 +116,11 @@ export const Reservation = () => {
                                         :
                                         <p className="text-sm text-red-700 font-bold">Closed</p>
                                     }
-                                    <p className="text-sm ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
+                                    {schedulePlan.filter(e => e.dayOfWeek === new Date().getDay() - 1)[0].isClose ?
+                                        null
+                                        :
+                                        <p className="text-sm ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -134,38 +136,54 @@ export const Reservation = () => {
                 <section className="mt-10 p-4 w-[80rem]">
                     <p className="text-2xl font-bold">Services</p>
                     <ul className="mt-4 border border-gray-300 rounded-md">
-                        {serviceData.map((e) => (
-                            <li key={e?.id} className="flex p-4 border-b border-gray-300 items-center">
-                                <div className="w-24 bg-green-100  rounded-full overflow-hidden">
-                                    {e?.servicePictureURL ?
-                                        <img src={e.servicePictureURL} alt="Service picture" />
-                                        :
-                                        <Image className="h-full w-full p-2 text-green-600"></Image>
-                                    }
-                                </div>
-                                <div className="ml-6">
-                                    <p className="font-bold text-lg">{e?.name}</p>
-                                    <p className="text-sm underline cursor-pointer mt-2">Show details</p>
-                                </div>
-                                <div className="ml-auto flex items-center">
-                                    <p className="font-bold">{e?.price} USD</p>
-                                    <button
-                                        className="border border-blue-300 text-blue-400 font-bold px-4 py-2 rounded-md ml-4 cursor-pointer duration-200 
+                        {serviceData.length > 0 ?
+
+
+                            serviceData.map((e) => (
+                                <li key={e?.id} className="flex p-4 border-b border-gray-300 items-center">
+                                    <div className="w-24 flex-shrink-0 bg-green-100  rounded-full overflow-hidden">
+                                        {e?.servicePictureURL ?
+                                            <img src={e.servicePictureURL} alt="Service picture" />
+                                            :
+                                            <Image className="h-full w-full p-2 text-green-600"></Image>
+                                        }
+                                    </div>
+                                    <div className="ml-6 w-auto">
+                                        <p className="font-bold text-lg">{e?.name}</p>
+                                        {showServiceDescription === e?.id ?
+                                            <p className="text-sm underline cursor-pointer mt-2" onClick={ev => setShowServiceDescription(null)}>Hide details</p>
+                                            :
+                                            <p className="text-sm underline cursor-pointer mt-2" onClick={ev => setShowServiceDescription(e?.id)}>Show details</p>
+                                        }
+                                        {showServiceDescription === e?.id ?
+                                            <p className="w-2/3 mt-4">{e?.description}</p>
+                                            : null
+                                        }
+                                    </div>
+                                    <div className="ml-auto flex items-center flex-shrink-0">
+                                        <p className="font-bold">{e?.price} USD</p>
+                                        <button
+                                            className="border border-blue-300 text-blue-400 font-bold px-4 py-2 rounded-md ml-4 cursor-pointer duration-200 
                                 hover:bg-blue-200"
-                                        onClick={() => navigate(`/${businessName}/order/${e?.id}`)}
-                                    >
-                                        Reservation
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
+                                            onClick={() => navigate(`/${businessName}/order/${e?.id}`)}
+                                        >
+                                            Reservation
+                                        </button>
+                                    </div>
+                                </li>
+                            ))
+                            : <p className="p-4 text-center">This company doesn't have any services yet</p>
+                        }
                     </ul>
 
                 </section>
                 <section className="px-6 py-4 w-[80rem]">
-                    <div>
-                        <h2 className="text-2xl font-bold">About</h2>
-                    </div>
+                    {businessDetail.slogan || businessDetail.description ?
+                        <div>
+                            <h2 className="text-2xl font-bold">About</h2>
+                        </div>
+                        : null
+                    }
                     <div className="flex justify-between">
                         <div>
 
