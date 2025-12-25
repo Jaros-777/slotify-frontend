@@ -82,7 +82,10 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
             </div>
 
             {clientIsLogged && clientDetails ?
-                <div className={`fixed inset-0 bg-gray-300/70 h-full w-full z-50 top-0 left-0 flex duration-300 ${showSideBar ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+                <div 
+                className={`fixed inset-0 bg-gray-300/70 h-full w-full z-50 top-0 left-0 flex duration-300 ${showSideBar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                onClick={()=>setShowSideBar(false)}
+                >
                     <div className={`bg-white w-80 ml-auto p-4 flex flex-col justify-between duration-300 ${showSideBar ? "translate-x-0" : "translate-x-full"}`}>
                         <div>
                             <div className="flex justify-between border-b border-gray-300 pb-4 items-center">
@@ -96,11 +99,15 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
                                     <p className="text-sm">{clientDetails.email}</p>
                                 </div>
                             </div>
-                            <div className="flex items-center mt-2 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l">
+                            <div className="flex items-center mt-2 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l"
+                            onClick={()=>navigate("/personal")}
+                            >
                                 <CircleUserRound className="h-8 w-8 cursor-pointer" />
                                 <p className="ml-4 font-medium cursor-pointer">Profile</p>
                             </div>
-                            <div className="flex items-center mt-4 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l">
+                            <div className="flex items-center mt-4 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l"
+                            onClick={()=>navigate("/client-booking")}
+                            >
                                 <BookCheck className="h-8 w-8 cursor-pointer" />
                                 <p className="ml-4 font-medium">Bookings</p>
                             </div>
