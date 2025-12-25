@@ -151,7 +151,7 @@ export const UserProfile = () => {
                     <p className="mt-2">Set or change your account password.</p>
                 </div>
                 <button
-                onClick={()=>alert("This function is not implemented yet.")}
+                onClick={()=>alert("This section isn't implemented yet!")}
                     className="ml-12 border border-gray-300 px-6 py-2 rounded-md text-md font-medium flex items-center cursor-pointer hover:bg-gray-300 duration-200">
                     <LockKeyhole className="mr-4 h-[1.5em]"></LockKeyhole>
                     <span>CHANGE PASSWORD</span>

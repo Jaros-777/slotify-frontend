@@ -86,7 +86,7 @@ export const Login = () => {
                     }
                 </button>
             </form>
-            <button onClick={() => navigate("/forgot-password")} className="font-medium my-4 text-text-gray text-sm cursor-pointer">FORGOT YOUR PASSWORD?</button>
+            <button onClick={() => alert("This section isn't implemented yet!")} className="font-medium my-4 text-text-gray text-sm cursor-pointer">FORGOT YOUR PASSWORD?</button>
         </section>
     )
 }

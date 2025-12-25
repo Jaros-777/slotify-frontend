@@ -31,7 +31,7 @@ export const NavbarAdmin = () => {
                     <CalendarDays className={activeSection === "calendar" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
                 </button>
-                <button className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>{alert("This section isn't implemented yet!")}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <User className={activeSection === "clients" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "clients" ? "text-blue-500" : ""}>Clients</span>
                 </button>
@@ -49,8 +49,8 @@ export const NavbarAdmin = () => {
                 <p>US</p>
                 {showDropBar ?
                     <ul className="absolute top-[3rem]  bg-white border-1 border-gray-300">
-                        <li className="px-6 py-2 whitespace-nowrap">User profile</li>
-                        <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300">Support</li>
+                        <li className="px-6 py-2 whitespace-nowrap" onClick={()=> alert("This section isn't implemented yet!")}>User profile</li>
+                        <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={()=>alert("This section isn't implemented yet!")}>Support</li>
                         <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={logOut}>Log out</li>
                     </ul>
 

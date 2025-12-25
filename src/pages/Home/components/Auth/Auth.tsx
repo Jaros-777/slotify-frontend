@@ -18,9 +18,9 @@ export const Auth = ({ view }: AuthProps) => {
             <div className="my-34 bg-white w-[40rem] h-auto flex flex-col items-center text-center p-16 pb-0 shadow-2xl">
                 {view === "login" ? <Login /> : <Register />}
                 <p className="mt-12">By signing in or creating an account, you agree with {" "}
-                    <span onClick={() => navigate("/terms-and-conditions")} className="cursor-pointer underline font-medium">Terms & Conditions</span>
+                    <span onClick={() => alert("This section isn't implemented yet!")} className="cursor-pointer underline font-medium">Terms & Conditions</span>
                     {" "}and {" "}
-                    <span onClick={() => navigate("/privacy-policy")} className="cursor-pointer underline font-medium">Privacy Policy</span>
+                    <span onClick={() => alert("This section isn't implemented yet!")} className="cursor-pointer underline font-medium">Privacy Policy</span>
                     .
                 </p>
                 <div className="h-[1px] w-full bg-text-gray mt-12"></div>

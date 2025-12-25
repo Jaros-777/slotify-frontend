@@ -14,7 +14,7 @@ export const FooterReservation = () => {
                 <p className="text-center">© 2025 Jaros. Made with ❤️</p>
             </div>
             <div className="bg-blue-500 p-4 w-full">
-                <p className="text-center text-white">Got your own business? <span className="underline font-bold cursor-pointer" onClick={() => {navigate("/register"); window.scrollTo(0,0)}}>Try Slotify</span> and create your own Booking Website</p>
+                <p className="text-center text-white">Got your own business? <span className="underline font-bold cursor-pointer" onClick={() => {navigate("/register/business"); window.scrollTo(0,0)}}>Try Slotify</span> and create your own Booking Website</p>
             </div>
         </footer>
     )
