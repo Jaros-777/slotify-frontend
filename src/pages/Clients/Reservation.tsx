@@ -8,6 +8,7 @@ import { FooterReservation } from "../../components/Footer/FooterReservation"
 import FacebookLogo from "../Admin/components/Booking/components/assets/Facebook_Logo_Primary.png"
 import type { scheduleDay } from "../Admin//components/Settings/components/Availability/utlis/scheduleType"
 import { NavBarClient } from "../../components/Navbar/NavBarClient"
+import { LoadingPage } from "../../LoadingPage"
 
 
 const dayTypes = [
@@ -77,7 +78,7 @@ export const Reservation = () => {
     }, []);
 
     if (loadDetails) {
-        return <p className="mt-20">Loading business details...</p>;
+        return <LoadingPage text="Loading business details..." ></LoadingPage>;
     }
 
     return (

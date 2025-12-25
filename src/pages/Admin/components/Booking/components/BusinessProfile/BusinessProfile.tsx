@@ -5,6 +5,7 @@ import type { BusinessProfileType } from "../../../types/BusinessProfileType";
 import axios from "axios";
 import { useData } from "../../../../../../AppRouter";
 import { ImageFileContainer } from "./components/ImageFileContainer";
+import { LoadingPage } from "../../../../../../LoadingPage";
 
 export const BusinessProfile = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
@@ -106,10 +107,10 @@ export const BusinessProfile = () => {
     }, []);
 
     if (isAuthLoading) {
-        return <p className="mt-20">Checking authentication...</p>;
+        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
     if (isLoading) {
-        return <p className="mt-20">Loading data...</p>;
+        return <LoadingPage text="Loading data..." ></LoadingPage>;
     }
 
     return (

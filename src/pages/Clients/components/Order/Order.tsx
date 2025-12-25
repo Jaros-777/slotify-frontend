@@ -12,6 +12,7 @@ import { monthTypes } from "./types/dayAndMonthNames"
 import { toLocalDateTimeString } from "../../../Admin/components/Calendar/components/BigCalendar/utils/dateUtils"
 import { FooterReservation } from "../../../../components/Footer/FooterReservation"
 import { useData } from "../../../../AppRouter"
+import { LoadingPage } from "../../../../LoadingPage"
 
 
 export const Order = () => {
@@ -70,7 +71,7 @@ export const Order = () => {
     }, [])
 
     if (loadDetails || !orderData) {
-        return <p className="mt-20">Loading business details...</p>;
+        return <LoadingPage text="Loading business details..." ></LoadingPage>;
     }
 
     return (

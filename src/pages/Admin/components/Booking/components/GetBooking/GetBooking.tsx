@@ -6,6 +6,7 @@ import FacebookLogo from "../assets/Facebook_Logo_Primary.png"
 import WhatsAppLogo from "../assets/Digital_Glyph_Green.png"
 import LinkedlnLogo from "../assets/LI-In-Bug.png"
 import axios from "axios";
+import { LoadingPage } from "../../../../../../LoadingPage";
 
 export const GetBooking = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -66,7 +67,7 @@ export const GetBooking = () => {
     }, []);
 
     if (isAuthLoading) {
-        return <p className="mt-20">Checking authentication...</p>;
+        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
 
     return (

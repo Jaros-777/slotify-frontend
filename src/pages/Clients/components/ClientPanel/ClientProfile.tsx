@@ -4,6 +4,7 @@ import { ImageFileContainer } from "../../../Admin/components/Booking/components
 import { Camera, Image, Loader, LockKeyhole } from "lucide-react";
 import axios from "axios";
 import { useData } from "../../../../AppRouter";
+import { LoadingPage } from "../../../../LoadingPage";
 
 export const UserProfile = () => {
 
@@ -62,10 +63,10 @@ export const UserProfile = () => {
     }, [])
 
     if (isAuthLoading) {
-        return <p className="mt-20">Checking authentication...</p>;
+        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
     if (!clientDetails) {
-        return <p className="mt-20">Loading data...</p>;
+        return <LoadingPage text="Loading data..." ></LoadingPage>;
     }
 
     return (

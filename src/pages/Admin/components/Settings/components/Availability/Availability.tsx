@@ -3,6 +3,7 @@ import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { scheduleDay } from "./utlis/scheduleType";
 import axios from "axios";
 import { useData } from "../../../../../../AppRouter";
+import { LoadingPage } from "../../../../../../LoadingPage";
 
 
 
@@ -69,10 +70,10 @@ export const Availability = () => {
     }, []);
 
     if (isAuthLoading) {
-        return <p className="mt-20">Checking authentication...</p>;
+        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
     if (checkIsDataLoaded) {
-        return <p className="mt-20">Checking data...</p>;
+        return <LoadingPage text="Checking data..." ></LoadingPage>;
     }
 
 

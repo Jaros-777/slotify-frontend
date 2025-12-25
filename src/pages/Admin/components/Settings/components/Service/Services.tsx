@@ -5,6 +5,7 @@ import { useLoadServiceData } from "../../../utlis/loadServiceData";
 import { useNavigate } from "react-router-dom";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import type { ServiceType } from "../../../types/ServiceType";
+import { LoadingPage } from "../../../../../../LoadingPage";
 
 export const Services = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
@@ -28,10 +29,10 @@ export const Services = () => {
     }, [serviceData])
 
     if (isAuthLoading) {
-        return <p className="mt-20">Checking authentication...</p>;
+        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
     if (isDataLoading) {
-        return <p className="mt-20">Loading data...</p>;
+        return <LoadingPage text="Loading data..." ></LoadingPage>;
     }
 
     return (

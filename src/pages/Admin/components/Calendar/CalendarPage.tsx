@@ -9,6 +9,7 @@ import { useData } from "../../../../AppRouter"
 import { useCheckIsLogged } from "../utlis/checkIsLoged"
 import { useLoadServiceData } from "../utlis/loadServiceData"
 import { Image } from "lucide-react"
+import { LoadingPage } from "../../../../LoadingPage"
 
 
 
@@ -69,11 +70,12 @@ export const CalendarPage = () => {
     }, [currentWeekStart])
 
     if (isAuthLoading) {
-        return <p className="mt-20">Checking authentication...</p>;
+        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
     if (!isAdminLogged) {
-        return <p className="mt-20">Waiting..</p>
+        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
+
 
     return (
         <section className="flex h-full">
