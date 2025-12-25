@@ -11,6 +11,7 @@ import type { OrderResponse } from "../../types/OrderResponse"
 import { monthTypes } from "./types/dayAndMonthNames"
 import { toLocalDateTimeString } from "../../../Admin/components/Calendar/components/BigCalendar/utils/dateUtils"
 import { FooterReservation } from "../../../../components/Footer/FooterReservation"
+import { useData } from "../../../../AppRouter"
 
 
 export const Order = () => {
@@ -21,6 +22,8 @@ export const Order = () => {
     const [loadDetails, setLoadDetails] = useState<boolean>(true)
     const [reservationDetails, setReservationDetails] = useState<OrderResponse>()
     const {businessName} = useParams()
+    const { clientToken } = useData();
+    console.log(clientToken)
 
     const fetchServiceDetails = async () => {
         await axios.get(`${import.meta.env.VITE_APP_URL}/order/${serviceId}`
@@ -31,7 +34,7 @@ export const Order = () => {
                 setReservationDetails({
                     ...reservationDetails,
                     serviceId: response.data.serviceDTO.id,
-                    loggedClient: false,
+                    loggedClient: clientToken? true: false,
                     agreements: false
                 })
 

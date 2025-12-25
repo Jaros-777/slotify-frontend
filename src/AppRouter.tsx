@@ -17,7 +17,8 @@ import { Reservation } from "./pages/Clients/Reservation.tsx";
 import { Order } from "./pages/Clients/components/Order/Order.tsx";
 import { Availability } from "./pages/Admin/components/Settings/components/Availability/Availability.tsx";
 
-import { UserProfile } from "./pages/Clients/components/ClientPanel/UserProfile.tsx";
+import { UserProfile } from "./pages/Clients/components/ClientPanel/ClientProfile.tsx";
+import { ClientBookings } from "./pages/Clients/components/ClientPanel/ClientBookings.tsx";
 
 import { NotFound } from "./pages/NotFound.tsx";
 import type { ServiceType } from "./pages/Admin/components/types/ServiceType.ts";
@@ -103,6 +104,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
 
         <Route element={<ClientPanelLayout />}>
           <Route path="/personal" element={<UserProfile />} />
+          <Route path="/client-booking" element={<ClientBookings />} />
 
         </Route>
 
