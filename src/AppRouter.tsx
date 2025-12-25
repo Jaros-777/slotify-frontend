@@ -91,7 +91,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
             <Route path="/admin/settings/services" element={<Services />} />
             <Route path="/admin/settings/services/form/:id" element={<ServiceForm />} />
             <Route path="/admin/settings/services/form/add" element={<ServiceForm />} />
-            <Route path="/admin/booking/availability" element={<Availability />} />
+            <Route path="/admin/settings/availability" element={<Availability />} />
           </Route>
           <Route element={<BookingLayout />}>
             <Route path="/admin/booking/get-booking" element={<GetBooking />} />
