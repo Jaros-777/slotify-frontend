@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { NavBarClient } from "./components/Navbar/NavBarClient";
-import { FooterReservation } from "./components/Footer/FooterReservation";
+import { NavBarClient } from "../components/Navbar/NavBarClient";
+import { FooterReservation } from "../components/Footer/FooterReservation";
 
 export const ClientPanelLayout = () => {
     return (

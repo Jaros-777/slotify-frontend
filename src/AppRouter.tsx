@@ -2,11 +2,11 @@ import { Routes, Route } from "react-router-dom";
 import Home from './pages/Home/Home.tsx';
 import { Auth } from './pages/Home/components/Auth/Auth.tsx';
 
-import { AdminLayout } from "./AdminLayout.tsx";
-import { HomeLayout } from "./HomeLayout.tsx";
-import { SettingsLayout } from "./SettingsLayout.tsx";
-import { BookingLayout } from "./BookingLayout.tsx";
-import { ClientPanelLayout } from "./ClientPanelLayout.tsx";
+import { AdminLayout } from "./Layouts/AdminLayout.tsx";
+import { HomeLayout } from "./Layouts/HomeLayout.tsx";
+import { SettingsLayout } from "./Layouts/SettingsLayout.tsx";
+import { BookingLayout } from "./Layouts/BookingLayout.tsx";
+import { ClientPanelLayout } from "./Layouts/ClientPanelLayout.tsx";
 
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";

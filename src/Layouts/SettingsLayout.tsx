@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom"
-import { BookingSideBar } from "./pages/Admin/components/Booking/BookingSideBar"
-import { FooterAdmin } from "./components/Footer/FooterAdmin"
+import { SettingsSideBar } from "../pages/Admin/components/Settings/SettingsSideBar"
+import { FooterAdmin } from "../components/Footer/FooterAdmin"
 
-export const BookingLayout = () => {
+export const SettingsLayout = () => {
 
     return (
         <div className="flex w-full min-h-screen">
-            <BookingSideBar />
+            <SettingsSideBar />
             <div className="bg-gray-200 w-full flex flex-col justify-between">
                 <Outlet />
                 <FooterAdmin/>
