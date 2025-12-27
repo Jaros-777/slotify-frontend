@@ -3,13 +3,14 @@ import type { OrderResponse } from "../../../types/OrderResponse"
 
 interface detailsProps {
     onSuccess: () => void
-    setReservationDetails: React.Dispatch<React.SetStateAction<OrderResponse | undefined>>
+    setReservationDetails: React.Dispatch<React.SetStateAction<OrderResponse>>
     reservationDetails: OrderResponse | undefined
 }
 
 export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDetails }: detailsProps) => {
 
     const [showBookingNote, setShowBookingNote] = useState<boolean>(false)
+    
 
     const handleCreateReservation = (e: React.FormEvent) => {
         e.preventDefault()
@@ -38,6 +39,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                             required 
                             type="text" 
                             className="w-full border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500"
+                            value={reservationDetails?.firstName}
                             onChange={(e)=>handleUpdateReservation("firstName", e.target.value)}
                              />
                         </div>
@@ -47,6 +49,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                             required 
                             type="text" 
                             className="w-full border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500"
+                            value={reservationDetails?.lastName}
                             onChange={(e)=>handleUpdateReservation("lastName", e.target.value)}
                              />
                         </div>
@@ -57,6 +60,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                         required 
                         type="email" 
                         className="border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500"
+                        value={reservationDetails?.email}
                         onChange={(e)=>handleUpdateReservation("email", e.target.value)}
                          />
                     </div>
@@ -69,6 +73,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                         type="tel"
                         pattern="[0-9]+"
                         className="border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500"
+                        value={reservationDetails?.phone}
                         onChange={(e)=>handleUpdateReservation("phone", e.target.value)}
                          />
                     </div>
@@ -87,6 +92,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                     <div className='border-t border-gray-300 flex flex-col p-4'>
                         <textarea 
                         className="border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500" placeholder="Add note..."
+                        value={reservationDetails?.description}
                         onChange={(e)=>handleUpdateReservation("description", e.target.value)}
                         ></textarea>
                     </div>

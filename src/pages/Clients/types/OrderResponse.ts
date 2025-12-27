@@ -5,7 +5,7 @@ export interface OrderResponse{
     firstName?: string
     lastName?: string
     email?:string
-    phone?:number
+    phone?:string
     description?: string
     agreements?: boolean
     loggedClient?: boolean

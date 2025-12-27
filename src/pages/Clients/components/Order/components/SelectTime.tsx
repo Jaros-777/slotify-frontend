@@ -10,7 +10,7 @@ import { dayTypes, monthTypes } from '../types/dayAndMonthNames';
 
 
 interface timeProps {
-    setReservationDetails: React.Dispatch<React.SetStateAction<OrderResponse | undefined>>
+    setReservationDetails: React.Dispatch<React.SetStateAction<OrderResponse>>
     reservationDetails: OrderResponse | undefined
     setSectionFinished: React.Dispatch<React.SetStateAction<boolean>>
     availability: scheduleDay[]

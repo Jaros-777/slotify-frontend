@@ -21,10 +21,9 @@ export const Order = () => {
     const [currentSection, setCurrentSection] = useState<"time" | "details" | "finish">("time")
     const [sectionFinished, setSectionFinished] = useState<boolean>(false)
     const [loadDetails, setLoadDetails] = useState<boolean>(true)
-    const [reservationDetails, setReservationDetails] = useState<OrderResponse>()
+    const [reservationDetails, setReservationDetails] = useState<OrderResponse>({})
     const {businessName} = useParams()
-    const { clientToken } = useData();
-    console.log(clientToken)
+    const { clientToken,clientDetails, setClientDetails } = useData();
 
     const fetchServiceDetails = async () => {
         await axios.get(`${import.meta.env.VITE_APP_URL}/order/${serviceId}`
@@ -32,12 +31,13 @@ export const Order = () => {
             .then(function (response) {
                 setOrderData(response.data)
                 setLoadDetails(false)
-                setReservationDetails({
-                    ...reservationDetails,
+                setReservationDetails(prev=>({
+                    ...prev,
                     serviceId: response.data.serviceDTO.id,
                     loggedClient: clientToken? true: false,
                     agreements: false
-                })
+                }))
+                console.log(response.data.serviceDTO.id)
 
             }).catch(function (error) {
                 console.log(error);
@@ -46,13 +46,13 @@ export const Order = () => {
 
     const postReservation = async () => {
         setCurrentSection("finish")
+        console.log(reservationDetails)
         if (reservationDetails?.chosenDate) {
             const payload = {
                 ...reservationDetails,
                 chosenDate: toLocalDateTimeString(reservationDetails.chosenDate)
             }
             console.log(payload)
-
             axios.post(`${import.meta.env.VITE_APP_URL}/order`,
                 payload,
             ).then(function (response) {
@@ -62,10 +62,29 @@ export const Order = () => {
         }
     }
 
+    const handleLoadClientDetails = async()=>{
+        if(clientDetails){
+            let nameTab:string[] =[];
+            nameTab[0] = clientDetails.name
+
+            if(clientDetails.name.includes(" ")){
+                nameTab = clientDetails.name.split(" ")
+            }
+            setReservationDetails(prev=>({
+                    ...prev,
+                    email: clientDetails.email,
+                    firstName: nameTab[0],
+                    lastName: nameTab[1] || "",
+                    phone: clientDetails.phone
+                }))
+        }
+    }
+
     useEffect(() => {
         (async () => {
             setLoadDetails(false)
             await fetchServiceDetails()
+            await handleLoadClientDetails()
 
         })();
     }, [])

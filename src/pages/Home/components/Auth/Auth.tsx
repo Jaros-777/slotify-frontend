@@ -11,7 +11,7 @@ type AuthProps = {
 export const Auth = ({ view }: AuthProps) => {
 
     const navigate = useNavigate()
-    const accountType = window.location.href.split("/")[4]
+    const isPreviousUrl:boolean = localStorage.getItem("previousURL") ? true : false
 
     return (
         <section className=" min-h-screen bg-gray-200 flex flex-col items-center">
@@ -25,9 +25,9 @@ export const Auth = ({ view }: AuthProps) => {
                 </p>
                 <div className="h-[1px] w-full bg-text-gray mt-12"></div>
                 {view === "login" ?
-                    <p className="py-8 font-medium">Don't have an account? <span onClick={() => { accountType == "personal" ? navigate("/register/personal") : navigate("/register/business") }} className="text-blue-400 underline cursor-pointer">Sing Up</span></p>
+                    <p className="py-8 font-medium">Don't have an account? <span onClick={() => { isPreviousUrl ? navigate("/register/personal") : navigate("/register/business") }} className="text-blue-400 underline cursor-pointer">Sing Up</span></p>
                     :
-                    <p className="py-8 font-medium">Already have an account? <span onClick={() => { accountType == "personal" ? navigate("/login") : navigate("/login") }} className="text-blue-400 underline cursor-pointer">Log In</span></p>
+                    <p className="py-8 font-medium">Already have an account? <span onClick={() => {navigate("/login") }} className="text-blue-400 underline cursor-pointer">Log In</span></p>
                 }
             </div>
 
