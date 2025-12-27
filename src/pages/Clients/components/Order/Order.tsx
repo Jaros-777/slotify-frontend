@@ -37,7 +37,6 @@ export const Order = () => {
                     loggedClient: clientToken? true: false,
                     agreements: false
                 }))
-                console.log(response.data.serviceDTO.id)
 
             }).catch(function (error) {
                 console.log(error);
@@ -46,7 +45,6 @@ export const Order = () => {
 
     const postReservation = async () => {
         setCurrentSection("finish")
-        console.log(reservationDetails)
         if (reservationDetails?.chosenDate) {
             const payload = {
                 ...reservationDetails,
