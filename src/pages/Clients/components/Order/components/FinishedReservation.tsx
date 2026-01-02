@@ -1,12 +1,12 @@
 import { Check } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
-interface reservationProps{
+interface reservationProps {
     mail: string | undefined
     businessName: string | undefined
 }
 
-export const FinishedReservation = ({mail, businessName}:reservationProps) => {
+export const FinishedReservation = ({ mail, businessName }: reservationProps) => {
     const navigate = useNavigate()
 
     return (
@@ -21,10 +21,16 @@ export const FinishedReservation = ({mail, businessName}:reservationProps) => {
                 <p className="text-center font-medium my-1">{mail}</p>
                 <p className="text-center">If you don’t receive the email, please check your junk folder.</p>
                 <div className="flex mt-10 justify-around w-full">
-                    <button className="border border-blue-500 rounded-md px-4 py-2 font-medium text-md text-blue-500 w-full mr-2 cursor-pointer duration-200 hover:border-blue-900 hover:text-blue-900">ADD TO CALENDAR</button>
-                    <button className="border border-blue-500 rounded-md px-4 py-2 font-medium text-blue-500 w-full ml-2 cursor-pointer duration-200 hover:border-blue-900 hover:text-blue-900">CHANGE BOOKING</button>
+                    <button
+                        className="border border-blue-500 rounded-md px-4 py-2 font-medium text-md text-blue-500 w-full mr-2 cursor-pointer duration-200 hover:border-blue-900 hover:text-blue-900"
+                        onClick={() => alert("This section isn't implemented yet!")}
+                    >ADD TO CALENDAR</button>
+                    <button
+                        className="border border-blue-500 rounded-md px-4 py-2 font-medium text-blue-500 w-full ml-2 cursor-pointer duration-200 hover:border-blue-900 hover:text-blue-900"
+                        onClick={() => alert("This section isn't implemented yet!")}
+                    >CHANGE BOOKING</button>
                 </div>
-                <button onClick={()=>navigate(`/${businessName}`)} className="bg-blue-500 rounded-md px-4 py-2 font-medium text-white w-full mt-4 duration-200 hover:bg-blue-600 cursor-pointer">BACK TO BOOKING WEBSITE</button>
+                <button onClick={() => navigate(`/${businessName}`)} className="bg-blue-500 rounded-md px-4 py-2 font-medium text-white w-full mt-4 duration-200 hover:bg-blue-600 cursor-pointer">BACK TO BOOKING WEBSITE</button>
             </div>
         </div>
 
