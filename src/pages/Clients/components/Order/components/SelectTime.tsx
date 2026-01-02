@@ -3,8 +3,11 @@ import 'react-calendar/dist/Calendar.css';
 import "./OrderCalendar.css"
 import type { OrderResponse } from '../../../types/OrderResponse';
 import type { scheduleDay } from '../../../../Admin/components/Settings/components/Availability/utlis/scheduleType';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { dayTypes, monthTypes } from '../types/dayAndMonthNames';
+import axios from 'axios';
+import { LoadingPage } from '../../../../../LoadingPage';
+import { toLocalDateTimeString } from '../../../../Admin/components/Calendar/components/BigCalendar/utils/dateUtils';
 
 
 
@@ -22,15 +25,46 @@ interface timeType {
     minute: number
 }
 
+interface bookedTimeType {
+    eventStartTime: Date
+}
+
 
 export const SelectTime = ({ setReservationDetails, reservationDetails, availability, serviceDuration, setSectionFinished }: timeProps) => {
 
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>()
     const [openHours, setOpenHours] = useState<string[]>([])
+    const [bookedTime, setBookedTime] = useState<timeType[]>([])
 
     const today = new Date();
 
+    const fetchBookedTime = async (day: Date) => {
+
+        if (reservationDetails)
+            await axios.get(`${import.meta.env.VITE_APP_URL}/order/booked/${reservationDetails.serviceId}/${toLocalDateTimeString(day)}`)
+                .then(function (response) {
+                    // console.log(response.data)
+                    handleSetBookedTime(response.data)
+
+
+                }).catch(function (error) {
+                    console.log(error);
+                })
+    }
+
+    const handleSetBookedTime = (booked: bookedTimeType[]) => {
+        const bookedArr: timeType[] = booked.map(e => {
+            const date = new Date(e.eventStartTime);
+
+            return {
+                hour: date.getHours(),
+                minute: date.getMinutes()
+            };
+        });
+        setBookedTime(bookedArr)
+
+    }
 
     const isOpenDay = (date: Date) => {
         const jsDay = date.getDay();
@@ -61,12 +95,25 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
 
         const slotsCount = Math.ceil((endMinutes - startMinutes) / (serviceDuration / 60));
 
+        const bookedMinutes = bookedTime.map(
+            b => b.hour * 60 + b.minute
+        );
+
         const todaySlots: timeType[] = Array.from({ length: slotsCount }, (_, i) => {
             const totalMinutes = startMinutes + i * (serviceDuration / 60);
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            return { hour: hours, minute: minutes };
-        });
+
+            return {
+                hour: Math.floor(totalMinutes / 60),
+                minute: totalMinutes % 60,
+                totalMinutes
+            };
+        }
+        )
+            .filter(slot =>
+                !bookedMinutes.includes(slot.totalMinutes)
+            )
+            .map(({ hour, minute }) => ({ hour, minute }));
+
 
 
         let today = new Date()
@@ -117,6 +164,19 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
     }
 
 
+    useEffect(() => {
+        if (!selectedDay) return;
+
+        const backendDay = (selectedDay.getDay() + 6) % 7;
+        availabilityHours(backendDay, selectedDay);
+
+    }, [bookedTime, selectedDay]);
+
+
+    if (!reservationDetails) {
+        return <LoadingPage text='Loading data...'></LoadingPage>
+    }
+
 
     return (
         <>
@@ -132,12 +192,13 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
                         minDate={today}
 
                         onClickDay={(value) => {
-                            const backendDay = (value.getDay() + 6) % 7;
                             if (isOpenDay(value) && !isPastDay(value)) {
+                                setOpenHours([])
+                                setBookedTime([])
                                 setSelectedDay(value);
                                 setSelectedTime(null)
                                 setSectionFinished(false)
-                                availabilityHours(backendDay, value);
+                                fetchBookedTime(value)
                             }
                         }}
 

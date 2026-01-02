@@ -50,7 +50,6 @@ export const Order = () => {
                 ...reservationDetails,
                 chosenDate: toLocalDateTimeString(reservationDetails.chosenDate)
             }
-            console.log(payload)
             axios.post(`${import.meta.env.VITE_APP_URL}/order`,
                 payload,
             ).then(function (response) {
