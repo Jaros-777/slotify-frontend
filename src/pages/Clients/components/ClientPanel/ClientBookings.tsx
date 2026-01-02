@@ -31,6 +31,14 @@ export const ClientBookings = () => {
                 future.push(e)
             }
         })
+        previous.sort((a, b) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+
+        future.sort((a, b) =>
+            new Date(a.date).getTime() - new Date(b.date).getTime()
+        )
+
         setPreviousBookings(previous)
         setFutureBookings(future)
     }
@@ -85,7 +93,7 @@ export const ClientBookings = () => {
                             <li key={e.eventId} className="flex items-center border border-gray-300 rounded-2xl mb-2">
                                 <div className="flex flex-col items-center justify-center py-2 w-26">
                                     <p className="font-medium">{monthTypes[date.getMonth()]}</p>
-                                    <p className="font-bold">{date.getDay()}</p>
+                                    <p className="font-bold">{date.getDate()}</p>
                                     <p className="font-medium">{String(date.getHours()).padStart(2, "0")}:{String(date.getMinutes()).padStart(2, "0")}</p>
 
                                 </div>
