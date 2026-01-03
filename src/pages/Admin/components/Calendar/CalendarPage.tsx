@@ -17,7 +17,7 @@ export const CalendarPage = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const { loadServiceData } = useLoadServiceData();
 
-    const { serviceData, setServiceData, userToken, setUserToken, isAdminLogged } = useData();
+    const { serviceData, userToken  } = useData();
     const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
     const [loadingState, setLoadingState] = useState<boolean>(false)
@@ -72,13 +72,10 @@ export const CalendarPage = () => {
     if (isAuthLoading) {
         return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
-    if (!isAdminLogged) {
-        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
-    }
 
 
     return (
-        <section className="flex h-full">
+        <section className="flex h-full w-full bg-white">
             <div className="w-1/6 border-r-1 border-b-1 border-gray-300 p-6">
                 {/* <button className="bg-blue-500 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-600 duration-200 w-full">
                     <img src="#" alt="" />

@@ -9,6 +9,7 @@ import { BookingLayout } from "./Layouts/BookingLayout.tsx";
 import { ClientPanelLayout } from "./Layouts/ClientPanelLayout.tsx";
 
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
+import { Client } from "./pages/Admin/components/Client/Client.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";
 import { ServiceForm } from "./pages/Admin/components/Settings/components/Service/components/ServiceForm.tsx";
 import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking/GetBooking.tsx";
@@ -87,6 +88,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
 
         <Route element={<AdminLayout />}>
           <Route path="/admin/calendar" element={<CalendarPage />} />
+          <Route path="/admin/client" element={<Client />} />
           <Route element={<SettingsLayout />}>
             <Route path="/admin/settings/services" element={<Services />} />
             <Route path="/admin/settings/services/form/:id" element={<ServiceForm />} />

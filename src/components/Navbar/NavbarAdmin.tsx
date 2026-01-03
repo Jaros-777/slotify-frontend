@@ -31,7 +31,7 @@ export const NavbarAdmin = () => {
                     <CalendarDays className={activeSection === "calendar" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
                 </button>
-                <button onClick={()=>{alert("This section isn't implemented yet!")}} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={()=>{navigate("/admin/client"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <User className={activeSection === "clients" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "clients" ? "text-blue-500" : ""}>Clients</span>
                 </button>
