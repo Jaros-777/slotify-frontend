@@ -259,6 +259,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                   placeholder="Phone"
                   minLength={9}
                   maxLength={9}
+                  required
                   value={newEvent.clientPhone || undefined}
                   onChange={(e) =>
                     setNewEvent({ ...newEvent, clientPhone: Number(e.target.value) })

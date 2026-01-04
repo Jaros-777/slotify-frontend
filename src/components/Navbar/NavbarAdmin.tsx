@@ -6,7 +6,7 @@ import { CalendarDays, User, Link, Settings } from "lucide-react"
 
 export const NavbarAdmin = () => {
     const [showDropBar, setShowDropBar] = useState<boolean>(false)
-    const [activeSection, setActiveSection] = useState<"calendar" | "clients" | "booking" | "settings">()
+    const [activeSection, setActiveSection] = useState<"calendar" | "client" | "booking" | "settings">()
     const section = window.location.href.split("/")[4];
 
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ export const NavbarAdmin = () => {
     }
 
     useEffect(() => {
-        const current = section as "calendar" | "clients" | "booking" | "settings"
+        const current = section as "calendar" | "client" | "booking" | "settings"
         setActiveSection(current)
     }, [section])
 
@@ -32,8 +32,8 @@ export const NavbarAdmin = () => {
                     <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
                 </button>
                 <button onClick={()=>{navigate("/admin/client"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
-                    <User className={activeSection === "clients" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
-                    <span className={activeSection === "clients" ? "text-blue-500" : ""}>Clients</span>
+                    <User className={activeSection === "client" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                    <span className={activeSection === "client" ? "text-blue-500" : ""}>Clients</span>
                 </button>
                 <button onClick={() => { navigate("/admin/booking/get-booking"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <Link className={activeSection === "booking" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
