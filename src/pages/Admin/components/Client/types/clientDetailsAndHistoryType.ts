@@ -1,7 +1,6 @@
 
 
 export interface clientDetailsAndHistoryType{
-    
     clientId:string
     clientName:string,
     clientEmail:string,

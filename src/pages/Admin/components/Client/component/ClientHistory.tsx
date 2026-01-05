@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"
 import { useCheckIsLogged } from "../../utlis/checkIsLoged";
 import { useEffect, useState } from "react";
 import { LoadingPage } from "../../../../../LoadingPage";
-import type { clientDetailsAndHistoryType } from "../types/clientHistoryType";
+import type { clientDetailsAndHistoryType } from "../types/clientDetailsAndHistoryType";
 import { dayTypes } from "../../../../Clients/components/Order/types/dayAndMonthNames";
 import axios from "axios";
 
@@ -21,7 +21,6 @@ export const ClientHistory = () => {
 				}
 			}
 		).then(response => {
-			console.log(response.data)
 			setClientDetailsAndHistory(response.data)
 		}).catch(function (error) {
 			console.log(error)
@@ -45,11 +44,11 @@ export const ClientHistory = () => {
 
     return (
         <>
-            <div className="mt-10 bg-white p-4 border border-gray-300 rounded-md flex min-w-250">
+            <div className="mt-10 pb-4 bg-white p-4 border border-gray-300 rounded-md flex min-w-250">
                 <div className="w-full">
                     <div className="flex justify-between items-start">
                         <div className="flex">
-                            <div className="bg-red-500 h-20 w-20 rounded-md text-white flex items-center justify-center">
+                            <div className="bg-blue-500 h-20 w-20 rounded-md text-white flex items-center justify-center">
                                 <p className="text-4xl">{clientDetailsAndHistory.clientName.slice(0, 2)}</p>
                             </div>
                             <div className="ml-8">
@@ -58,7 +57,7 @@ export const ClientHistory = () => {
                                 <p>{clientDetailsAndHistory.clientPhone}</p>
                             </div>
                         </div>
-                        <button className="bg-blue-500 cursor-pointer px-4 py-2 text-white duration-200 hover:bg-blue-600 rounded-md">Create appointment</button>
+                        {/* <button className="bg-blue-500 cursor-pointer px-4 py-2 text-white duration-200 hover:bg-blue-600 rounded-md">Create appointment</button> */}
                     </div>
                     <div className="border-t border-gray-300 w-full mt-4 pt-2 flex justify-around">
                         <div className="flex flex-col items-center px-4">
@@ -68,7 +67,7 @@ export const ClientHistory = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-10 bg-white p-4 border border-gray-300 rounded-md flex flex-col min-w-250">
+            <div className="my-10 bg-white p-4 border border-gray-300 rounded-md flex flex-col min-w-250">
                 <p className="text-xl font-medium">Past bookings</p>
                 <ul className="mt-4">
                     {clientDetailsAndHistory.historyDTO.map(e => {
@@ -80,7 +79,7 @@ export const ClientHistory = () => {
                         }).format(date);
 
                         return (
-                            <li key={e.id} className="mb-6 cursor-pointer duration-200 hover:bg-gray-200 p-2">
+                            <li key={e.id} className="mb-6 duration-200 hover:bg-gray-200 p-2">
                                 <p>{dayTypes[date.getDay()]}, {formattedDate}</p>
                                 <div className="flex mt-2 items-center">
                                     <div>

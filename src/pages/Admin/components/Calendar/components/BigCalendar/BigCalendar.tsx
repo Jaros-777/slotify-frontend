@@ -65,8 +65,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
     setIsModalOpen(true);
   };
 
-
-
+  
   const handleAddUpdateEvent = () => {
     if (!newEvent.clientName || !newEvent.startDate) {
       alert("Reservation must have client name");

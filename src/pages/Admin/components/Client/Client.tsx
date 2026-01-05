@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import type { clientType } from "./types/clientType";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import type { clientDetailsAndHistoryType } from "./types/clientHistoryType";
+import type { clientDetailsAndHistoryType } from "./types/clientDetailsAndHistoryType";
+import { useData } from "../../../../AppRouter";
 
 
 const colors = [
@@ -19,10 +20,10 @@ export const Client = () => {
 
 	const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
 	const [clientData, setClientData] = useState<clientType[]>([])
-	const [allClientsHistory, setAllClientsHistory] = useState<clientDetailsAndHistoryType[]>([])
 	const [fliteredByText, setFilteredByText] = useState<string>("")
 	const [filteredClientsList, setFilteredClientList] = useState<clientType[]>(clientData)
 	const navigate = useNavigate();
+	const { userToken } = useData()
 
 	const fetchData = async (token: string) => {
 		await axios.get(`${import.meta.env.VITE_APP_URL}/admin/client/all`,
@@ -32,7 +33,6 @@ export const Client = () => {
 				}
 			}
 		).then(response => {
-			console.log(response.data)
 			setClientData(response.data)
 			setFilteredByText("")
 			setFilteredClientList(response.data)
@@ -54,49 +54,69 @@ export const Client = () => {
 	const formatTime = (date: Date) =>
 		`${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
-	const exportAllClientsHistoryCSV = () => {
-		// if (allClientsHistory.length === 0) return;
+	const exportAllClientsHistoryCSV = async () => {
 
-		// const headers = [
-		// 	"Client ID",
-		// 	"Name",
-		// 	"Email",
-		// 	"Phone",
-		// 	"Service name",
-		// 	"Date",
-		// 	"Start",
-		// 	"End"
-		// ];
+		let allData: clientDetailsAndHistoryType[] = [];
 
-		// const rows = allClientsHistory.map(entry => {
-		// 	const client = clientData.find(c => c.id === entry.clientId);
+		try {
+			const response = await axios.get(
+				`${import.meta.env.VITE_APP_URL}/admin/client/all/with-reservations`,
+				{
+					headers: {
+						Authorization: `Bearer ${userToken}`,
+					},
+				}
+			);
+			allData = response.data;
+		} catch (error) {
+			console.error(error);
+			return;
+		}
 
-		// 	if (!client) return null;
+		if (allData.length === 0) return;
 
-		// 	const start = new Date(entry.startDate);
-		// 	const end = new Date(start.getTime() + entry.duration * 1000);
+		const headers = [
+			"Client ID",
+			"Name",
+			"Email",
+			"Phone",
+			"Service name",
+			"Date",
+			"Start",
+			"End",
+		];
 
-		// 	return [
-		// 		client.id,
-		// 		client.name,
-		// 		client.email,
-		// 		client.phone,
-		// 		entry.serviceName,
-		// 		formatDate(start),
-		// 		formatTime(start),
-		// 		formatTime(end)
-		// 	].join(",");
-		// }).filter(Boolean);
+		const rows = allData.flatMap(client =>
+			client.historyDTO.map(history => {
+				const start = new Date(history.startDate);
+				const end = new Date(history.endDate);
 
-		// const csvContent = [headers.join(","), ...rows].join("\n");
+				return [
+					client.clientId,
+					client.clientName,
+					client.clientEmail,
+					client.clientPhone,
+					history.serviceName,
+					formatDate(start),
+					formatTime(start),
+					formatTime(end),
+				].join(",");
+			})
+		);
 
-		// const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-		// const link = document.createElement("a");
-		// link.href = URL.createObjectURL(blob);
-		// const date = new Date()
-		// link.download = `Clients ${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}.csv`;
-		// link.click();
-		// URL.revokeObjectURL(link.href);
+		if (rows.length === 0) return;
+
+		const csvContent = [headers.join(","), ...rows].join("\n");
+
+		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+		const link = document.createElement("a");
+		link.href = URL.createObjectURL(blob);
+
+		const date = new Date();
+		link.download = `Clients_${formatDate(date)}.csv`;
+
+		link.click();
+		URL.revokeObjectURL(link.href);
 	};
 
 	useEffect(() => {
@@ -135,21 +155,22 @@ export const Client = () => {
 				<p className="text-2xl font-medium">Clients ({filteredClientsList.length})</p>
 				<ul className="grid grid-cols-2 gap-2 mt-4">
 					{filteredClientsList.map(e => {
-						 const bgColor = colors[Math.floor(Math.random() * colors.length)];
-						return(
-						<li key={e.id} className="bg-white p-4 border border-gray-300 rounded-md flex cursor-pointer duration-200 hover:bg-gray-200" onClick={() => navigate(`/admin/client/${e.id}`)}>
-							<div 
-							style={{ backgroundColor: bgColor }}
-							className="h-20 w-20 rounded-md text-white flex items-center justify-center">
-								<p className="text-4xl">{e.name.slice(0, 2)}</p>
-							</div>
-							<div className="ml-4">
-								<p className="font-medium">{e.name}</p>
-								<p>{e.email}</p>
-								<p>{e.phone}</p>
-							</div>
-						</li>
-					)})}
+						const bgColor = colors[Math.floor(Math.random() * colors.length)];
+						return (
+							<li key={e.id} className="bg-white p-4 border border-gray-300 rounded-md flex cursor-pointer duration-200 hover:bg-gray-200" onClick={() => navigate(`/admin/client/${e.id}`)}>
+								<div
+									style={{ backgroundColor: bgColor }}
+									className="h-20 w-20 rounded-md text-white flex items-center justify-center">
+									<p className="text-4xl">{e.name.slice(0, 2)}</p>
+								</div>
+								<div className="ml-4">
+									<p className="font-medium">{e.name}</p>
+									<p>{e.email}</p>
+									<p>{e.phone}</p>
+								</div>
+							</li>
+						)
+					})}
 
 				</ul>
 			</div>
