@@ -14,6 +14,7 @@ import { CustomToolbar } from "./components/CustomToolbar";
 import type { ServiceType } from "../../../types/ServiceType";
 import axios from "axios";
 import { toLocalDateTimeString } from "./utils/dateUtils";
+import type { clientType } from "../../../Client/types/clientType";
 
 
 const locales = {
@@ -45,8 +46,12 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
   const [newEvent, setNewEvent] = useState<Partial<EventType>>({});
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
   const [showEventDescription, setShowEventDescription] = useState<boolean>(false)
+  const [showClientsList, setShowClientsList] = useState<boolean>(false);
+  const [clientDetails, setClientDetails] = useState<clientType[]>([])
+  const [filteredClientDetails, setFilteredClientDetails] = useState<clientType[]>([])
 
-  const handleSelectSlot = (slotInfo: SlotInfo) => {
+  const handleSelectSlot = async (slotInfo: SlotInfo) => {
+    await fetchPreviousClients()
     const diffInMinutes = (slotInfo.end.getTime() - slotInfo.start.getTime()) / 60000;
 
     setNewEvent({
@@ -65,7 +70,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
     setIsModalOpen(true);
   };
 
-  
+
   const handleAddUpdateEvent = () => {
     if (!newEvent.clientName || !newEvent.startDate) {
       alert("Reservation must have client name");
@@ -168,6 +173,31 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
     { value: 720, label: "12 hr" },
   ];
 
+  const fetchPreviousClients = async () => {
+    await axios.get(`${import.meta.env.VITE_APP_URL}/admin/client/all`,
+      {
+        headers: {
+          'Authorization': `Bearer ${userToken}`
+        }
+      }
+    ).then(response => {
+      setClientDetails(response.data)
+    }).catch(function (error) {
+      console.log(error)
+    })
+  }
+
+  const filterClientNames = (text: string) => {
+    const filtered = clientDetails.filter(e => e.name.toLowerCase().startsWith(text.toLowerCase()))
+
+    if (filtered.length != 0 && text.length != 0) {
+      setShowClientsList(true)
+    } else {
+      setShowClientsList(false)
+    }
+    setFilteredClientDetails(filtered)
+  }
+
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -232,16 +262,45 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                   handleAddUpdateEvent();
                 }}
               >
-                <input
-                  type="text"
-                  required
-                  placeholder="Name"
-                  value={newEvent.clientName || ""}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, clientName: e.target.value })
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    placeholder="Name"
+                    value={newEvent.clientName || ""}
+                    onChange={(e) => {
+                      setNewEvent({ ...newEvent, clientName: e.target.value });
+                      filterClientNames(e.target.value)
+                    }
+                    }
+                    className="w-full border p-2 rounded mb-4 border-gray-300"
+                  />
+                  {showClientsList ?
+                    <ul className="absolute bg-white p-2 border border-black w-84 left-0 top-10  z-100">
+                      {filteredClientDetails.map(e => (
+                        <li
+                          onClick={() => {
+                            setNewEvent(prev => ({
+                              ...prev,
+                              clientName: e.name,
+                              clientEmail: e.email,
+                              clientPhone: parseInt(e.phone) ?? undefined
+                            }));
+                            setShowClientsList(false)
+                          }}
+                          key={e.id}
+                          className="cursor-pointer hover:bg-gray-300 px-2 flex">
+                            <p>{e.name}</p>
+                            <p className="ml-4">{e.email}</p>
+                        </li>
+                      ))}
+                    </ul>
+                    : null
+
                   }
-                  className="w-full border p-2 rounded mb-4 border-gray-300"
-                />
+
+
+                </div>
                 <input
                   type="email"
                   placeholder="Mail"
@@ -366,7 +425,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                   onChange={(e) =>
                     setNewEvent({ ...newEvent, bookingStatus: e.target.value as BookingStatus })
                   }
-                  className={`w-full border p-2 rounded mb-4 border-gray-300 ${newEvent.bookingStatus === "TO_BE_CONFIRMED" ? "bg-yellow-100" :null }`}
+                  className={`w-full border p-2 rounded mb-4 border-gray-300 ${newEvent.bookingStatus === "TO_BE_CONFIRMED" ? "bg-yellow-100" : null}`}
                 >
                   <option key={0} value={"CONFIRMED"}>
                     Confirmed
