@@ -1,4 +1,4 @@
-import { Download, Mail, Copy } from "lucide-react";
+import { Download, Mail, Copy, MousePointerClick,ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import { QRCodeCanvas } from "qrcode.react";
@@ -7,14 +7,16 @@ import WhatsAppLogo from "../assets/Digital_Glyph_Green.png"
 import LinkedlnLogo from "../assets/LI-In-Bug.png"
 import axios from "axios";
 import { LoadingPage } from "../../../../../../LoadingPage";
+import { useNavigate } from "react-router-dom";
 
 export const GetBooking = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const [showCopyInfo, setShowCopyInfo] = useState<boolean>(false)
     const [businessUrl, setBusinessUrl] = useState<string>("")
+    const navigate = useNavigate()
 
-    const mailToSendSubject = encodeURIComponent(`I invite you to make a reservation - ${businessUrl.slice(22,businessUrl.length)}`);
+    const mailToSendSubject = encodeURIComponent(`I invite you to make a reservation - ${businessUrl.slice(22, businessUrl.length)}`);
     const mailToSendBody = encodeURIComponent(`Good morning.\nBelow is a link to the booking page:\n${businessUrl}`);
     const mailto = `mailto:?subject=${mailToSendSubject}&body=${mailToSendBody}`
 
@@ -50,7 +52,7 @@ export const GetBooking = () => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                setBusinessUrl(`${window.location.href.split("/").slice(0,3).join("/")}/` + response.data.businessName.toLowerCase())
+                setBusinessUrl(`${window.location.href.split("/").slice(0, 3).join("/")}/` + response.data.businessName.toLowerCase())
             })
             .catch((error) => {
                 console.log(error)
@@ -147,6 +149,19 @@ export const GetBooking = () => {
 
                             </div>
                         </div>
+                    </div>
+                    <div className="mt-4 rounded-2xl p-4 border border-gray-300 flex items-center">
+                        <div className="bg-blue-200 rounded-full p-4">
+                            <MousePointerClick className="text-blue-500"></MousePointerClick>
+                        </div>
+                        <div className="ml-4">
+                            <p className="font-bold">Book now button</p>
+                            <p>Get a code and customize your button to start receving bookings from your website.</p>
+                        </div>
+                        <button className="flex text-blue-500 ml-auto font-bold cursor-pointer px-4 py-2 rounded-md duration-200 hover:bg-gray-300" onClick={()=>navigate("/admin/get-button")}>
+                            <p>GET BUTTON</p>
+                            <ChevronRight></ChevronRight>
+                        </button>
                     </div>
                 </div>
 

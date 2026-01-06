@@ -8,21 +8,28 @@ import { SettingsLayout } from "./Layouts/SettingsLayout.tsx";
 import { BookingLayout } from "./Layouts/BookingLayout.tsx";
 import { ClientPanelLayout } from "./Layouts/ClientPanelLayout.tsx";
 
+
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
+
 import { Client } from "./pages/Admin/components/Client/Client.tsx";
 import { ClientHistory } from "./pages/Admin/components/Client/component/ClientHistory.tsx";
+
+import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking/GetBooking.tsx";
+import { BookNowHTML } from "./pages/Admin/components/Booking/components/GetBooking/components/BookNowHTML.tsx";
+import { BusinessProfile } from "./pages/Admin/components/Booking/components/BusinessProfile/BusinessProfile.tsx";
+
+import { Availability } from "./pages/Admin/components/Settings/components/Availability/Availability.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";
 import { ServiceForm } from "./pages/Admin/components/Settings/components/Service/components/ServiceForm.tsx";
-import { GetBooking } from "./pages/Admin/components/Booking/components/GetBooking/GetBooking.tsx";
-import { BusinessProfile } from "./pages/Admin/components/Booking/components/BusinessProfile/BusinessProfile.tsx";
+
 import { Reservation } from "./pages/Clients/Reservation.tsx";
 import { Order } from "./pages/Clients/components/Order/Order.tsx";
-import { Availability } from "./pages/Admin/components/Settings/components/Availability/Availability.tsx";
 
 import { UserProfile } from "./pages/Clients/components/ClientPanel/ClientProfile.tsx";
 import { ClientBookings } from "./pages/Clients/components/ClientPanel/ClientBookings.tsx";
 
 import { NotFound } from "./pages/NotFound.tsx";
+
 import type { ServiceType } from "./pages/Admin/components/types/ServiceType.ts";
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { ClientType } from "./pages/Clients/components/ClientPanel/types/clientType.ts";
@@ -105,6 +112,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
 
         <Route path="/:businessName" element={<Reservation />} />
         <Route path="/:businessName/order/:serviceId" element={<Order />} />
+        <Route path="/admin/get-button" element={<BookNowHTML />} />
 
         <Route element={<ClientPanelLayout />}>
           <Route path="/personal" element={<UserProfile />} />

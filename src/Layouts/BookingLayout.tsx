@@ -5,7 +5,7 @@ import { FooterAdmin } from "../components/Footer/FooterAdmin"
 export const BookingLayout = () => {
 
     return (
-        <div className="flex w-full min-h-screen">
+        <div className="flex w-full min-h-screen bg-white">
             <BookingSideBar />
             <div className="bg-gray-200 w-full flex flex-col justify-between">
                 <Outlet />
