@@ -21,6 +21,7 @@ import { BusinessProfile } from "./pages/Admin/components/Booking/components/Bus
 import { Availability } from "./pages/Admin/components/Settings/components/Availability/Availability.tsx";
 import { Services } from "./pages/Admin/components/Settings/components/Service/Services.tsx";
 import { ServiceForm } from "./pages/Admin/components/Settings/components/Service/components/ServiceForm.tsx";
+import { Vacations } from "./pages/Admin/components/Settings/components/Vacations/Vacations.tsx";
 
 import { Reservation } from "./pages/Clients/Reservation.tsx";
 import { Order } from "./pages/Clients/components/Order/Order.tsx";
@@ -103,6 +104,8 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
             <Route path="/admin/settings/services/form/:id" element={<ServiceForm />} />
             <Route path="/admin/settings/services/form/add" element={<ServiceForm />} />
             <Route path="/admin/settings/availability" element={<Availability />} />
+            <Route path="/admin/settings/vacations" element={<Vacations />} />
+            <Route path="/admin/settings/vacations/:id" element={<Vacations />} />
           </Route>
           <Route element={<BookingLayout />}>
             <Route path="/admin/booking/get-booking" element={<GetBooking />} />

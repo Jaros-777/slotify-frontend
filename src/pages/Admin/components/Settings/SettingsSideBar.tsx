@@ -1,4 +1,4 @@
-import {Clock2,HandPlatter  } from "lucide-react";
+import {Clock2,HandPlatter,TreePalm  } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -21,6 +21,12 @@ export const SettingsSideBar = () => {
                 onClick={()=>{navigate("/admin/settings/services");window.scrollTo(0,0)}}>
                     <HandPlatter className="group-hover:text-blue-600"></HandPlatter>
                     <p className="ml-4 group-hover:text-blue-600">Services</p>
+                </button>
+                <button 
+                className={`flex cursor-pointer py-2 group ${section === "vactions" ? "text-blue-500" : "null"}`}  
+                onClick={()=>{navigate("/admin/settings/vacations");window.scrollTo(0,0)}}>
+                    <TreePalm className="group-hover:text-blue-600"></TreePalm>
+                    <p className="ml-4 group-hover:text-blue-600">Vactions</p>
                 </button>
             </div>
         </section>
