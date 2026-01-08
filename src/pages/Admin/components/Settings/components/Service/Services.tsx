@@ -12,8 +12,17 @@ export const Services = () => {
     const { serviceData } = useData();
     const [serviceDataToShow, setServiceDataToShow] = useState<ServiceType[]>([])
     const { loadServiceData, isDataLoading } = useLoadServiceData();
+    const [filteredByText, setFilteredByText] = useState<string>("")
     const navigate = useNavigate()
 
+
+    const handleFilterServices = (text:string)=>{
+        const filtered = serviceData.filter(e=>e.name.toLowerCase().startsWith(text.toLowerCase()) && e.isEditable === true)
+        setServiceDataToShow(filtered)
+        if(text.length === 0){
+            setServiceDataToShow(serviceData.filter(service => service.isEditable === true))
+        }
+    }
 
     useEffect(() => {
         (async () => {
@@ -45,7 +54,12 @@ export const Services = () => {
                     </div>
                     <div className="flex border border-gray-300 w-full mt-6 mb-6 p-2 ">
                         <Search className="text-gray-300" />
-                        <input type="text" placeholder="Search" className="ml-2 w-full outline-0" />
+                        <input 
+                        value={filteredByText}
+                        onChange={(e)=>{setFilteredByText(e.target.value),handleFilterServices(e.target.value)}}
+                        type="text" 
+                        placeholder="Search" 
+                        className="ml-2 w-full outline-0" />
                     </div>
                 </div>
                 <ul className="w-full mt-6 pb-12 flex flex-col items-center ">
