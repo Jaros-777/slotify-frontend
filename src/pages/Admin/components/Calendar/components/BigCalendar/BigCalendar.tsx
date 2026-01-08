@@ -154,8 +154,6 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
   });
 
   const durations = [
-    { value: 5, label: "5 min" },
-    { value: 10, label: "10 min" },
     { value: 15, label: "15 min" },
     { value: 30, label: "30 min" },
     { value: 45, label: "45 min" },
@@ -250,9 +248,9 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
         onNavigate={(date) => onWeekChange(getWeekStart(date))}
       />
       {isModalOpen && (
-        <div className="fixed top-20 inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed top-20 inset-0 bg-black/50 flex items-center justify-center z-50" onClick={()=>setShowClientsList(false)}>
           <div className="min-h-full flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-lg p-6 w-96 flex flex-col items-start max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl shadow-lg p-6 w-96 flex flex-col items-start max-h-[90vh] overflow-y-auto" >
               <h2 className="text-xl font-semibold mb-4 text-center">
                 Client
               </h2>
