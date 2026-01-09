@@ -70,7 +70,7 @@ export const Services = () => {
                     {serviceDataToShow.map((e) => (
                         <li
                             key={e.id}
-                            className="flex my-2 w-[90%] bg-white p-4 items-center rounded-md cursor-pointer duration-100 hover:bg-gray-200"
+                            className="flex my-2 w-[90%] bg-white p-4 items-center rounded-md cursor-pointer duration-100 hover:bg-gray-200 border border-gray-300"
                             onClick={() => navigate(`/admin/settings/services/form/${e.id}`)}
                         >
                             <div className="border border-black w-12 h-12 rounded-full overflow-hidden flex items-center justify-center">

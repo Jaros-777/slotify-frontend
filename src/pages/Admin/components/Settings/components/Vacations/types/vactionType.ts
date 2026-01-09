@@ -1,6 +1,7 @@
 
 export interface vactionType{
-    id:string,
+    id?:string,
     name:string,
-    date:Date
+    startDate:Date,
+    endDate: Date
 }
