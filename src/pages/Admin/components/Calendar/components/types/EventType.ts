@@ -1,5 +1,5 @@
 
-export type BookingStatus= "CONFIRMED" | "CLIENT_ARRIVED" | "CLIENT_DID_NOT_ARRIVE" | "TO_BE_CONFIRMED"
+export type BookingStatus= "CONFIRMED" | "CLIENT_ARRIVED" | "CLIENT_DID_NOT_ARRIVE" | "TO_BE_CONFIRMED" | "VACATION"
 
 
 export interface EventType {

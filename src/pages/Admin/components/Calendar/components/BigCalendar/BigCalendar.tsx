@@ -15,6 +15,7 @@ import type { ServiceType } from "../../../types/ServiceType";
 import axios from "axios";
 import { toLocalDateTimeString } from "./utils/dateUtils";
 import type { clientType } from "../../../Client/types/clientType";
+import { useNavigate } from "react-router-dom";
 
 
 const locales = {
@@ -49,6 +50,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
   const [showClientsList, setShowClientsList] = useState<boolean>(false);
   const [clientDetails, setClientDetails] = useState<clientType[]>([])
   const [filteredClientDetails, setFilteredClientDetails] = useState<clientType[]>([])
+  const navigate = useNavigate()
 
   const handleSelectSlot = async (slotInfo: SlotInfo) => {
     await fetchPreviousClients()
@@ -217,7 +219,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
 
 
   return (
-    <div className="h-180 p-4 pb-0 w-full">
+    <div className="h-200 p-4 pb-0 w-full">
       <Calendar
         selectable
         localizer={localizer}
@@ -232,23 +234,52 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
         className="h-full bg-white"
         onSelectSlot={handleSelectSlot}
         onSelectEvent={(event: EventType) => {
-          setNewEvent(event);
-          const durationInMinutes = (event.endDate.getTime() - event.startDate.getTime()) / 60000;
-          setSelectedDuration(durationInMinutes);
-          setIsModalOpen(true);
-          if (event.description != null) {
-            setShowEventDescription(true)
+          if (event.bookingStatus === "VACATION") {
+            localStorage.setItem("currentWeek", weekStartDate.toDateString())
+            navigate(`/admin/settings/vacations/${event.id}`)
+          } else {
+            setNewEvent(event);
+            const durationInMinutes = (event.endDate.getTime() - event.startDate.getTime()) / 60000;
+            setSelectedDuration(durationInMinutes);
+            setIsModalOpen(true);
+            if (event.description != null) {
+              setShowEventDescription(true)
+            }
           }
+
         }}
         scrollToTime={new Date(2025, 0, 1, 8, 0, 0)}
         components={{
           event: CustomEvent,
           toolbar: (props) => <CustomToolbar {...props} currentViewDate={weekStartDate} />,
         }}
+        eventPropGetter={(event: EventType) => {
+          if (event.bookingStatus === "VACATION") {
+            return {
+              className: "vacation-event",
+            };
+          }
+          if (event.bookingStatus === "TO_BE_CONFIRMED") {
+            return {
+              className: "to-be-confirmed-event",
+            };
+          }
+          if (event.bookingStatus === "CLIENT_ARRIVED") {
+            return {
+              className: "client-arrived-event",
+            };
+          }
+          if (event.bookingStatus === "CLIENT_DID_NOT_ARRIVE") {
+            return {
+              className: "client-did-not-arrive-event",
+            };
+          }
+          return {};
+        }}
         onNavigate={(date) => onWeekChange(getWeekStart(date))}
       />
       {isModalOpen && (
-        <div className="fixed top-20 inset-0 bg-black/50 flex items-center justify-center z-50" onClick={()=>setShowClientsList(false)}>
+        <div className="fixed top-20 inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowClientsList(false)}>
           <div className="min-h-full flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-lg p-6 w-96 flex flex-col items-start max-h-[90vh] overflow-y-auto" >
               <h2 className="text-xl font-semibold mb-4 text-center">
@@ -288,8 +319,8 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                           }}
                           key={e.id}
                           className="cursor-pointer hover:bg-gray-300 px-2 flex">
-                            <p>{e.name}</p>
-                            <p className="ml-4">{e.email}</p>
+                          <p>{e.name}</p>
+                          <p className="ml-4">{e.email}</p>
                         </li>
                       ))}
                     </ul>
@@ -423,7 +454,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                   onChange={(e) =>
                     setNewEvent({ ...newEvent, bookingStatus: e.target.value as BookingStatus })
                   }
-                  className={`w-full border p-2 rounded mb-4 border-gray-300 ${newEvent.bookingStatus === "TO_BE_CONFIRMED" ? "bg-yellow-100" : null}`}
+                  className={`w-full border p-2 rounded mb-4 border-gray-300 ${newEvent.bookingStatus === "TO_BE_CONFIRMED" ? "bg-blue-100" : null}`}
                 >
                   <option key={0} value={"CONFIRMED"}>
                     Confirmed

@@ -5,6 +5,7 @@ import { X } from "lucide-react"
 import { useData } from "@/AppRouter"
 import axios from "axios"
 import { toLocalDateTimeString } from "@/pages/Admin/components/Calendar/components/BigCalendar/utils/dateUtils"
+import { useNavigate } from "react-router-dom"
 
 interface vactionFormProps {
     setShowForm: React.Dispatch<React.SetStateAction<boolean>>,
@@ -15,13 +16,14 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
     const [vacation, setVacation] = useState<vactionType>(chosenVacation)
     const [showHours, setShowHours] = useState<boolean>(false)
     const { userToken } = useData();
+    const navigate = useNavigate()
 
 
     const postUpdateData = async () => {
         const payload = {
             ...vacation,
             startDate: vacation.id ? vacation.startDate : toLocalDateTimeString(vacation.startDate),
-            endDate: vacation.id ? vacation.startDate : toLocalDateTimeString(vacation.endDate),
+            endDate: vacation.id ? vacation.endDate : toLocalDateTimeString(vacation.endDate),
         }
         console.log(payload)
         await axios.post(`${import.meta.env.VITE_APP_URL}/vacation`,
@@ -32,7 +34,7 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                 }
             }
         ).then(response => {
-            setShowForm(false)
+            handleCloseForm
             window.location.reload()
         }).catch(function (error) {
             console.log(error)
@@ -66,6 +68,15 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
         )
     }
 
+    const handleCloseForm=()=>{
+        setShowForm(false)
+        const prevWeek = localStorage.getItem("currentWeek")
+        if(prevWeek){
+            navigate("/admin/calendar")
+        }
+    }
+
+
     useEffect(() => {
         setShowHours(!isAllDay(new Date(vacation.startDate), new Date(vacation.endDate)))
     }, [])
@@ -73,7 +84,7 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
     return (
         <div className="fixed bg-gray-200 top-0 left-0 w-full h-full z-100">
             <div className="flex bg-white justify-between py-4 px-8 items-center">
-                <X onClick={() => setShowForm(false)} className="cursor-pointer h-10 w-10 p-2 rounded-full duration-200 hover:bg-gray-200"></X>
+                <X onClick={handleCloseForm} className="cursor-pointer h-10 w-10 p-2 rounded-full duration-200 hover:bg-gray-200"></X>
                 <p className="font-bold text-xl">{vacation.id ? "Edit vacation" : "New vacation"}</p>
                 <button
                     type="submit"
@@ -109,14 +120,14 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                                 let endDate = new Date();
                                 endDate.setHours(23);
                                 endDate.setMinutes(59)
-                                setVacation(prev=>(
+                                setVacation(prev => (
                                     {
                                         ...prev,
                                         startDate: vacation.id ? vacation.startDate : startDate,
                                         endDate: vacation.id ? vacation.endDate : endDate
                                     }
                                 )), setShowHours(!showHours)
-                            } }
+                            }}
                         />
                         <p className="ml-4">All day</p>
                     </div>
@@ -133,15 +144,6 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                                         updated.setFullYear(year)
                                         updated.setMonth(month - 1)
                                         updated.setDate(day)
-
-                                        const inputEl = e.target
-                                        const start = updated
-                                        const end = new Date(prev.endDate)
-                                        if (start.getTime() > end.getTime()) {
-                                            inputEl.setCustomValidity("Start date cannot be after end date")
-                                        } else {
-                                            inputEl.setCustomValidity("")
-                                        }
 
                                         return { ...prev, startDate: updated }
                                     })
@@ -160,20 +162,6 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                                             updated.setHours(hours)
                                             updated.setMinutes(minutes)
                                             updated.setSeconds(0)
-
-                                            const start = updated
-                                            const end = new Date(prev.endDate)
-                                            if (
-                                                start.getFullYear() === end.getFullYear() &&
-                                                start.getMonth() === end.getMonth() &&
-                                                start.getDate() === end.getDate() &&
-                                                start.getTime() > end.getTime()
-                                            ) {
-                                                e.target.setCustomValidity("Start time cannot be after end time on the same day")
-                                            } else {
-                                                e.target.setCustomValidity("")
-                                            }
-
                                             return { ...prev, startDate: updated }
                                         })
                                     }}
@@ -193,16 +181,6 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                                         updated.setFullYear(year)
                                         updated.setMonth(month - 1)
                                         updated.setDate(day)
-
-                                        const inputEl = e.target
-                                        const start = new Date(prev.startDate)
-                                        const end = updated
-                                        if (end.getTime() < start.getTime()) {
-                                            inputEl.setCustomValidity("End date cannot be before start date")
-                                        } else {
-                                            inputEl.setCustomValidity("")
-                                        }
-
                                         return { ...prev, endDate: updated }
                                     })
                                 }}
@@ -220,20 +198,6 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                                             updated.setHours(hours)
                                             updated.setMinutes(minutes)
                                             updated.setSeconds(0)
-
-                                            const start = new Date(prev.startDate)
-                                            const end = updated
-                                            if (
-                                                start.getFullYear() === end.getFullYear() &&
-                                                start.getMonth() === end.getMonth() &&
-                                                start.getDate() === end.getDate() &&
-                                                end.getTime() < start.getTime()
-                                            ) {
-                                                e.target.setCustomValidity("End time cannot be before start time on the same day")
-                                            } else {
-                                                e.target.setCustomValidity("")
-                                            }
-
                                             return { ...prev, endDate: updated }
                                         })
                                     }}

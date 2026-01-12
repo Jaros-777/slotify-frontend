@@ -17,7 +17,7 @@ export const CalendarPage = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const { loadServiceData } = useLoadServiceData();
 
-    const { serviceData, userToken  } = useData();
+    const { serviceData, userToken } = useData();
     const [eventsData, setEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
     const [loadingState, setLoadingState] = useState<boolean>(false)
@@ -32,8 +32,14 @@ export const CalendarPage = () => {
         return start;
     }
 
-    async function fetchData(token?: string) {
-        const localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
+    async function fetchData(token?: string, currentWeekProps?: Date) {
+        let localDateTimeStartWeek;
+        if (currentWeekProps) {
+             localDateTimeStartWeek = encodeURI(currentWeekProps.toISOString())
+
+        } else {
+             localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
+        }
         axios.get(`${import.meta.env.VITE_APP_URL}/events/${localDateTimeStartWeek}`,
             {
                 headers: {
@@ -58,16 +64,41 @@ export const CalendarPage = () => {
         (async () => {
             const token = await checkIsLogged()
             if (token) {
+                const prevWeek = localStorage.getItem("currentWeek")
+                if (prevWeek) {
+                    console.log(new Date(prevWeek))
+                    setCurrentWeekStart(getWeekStart(new Date(prevWeek)))
+                    localStorage.removeItem("currentWeek")
+                    await fetchData(token, new Date(prevWeek))
+                }else
+                    await fetchData(token)
+
                 await loadServiceData(token);
-                await fetchData(token)
             }
         })();
     }, [])
 
     useEffect(() => {
+        // (async () => {
+        //     const prevWeek = localStorage.getItem("currentWeek")
+        //     if (prevWeek) {
+        //         setCurrentWeekStart(new Date(prevWeek))
+        //         localStorage.removeItem("currentWeek")
+        //     }
+
         setLoadingState(true)
         fetchData()
+        // })();
+
     }, [currentWeekStart])
+
+    // useEffect(()=>{
+    //     const prevWeek = localStorage.getItem("currentWeek")
+    //     if(prevWeek){
+    //         setCurrentWeekStart(new Date(prevWeek))
+    //         localStorage.removeItem("currentWeek")
+    //     }
+    // },[])
 
     if (isAuthLoading) {
         return <LoadingPage text="Checking authentication..." ></LoadingPage>;

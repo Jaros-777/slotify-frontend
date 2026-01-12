@@ -11,7 +11,7 @@ import { VacationForm } from "./component/VacationForm";
 
 
 export const Vacations = () => {
-    const vactionId = useParams();
+    const { vactionId } = useParams();
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
     const { userToken } = useData()
     const [checkIsDataLoaded, setCheckIsDataLoaded] = useState<boolean>(false)
@@ -38,7 +38,7 @@ export const Vacations = () => {
                 }
             }
         ).then(response => {
-            console.log(response.data)
+            // console.log(response.data)
             setVacationData(response.data)
             const sortedData = response.data.sort(
                 (a: vactionType, b: vactionType) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
@@ -59,7 +59,6 @@ export const Vacations = () => {
                 }
             }
         ).then(response => {
-            console.log(response.data)
             setVacationData(response.data)
             const sortedData = response.data.sort(
                 (a: vactionType, b: vactionType) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
@@ -74,15 +73,27 @@ export const Vacations = () => {
     }
 
     const isSameDay = (start: string | Date, end: string | Date): boolean => {
-    const s = typeof start === "string" ? new Date(start) : start
-    const e = typeof end === "string" ? new Date(end) : end
+        const s = typeof start === "string" ? new Date(start) : start
+        const e = typeof end === "string" ? new Date(end) : end
 
-    return (
-        s.getFullYear() === e.getFullYear() &&
-        s.getMonth() === e.getMonth() &&
-        s.getDate() === e.getDate()
-    )
-}
+        return (
+            s.getFullYear() === e.getFullYear() &&
+            s.getMonth() === e.getMonth() &&
+            s.getDate() === e.getDate()
+        )
+    }
+
+    useEffect(() => {
+        if (vactionId && vactionsData.length>0) {
+            const vacation = vactionsData.find(e => e.id?.toString() === vactionId)
+            if(vacation){
+                setChosenVacation(vacation)
+                setShowForm(true)
+            }
+        }
+
+        // setChosenVacation(vactionsData.filter(e=> e.id === vactionId))
+    }, [vactionId, vactionsData])
 
     useEffect(() => {
         (async () => {
@@ -147,7 +158,7 @@ export const Vacations = () => {
                         <li
                             key={e.id}
                             className="flex my-2 w-[90%] bg-white items-center rounded-md cursor-pointer justify-between duration-100 hover:bg-gray-200 border border-gray-300"
-                            
+
                         >
                             <div className="flex w-full h-full p-4 " onClick={() => { setChosenVacation(e), setShowForm(true) }}>
 

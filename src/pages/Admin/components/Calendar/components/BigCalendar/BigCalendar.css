@@ -37,7 +37,7 @@
 
 /*Set reservation style*/
 .rbc-day-slot .rbc-event {
-  background-color: lightblue;
+  /* background-color: lightblue; */
   color: rgb(49, 60, 63);
   border: 1px solid black;
   box-sizing: border-box;
@@ -66,3 +66,39 @@
 .rbc-allday-cell {
   display: none !important;
 }
+
+.to-be-confirmed-event{
+  background: repeating-linear-gradient(
+    45deg,
+    lightblue,
+    lightblue 10px,
+    white 10px,
+    white 20px
+  )!important;
+}
+.client-arrived-event{
+  background-color: lightgreen !important;
+}
+.client-did-not-arrive-event{
+  background-color: rgb(255, 109, 109)!important;
+}
+
+.vacation-event {
+  background: repeating-linear-gradient(
+    45deg,
+    #fee2e2,
+    #fee2e2 10px,
+    #fecaca 10px,
+    #fecaca 20px
+  );
+}
+
+.vacation-event .rbc-event-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  white-space: normal;
+  text-align: center;
+}
+
