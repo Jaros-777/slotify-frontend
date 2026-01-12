@@ -1,6 +1,13 @@
 export const pad = (n: number) => n.toString().padStart(2, "0");
 
 export const toLocalDateTimeString = (date: Date) =>{
+  if (!date) return null;
+
+  if (typeof date === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(date)) {
+    return date;
+  }
+
+  console.log(date)
   const pad = (n:number) => n.toString().padStart(2, '0');
 
   const year = date.getFullYear();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
-import type { vactionType } from "./types/vactionType";
+import type { vacationType } from "./types/vacationType";
 import { Search, Trash2, X } from "lucide-react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import { LoadingPage } from "../../../../../../LoadingPage";
@@ -17,9 +17,9 @@ export const Vacations = () => {
     const [checkIsDataLoaded, setCheckIsDataLoaded] = useState<boolean>(false)
     const [filteredByText, setFilteredByText] = useState<string>("")
     const [showForm, setShowForm] = useState<boolean>(true)
-    const [vactionsData, setVacationData] = useState<vactionType[]>([])
-    const [filtredVactionsData, setFiltredVacationData] = useState<vactionType[]>([])
-    const [chosenVacation, setChosenVacation] = useState<vactionType>()
+    const [vactionsData, setVacationsData] = useState<vacationType[]>([])
+    const [filtredVactionsData, setFiltredVacationData] = useState<vacationType[]>([])
+    const [chosenVacation, setChosenVacation] = useState<vacationType>()
 
     const handleFilterServices = (text: string) => {
         const filtered = vactionsData.filter(e => e.name.toLowerCase().startsWith(text.toLowerCase()))
@@ -38,13 +38,16 @@ export const Vacations = () => {
                 }
             }
         ).then(response => {
-            // console.log(response.data)
-            setVacationData(response.data)
-            const sortedData = response.data.sort(
-                (a: vactionType, b: vactionType) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+            const sorted = response.data.map((e:vacationType)=>({
+                ...e,
+                startDate: new Date(e.startDate),
+                endDate: new Date(e.endDate),
+            })).sort(
+                (a: vacationType, b: vacationType) => a.startDate.getTime() - b.startDate.getTime()
             )
 
-            setFiltredVacationData(sortedData)
+            setVacationsData(sorted)
+            setFiltredVacationData(sorted)
             setCheckIsDataLoaded(false)
         }).catch(function (error) {
             console.log(error)
@@ -59,9 +62,9 @@ export const Vacations = () => {
                 }
             }
         ).then(response => {
-            setVacationData(response.data)
+            setVacationsData(response.data)
             const sortedData = response.data.sort(
-                (a: vactionType, b: vactionType) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+                (a: vacationType, b: vacationType) => a.startDate.getTime() - b.startDate.getTime()
             )
 
             setFiltredVacationData(sortedData)
@@ -72,27 +75,23 @@ export const Vacations = () => {
         window.location.reload()
     }
 
-    const isSameDay = (start: string | Date, end: string | Date): boolean => {
-        const s = typeof start === "string" ? new Date(start) : start
-        const e = typeof end === "string" ? new Date(end) : end
+    const isSameDay = (start:Date, end:Date): boolean => {
 
         return (
-            s.getFullYear() === e.getFullYear() &&
-            s.getMonth() === e.getMonth() &&
-            s.getDate() === e.getDate()
+            start.getFullYear() === end.getFullYear() &&
+            start.getMonth() === end.getMonth() &&
+            start.getDate() === end.getDate()
         )
     }
 
     useEffect(() => {
         if (vactionId && vactionsData.length>0) {
-            const vacation = vactionsData.find(e => e.id?.toString() === vactionId)
+            const vacation = vactionsData.find(e => e.eventsId?.includes(parseInt(vactionId)))
             if(vacation){
                 setChosenVacation(vacation)
                 setShowForm(true)
             }
         }
-
-        // setChosenVacation(vactionsData.filter(e=> e.id === vactionId))
     }, [vactionId, vactionsData])
 
     useEffect(() => {

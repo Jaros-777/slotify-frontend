@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { vactionType } from "../types/vactionType"
+import type { vacationType } from "../types/vacationType"
 import { Switch } from "@/components/ui/switch"
 import { X } from "lucide-react"
 import { useData } from "@/AppRouter"
@@ -9,11 +9,11 @@ import { useNavigate } from "react-router-dom"
 
 interface vactionFormProps {
     setShowForm: React.Dispatch<React.SetStateAction<boolean>>,
-    chosenVacation: vactionType
+    chosenVacation: vacationType
 }
 
 export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) => {
-    const [vacation, setVacation] = useState<vactionType>(chosenVacation)
+    const [vacation, setVacation] = useState<vacationType>(chosenVacation)
     const [showHours, setShowHours] = useState<boolean>(false)
     const { userToken } = useData();
     const navigate = useNavigate()
@@ -22,8 +22,8 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
     const postUpdateData = async () => {
         const payload = {
             ...vacation,
-            startDate: vacation.id ? vacation.startDate : toLocalDateTimeString(vacation.startDate),
-            endDate: vacation.id ? vacation.endDate : toLocalDateTimeString(vacation.endDate),
+            startDate: toLocalDateTimeString(vacation.startDate),
+            endDate: toLocalDateTimeString(vacation.endDate),
         }
         console.log(payload)
         await axios.post(`${import.meta.env.VITE_APP_URL}/vacation`,
@@ -34,7 +34,7 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                 }
             }
         ).then(response => {
-            handleCloseForm
+            handleCloseForm()
             window.location.reload()
         }).catch(function (error) {
             console.log(error)
@@ -114,10 +114,10 @@ export const VacationForm = ({ setShowForm, chosenVacation }: vactionFormProps) 
                         <Switch
                             checked={!showHours}
                             onCheckedChange={() => {
-                                let startDate = new Date();
+                                let startDate = vacation.startDate;
                                 startDate.setHours(0);
                                 startDate.setMinutes(0)
-                                let endDate = new Date();
+                                let endDate = vacation.endDate;
                                 endDate.setHours(23);
                                 endDate.setMinutes(59)
                                 setVacation(prev => (
