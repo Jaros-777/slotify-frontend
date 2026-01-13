@@ -66,7 +66,6 @@ export const CalendarPage = () => {
             if (token) {
                 const prevWeek = localStorage.getItem("currentWeek")
                 if (prevWeek) {
-                    console.log(new Date(prevWeek))
                     setCurrentWeekStart(getWeekStart(new Date(prevWeek)))
                     localStorage.removeItem("currentWeek")
                     await fetchData(token, new Date(prevWeek))
@@ -79,26 +78,10 @@ export const CalendarPage = () => {
     }, [])
 
     useEffect(() => {
-        // (async () => {
-        //     const prevWeek = localStorage.getItem("currentWeek")
-        //     if (prevWeek) {
-        //         setCurrentWeekStart(new Date(prevWeek))
-        //         localStorage.removeItem("currentWeek")
-        //     }
-
         setLoadingState(true)
         fetchData()
-        // })();
 
     }, [currentWeekStart])
-
-    // useEffect(()=>{
-    //     const prevWeek = localStorage.getItem("currentWeek")
-    //     if(prevWeek){
-    //         setCurrentWeekStart(new Date(prevWeek))
-    //         localStorage.removeItem("currentWeek")
-    //     }
-    // },[])
 
     if (isAuthLoading) {
         return <LoadingPage text="Checking authentication..." ></LoadingPage>;
