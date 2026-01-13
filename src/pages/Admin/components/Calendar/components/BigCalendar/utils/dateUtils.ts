@@ -7,7 +7,6 @@ export const toLocalDateTimeString = (date: Date) =>{
     return date;
   }
 
-  console.log(date)
   const pad = (n:number) => n.toString().padStart(2, '0');
 
   const year = date.getFullYear();

@@ -20,13 +20,9 @@ interface timeProps {
     serviceDuration: number
 }
 
-interface timeType {
-    hour: number
-    minute: number
-}
-
 interface bookedTimeType {
-    eventStartTime: Date
+    eventStartTime: string,
+    eventEndTime: string,
 }
 
 
@@ -35,7 +31,7 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>()
     const [openHours, setOpenHours] = useState<string[]>([])
-    const [bookedTime, setBookedTime] = useState<timeType[]>([])
+    const [bookedTime, setBookedTime] = useState<bookedTimeType[]>([])
 
     const today = new Date();
 
@@ -44,26 +40,12 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
         if (reservationDetails)
             await axios.get(`${import.meta.env.VITE_APP_URL}/order/booked/${reservationDetails.serviceId}/${toLocalDateTimeString(day)}`)
                 .then(function (response) {
-                    // console.log(response.data)
-                    handleSetBookedTime(response.data)
+                    setBookedTime(response.data)
 
 
                 }).catch(function (error) {
                     console.log(error);
                 })
-    }
-
-    const handleSetBookedTime = (booked: bookedTimeType[]) => {
-        const bookedArr: timeType[] = booked.map(e => {
-            const date = new Date(e.eventStartTime);
-
-            return {
-                hour: date.getHours(),
-                minute: date.getMinutes()
-            };
-        });
-        setBookedTime(bookedArr)
-
     }
 
     const isOpenDay = (date: Date) => {
@@ -83,8 +65,9 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
         return normalized < todayNormalized;
     };
 
+
     const availabilityHours = (day: number, chosenDate: Date) => {
-        const todayAvailability = availability.find(e => e.dayOfWeek === day)
+        const todayAvailability = availability.find(e => e.dayOfWeek === day);
         if (!todayAvailability) return [];
 
         let [startHour, startMin] = todayAvailability.openHour.split(":").map(Number);
@@ -93,59 +76,54 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
         const startMinutes = startHour * 60 + startMin;
         const endMinutes = endHour * 60 + endMin;
 
-        const slotsCount = Math.ceil((endMinutes - startMinutes) / (serviceDuration / 60));
+        const slotDuration = serviceDuration / 60;
+        const slotsCount = Math.floor((endMinutes - startMinutes) / slotDuration);
 
-        const bookedMinutes = bookedTime.map(
-            b => b.hour * 60 + b.minute
-        );
+        const slots: string[] = [];
 
-        const todaySlots: timeType[] = Array.from({ length: slotsCount }, (_, i) => {
-            const totalMinutes = startMinutes + i * (serviceDuration / 60);
+        const now = new Date();
+        const isToday =
+            chosenDate.getFullYear() === now.getFullYear() &&
+            chosenDate.getMonth() === now.getMonth() &&
+            chosenDate.getDate() === now.getDate();
 
-            return {
-                hour: Math.floor(totalMinutes / 60),
-                minute: totalMinutes % 60,
-                totalMinutes
-            };
-        }
-        )
-            .filter(slot =>
-                !bookedMinutes.includes(slot.totalMinutes)
-            )
-            .map(({ hour, minute }) => ({ hour, minute }));
+        for (let i = 0; i < slotsCount; i++) {
+            const slotStartMinutes = startMinutes + i * slotDuration;
 
+            const slotStart = new Date(chosenDate);
+            slotStart.setHours(
+                Math.floor(slotStartMinutes / 60),
+                slotStartMinutes % 60,
+                0,
+                0
+            );
 
+            const slotEnd = new Date(slotStart);
+            slotEnd.setMinutes(slotEnd.getMinutes() + slotDuration);
 
-        let today = new Date()
-        const originalHours = today.getHours();
-        const originalMinutes = today.getMinutes();
-        today.setHours(0, 0, 0, 0)
+            const isOverlapping = bookedTime.some(event => {
+                const eventStart = new Date(event.eventStartTime);
+                const eventEnd = new Date(event.eventEndTime);
 
-        const finalSlots = [];
+                return slotStart < eventEnd && slotEnd > eventStart;
+            });
 
-        if (today.getTime() === chosenDate.getTime()) {
+            const isPastSlot = isToday && slotStart < now;
 
-            today.setHours(originalHours, originalMinutes);
-            const todayMinutes = today.getHours() * 60 + today.getMinutes();
-
-            for (let slot of todaySlots) {
-                const slotMinutes = slot.hour * 60 + slot.minute;
-                if (slotMinutes >= todayMinutes) {
-                    finalSlots.push(`${slot.hour.toString().padStart(2, '0')}:${slot.minute.toString().padStart(2, '0')}`);
-                }
+            if (!isOverlapping && !isPastSlot) {
+                slots.push(
+                    `${slotStart.getHours().toString().padStart(2, '0')}:${slotStart
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, '0')}`
+                );
             }
-
-        } else {
-
-            for (let slot of todaySlots) {
-                finalSlots.push(`${slot.hour.toString().padStart(2, '0')}:${slot.minute.toString().padStart(2, '0')}`);
-
-            }
-
         }
-        setOpenHours(finalSlots)
 
-    }
+        setOpenHours(slots);
+    };
+
+
 
     const handleSelectTime = (time: string) => {
         setSelectedTime(time)
@@ -225,18 +203,23 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
                                 <div className="p-3 rounded-xl  text-center">
                                     <p className='font-bold'>{dayTypes[selectedDay.getDay()]}, {monthTypes[selectedDay.getMonth()]} {selectedDay.getDate()}, {selectedDay.getFullYear()}</p>
                                 </div>
-                                <ul className='grid grid-cols-3 w-full items-center py-4 px-2'>
-                                    {openHours.map((e, index) => (
-                                        <li
-                                            key={index}
-                                            className={`text-center border border-gray-300 rounded-2xl py-1 m-1 cursor-pointer
+                                {openHours.length > 0 ?
+                                    <ul className='grid grid-cols-3 w-full items-center py-4 px-2'>
+                                        {openHours.map((e, index) => (
+                                            <li
+                                                key={index}
+                                                className={`text-center border border-gray-300 rounded-2xl py-1 m-1 cursor-pointer
                                             ${selectedTime === e ? 'bg-blue-500 text-white' : ''}`}
-                                            onClick={() => { handleSelectTime(e) }}
-                                        >
-                                            {e}
-                                        </li>
-                                    ))}
-                                </ul>
+                                                onClick={() => { handleSelectTime(e) }}
+                                            >
+                                                {e}
+                                            </li>
+                                        ))
+                                        }
+                                    </ul>
+                                    :
+                                    <p className='mt-6 font-medium w-full text-center'>No available hours</p>
+                                }
                             </>
 
                         )}
