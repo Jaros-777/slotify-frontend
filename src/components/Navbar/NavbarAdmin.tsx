@@ -2,7 +2,7 @@ import { data, useNavigate } from "react-router-dom"
 import Logo from "../../assets/Slotify Logo.webp"
 import { useEffect, useState } from "react"
 import { CalendarDays, User, Link, Settings, BellRing, Image } from "lucide-react"
-import type { NotificationType } from "./types/notificationType"
+import type { NotificationType } from "./types/NotificationType"
 import axios from "axios"
 import { useData } from "@/AppRouter"
 
@@ -47,7 +47,6 @@ export const NavbarAdmin = () => {
 
     const notificationDate = (date: Date): string => {
         const today = new Date();
-        console.log("Data ", date)
 
         if (today.getFullYear() === date.getFullYear() && today.getMonth() === date.getMonth() && today.getDate() === date.getDate()) {
 
@@ -175,7 +174,7 @@ export const NavbarAdmin = () => {
                                         >
                                             <div className="flex ">
                                                 {e.clientImgUrl ?
-                                                    <img className="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center" src={e.clientImgUrl} alt="Background picture" />
+                                                    <img className="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center" src={e.clientImgUrl} alt="Profile picture" />
                                                     :
                                                     <Image className="h-10 w-10 aspect-square text-gray-400" />
                                                 }

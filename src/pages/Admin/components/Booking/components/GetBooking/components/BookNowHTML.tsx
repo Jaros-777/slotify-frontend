@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../../utlis/checkIsLoged";
 import { LoadingPage } from "../../../../../../../LoadingPage";
 import { X, Copy, Check,Plus } from "lucide-react"
@@ -43,6 +43,8 @@ export const BookNowHTML = () => {
     })
     const [showCopyInfo, setShowCopyInfo] = useState<boolean>(false)
     const [businessUrl, setBusinessUrl] = useState<string>("")
+    const colorInputRef = useRef<HTMLInputElement>(null);
+
 
     const buttonCode =
         `<a href="${businessUrl}"
@@ -94,6 +96,11 @@ export const BookNowHTML = () => {
                 console.log(error)
             })
     }
+
+    const openColorPicker = () => {
+    colorInputRef.current?.click();
+};
+
 
     useEffect(() => {
         (async () => {
@@ -200,6 +207,7 @@ export const BookNowHTML = () => {
                                 <div className="relative h-10 w-20">
                                     <input
                                         type="color"
+                                        ref={colorInputRef}
                                         value={colors.includes(config.mainColor) ? "#fafcfc" : config.mainColor }
                                         onChange={(e) => setConfig(prev => ({
                                             ...prev,
@@ -209,8 +217,8 @@ export const BookNowHTML = () => {
                                         className="h-10 w-20  cursor-pointer"
                                     />
                                     {!colors.includes(config.mainColor) ?
-                                        <Check className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer"></Check>
-                                        : <Plus className="text-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer"></Plus>
+                                        <Check onClick={openColorPicker} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer"></Check>
+                                        : <Plus onClick={openColorPicker} className="text-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer"></Plus>
                                     }
                                 </div>
                             </div>

@@ -14,7 +14,7 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
     const bussinessName = window.location.href.split("/")[3]
     const [showSideBar, setShowSideBar] = useState<boolean>(false)
     const [clientIsLogged, setClientIsLogged] = useState<boolean>(false)
-    const {clientDetails, setClientDetails} = useData()
+    const { clientDetails, setClientDetails } = useData()
     // const [clientDetails, setClientDetails] = useState<Partial<ClientType>>({})
     const navigate = useNavigate()
 
@@ -73,7 +73,11 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
 
             }
             <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
-                <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-8 w-8 cursor-pointer" />
+                {clientDetails?.pictureURL ?
+                    <img className="h-8 w-8 overflow-hidden rounded-full flex items-center justify-center" src={clientDetails.pictureURL} alt="Profile picture" />
+                    :
+                    <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-8 w-8 cursor-pointer" />
+                }
                 {clientIsLogged && clientDetails ?
                     <p className="ml-2 cursor-pointer font-medium">{clientDetails.name}</p>
                     :
@@ -82,9 +86,9 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
             </div>
 
             {clientIsLogged && clientDetails ?
-                <div 
-                className={`fixed inset-0 bg-gray-300/70 h-full w-full z-50 top-0 left-0 flex duration-300 ${showSideBar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-                onClick={()=>setShowSideBar(false)}
+                <div
+                    className={`fixed inset-0 bg-gray-300/70 h-full w-full z-50 top-0 left-0 flex duration-300 ${showSideBar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                    onClick={() => setShowSideBar(false)}
                 >
                     <div className={`bg-white w-80 ml-auto p-4 flex flex-col justify-between duration-300 ${showSideBar ? "translate-x-0" : "translate-x-full"}`}>
                         <div>
@@ -100,13 +104,13 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
                                 </div>
                             </div>
                             <div className="flex items-center mt-2 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l"
-                            onClick={()=>navigate("/personal")}
+                                onClick={() => navigate("/personal")}
                             >
                                 <CircleUserRound className="h-8 w-8 cursor-pointer" />
                                 <p className="ml-4 font-medium cursor-pointer">Profile</p>
                             </div>
                             <div className="flex items-center mt-4 cursor-pointer duration-200 hover:bg-gray-300 p-2 rounded-l"
-                            onClick={()=>navigate("/client-booking")}
+                                onClick={() => navigate("/client-booking")}
                             >
                                 <BookCheck className="h-8 w-8 cursor-pointer" />
                                 <p className="ml-4 font-medium">Bookings</p>
