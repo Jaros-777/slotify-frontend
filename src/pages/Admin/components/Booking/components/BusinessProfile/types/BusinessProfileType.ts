@@ -10,4 +10,8 @@ export interface BusinessProfileType{
     facebookURL:string,
     profilePictureURL:string,
     backgroundPictureURL:string;
+    houseNumber?: string;
+    street?: string | undefined;
+    city?: string;
+    locationDescription:string
 }

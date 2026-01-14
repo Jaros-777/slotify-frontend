@@ -8,8 +8,8 @@ export const SettingsSideBar = () => {
     const navigate = useNavigate()
 
     return (
-        <section className="flex max-h-full">
-            <div className="flex flex-col p-4 ml-4 pt-20 w-64 border-r-1 border-gray-300">
+        <section className="flex min-h-screen w-84  border-r-1 border-gray-300">
+            <div className="flex flex-col p-4 ml-4 pt-40 w-64 h-100  fixed top-0">
                 <button 
                 className={`flex cursor-pointer py-2 group ${section === "availability" ? "text-blue-500" : "null"}`} 
                 onClick={()=>{navigate("/admin/settings/availability");window.scrollTo(0,0)}}>
@@ -23,7 +23,7 @@ export const SettingsSideBar = () => {
                     <p className="ml-4 group-hover:text-blue-600">Services</p>
                 </button>
                 <button 
-                className={`flex cursor-pointer py-2 group ${section === "vactions" ? "text-blue-500" : "null"}`}  
+                className={`flex cursor-pointer py-2 group ${section === "vacations" ? "text-blue-500" : "null"}`}  
                 onClick={()=>{navigate("/admin/settings/vacations");window.scrollTo(0,0)}}>
                     <TreePalm className="group-hover:text-blue-600"></TreePalm>
                     <p className="ml-4 group-hover:text-blue-600">Vactions</p>

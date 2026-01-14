@@ -132,7 +132,7 @@ export const NavbarAdmin = () => {
     return (
         <header
             id="navbar"
-            className="flex h-20 px-20 w-full fixed top-0 left-0 z-100 bg-white justify-between items-center border-b-1 border-gray-300 "
+            className="flex h-20 px-20 w-full fixed top-0 left-0 z-60 bg-white justify-between items-center border-b-1 border-gray-300 "
         >
             <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
