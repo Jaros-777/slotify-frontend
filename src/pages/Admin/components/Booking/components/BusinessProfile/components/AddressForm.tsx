@@ -1,14 +1,10 @@
 import { useState } from "react";
-import { Search, X, Info, Loader } from "lucide-react";
+import { X, Info } from "lucide-react";
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from "react-leaflet";
 import axios from "axios";
-import type { BusinessProfileType } from "@/pages/Admin/components/Booking/components/BusinessProfile/types/BusinessProfileType";
 import type { AddressType } from "../types/AddressType";
 import { mapPointIcon } from "../utils/MapPointIcon";
-
-
-
 
 
 interface AddressProps {
@@ -18,8 +14,8 @@ interface AddressProps {
 }
 
 type AddressShortenType = {
-    lat?: number,
-    lng?: number,
+    lat?: number | null,
+    lng?: number | null,
     streetAndHouseNumber?: string;
     city?: string;
     postcode?: string;
@@ -39,9 +35,15 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
     function MapSetPoint() {
         useMapEvents({
             click: async (e) => {
-                const { lat, lng } = e.latlng;
-                setMapPoint([lat, lng]);
-                console.log(buforAddress)
+                fetchPointByLatAndLng(e.latlng.lat, e.latlng.lng)
+            },
+        });
+
+        return null;
+    }
+
+    const fetchPointByLatAndLng = (lat:number,lng:number)=>{
+        setMapPoint([lat, lng]);
 
                 axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
                 )
@@ -52,6 +54,7 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
                             houseNumber: response.data.address.house_number ?? "",
                             street: response.data.address.road ?? "",
                             city: response.data.address.city || response.data.address.town || response.data.address.village,
+                            postcode: response.data.address.postcode
                         };
                         setChosenAddress(newAddress);
                         setBuforAddress({
@@ -63,10 +66,6 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
                     ).catch(error => {
                         console.log(error)
                     })
-            },
-        });
-
-        return null;
     }
 
     const handleSetStreetAndHouseNumber = ():AddressType => {
@@ -101,17 +100,14 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
         }
     }
 
-    const fetchPointOfAddressName = async() => {
+    const fetchPointByAddressName = async() => {
         const tempAddress:AddressType = handleSetStreetAndHouseNumber()
-        setChosenAddress(tempAddress);
-        console.log(tempAddress)
 
         const query = `${tempAddress.street ? tempAddress.street : ""} ${tempAddress.houseNumber ? tempAddress.houseNumber : ""}, ${tempAddress.city ? tempAddress.city : ""}`
 
         axios.get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5`)
             .then(response => {
-                console.log(response.data)
-                setMapPoint([response.data[0].lat, response.data[0].lon])
+                fetchPointByLatAndLng(response.data[0].lat, response.data[0].lon)
             }
 
             ).catch(error => {
@@ -124,12 +120,12 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
 
     return (
         <div className="fixed bg-gray-300/75 z-70 h-full w-full top-0 right-0 flex items-start justify-center">
-            <div className="bg-white w-3/5 mt-6 opacity-100 py-4 px-6 rounded-md">
+            <div className="bg-white w-3/5 mt-6 opacity-100 py-4 px-6 rounded-md max-h-[calc(100vh-3rem)]">
                 <div className="border-gray-300 border-b pt-2 pb-4 flex justify-between">
                     <p className="font-bold text-xl ">Address</p>
-                    <X className="cursor-pointer" onClick={() => { setShowAddressForm(false); document.body.classList.remove("overflow-hidden"); }}></X>
+                    <X className="cursor-pointer" onClick={() => setShowAddressForm(false)}></X>
                 </div>
-                <div className="max-h-170 overflow-y-scroll overflow-x-hidden">
+                <div className="max-h-[calc(100vh-14rem)] overflow-y-scroll overflow-x-hidden">
 
 
                     <p className="mt-4 font-medium">Where's your business located?</p>
@@ -221,7 +217,7 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
                                     type="button"
                                     className="bg-blue-500 text-white ml-2 rounded-md cursor-pointer px-4 py-2 duration-200 hover:bg-blue-600"
                                     onClick={() => {
-                                        fetchPointOfAddressName()
+                                        fetchPointByAddressName()
                                         setEditableAddress(false)
                                     }}
                                 >SAVE</button>
@@ -244,12 +240,7 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
                             )}
                         />
                     </div>
-                    <div className="mt-4 w-full h-100 flex items-center justify-center">
-                        {/* {loadingState ?
-                            <div className="h-full w-full p-20 border border-gray-300 rounded-md">
-                                <Loader className="h-full w-full animate-spin " />
-                            </div>
-                            : */}
+                    <div className="mt-4 w-full h-90 flex items-center justify-center">
                         <MapContainer
                             center={mapPoint}
                             zoom={12}
@@ -260,7 +251,7 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
                                 attribution="&copy; OpenStreetMap contributors"
                             />
                             <MapSetPoint />
-                            {mapPoint && (
+                            {mapPoint &&(
                                 <Marker position={mapPoint} icon={mapPointIcon}>
                                     <Popup>
                                         {chosenAddress.street} {chosenAddress.houseNumber ? `${chosenAddress.houseNumber}, ` : ""}

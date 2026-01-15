@@ -1,6 +1,6 @@
 export interface AddressType {
-    lat?: number,
-    lng?:number,
+    lat?: number | null,
+    lng?:number | null,
     houseNumber?: string;
     street?: string;
     city?: string;

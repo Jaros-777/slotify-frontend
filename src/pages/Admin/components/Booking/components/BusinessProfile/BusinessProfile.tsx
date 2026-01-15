@@ -16,15 +16,15 @@ export const BusinessProfile = () => {
     const fileInputRefProfilePic = useRef<HTMLInputElement | null>(null)
     const fileInputRefBackgroundPic = useRef<HTMLInputElement | null>(null)
 
-    const [showAddressForm, setShowAddressForm] = useState<boolean>(true)
+    const [showAddressForm, setShowAddressForm] = useState<boolean>(false)
     const [address, setAddress] = useState<AddressType>({
-    "lat": 53.026961288781315,
-    "lng": 18.693931961641304,
-    "houseNumber": "8C",
-    "street": "Kosynierów Kościuszkowskich",
-    "city": "Toruń",
-    "note":"dsadsadsad"
-})
+        "lat": null,
+        "lng": null,
+        "houseNumber": "",
+        "street": "",
+        "city": "",
+        "note": ""
+    })
     const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({})
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const { userToken } = useData();
@@ -45,6 +45,14 @@ export const BusinessProfile = () => {
         )
             .then(function (response) {
                 setCurrentBusinessProfile(response.data)
+                setAddress({
+                    lat: response.data.lat,
+                    lng: response.data.lng,
+                    houseNumber: response.data.houseNumber,
+                    street: response.data.street,
+                    city: response.data.city,
+                    note: response.data.note
+                })
                 setIsLoading(false)
 
             }).catch(function (error) {
@@ -61,52 +69,61 @@ export const BusinessProfile = () => {
     }
 
     const handleUpdateBusinessProfile = async () => {
-        console.log(currentBusinessProfile)
-        // setShowSavingState(true)
+        const businessProfileAndAddress = {
+            ...currentBusinessProfile,
+            lat: address.lat,
+            lng: address.lng,
+            houseNumber: address.houseNumber,
+            street: address.street,
+            city: address.city,
+            note: address.note
 
-        // axios.put(`${import.meta.env.VITE_APP_URL}/business-profile`,
-        //     currentBusinessProfile,
-        //     {
-        //         headers: {
-        //             'Authorization': `Bearer ${userToken}`
-        //         }
-        //     }
-        // )
-        //     .then(response => {
+        }
+        setShowSavingState(true)
 
-        //     }).catch(function (error) {
-        //         console.log(error);
-        //     })
+        axios.put(`${import.meta.env.VITE_APP_URL}/business-profile`,
+            businessProfileAndAddress,
+            {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            }
+        )
+            .then(response => {
 
-        // if (profilePic != null || backgroundPic != null) {
-        //     const formData = new FormData()
-        //     if (profilePic != null) {
-        //         formData.append("profilePic", profilePic)
-        //     }
+            }).catch(function (error) {
+                console.log(error);
+            })
 
-        //     if (backgroundPic != null) {
-        //         formData.append("backgroundPic", backgroundPic)
-        //     }
+        if (profilePic != null || backgroundPic != null) {
+            const formData = new FormData()
+            if (profilePic != null) {
+                formData.append("profilePic", profilePic)
+            }
 
-        //     axios.post(`${import.meta.env.VITE_APP_URL}/business-profile/pictures`,
-        //         formData,
-        //         {
-        //             headers: {
-        //                 'Authorization': `Bearer ${userToken}`
-        //             }
-        //         }
-        //     )
-        //         .then(response => {
+            if (backgroundPic != null) {
+                formData.append("backgroundPic", backgroundPic)
+            }
 
-        //         }).catch(function (error) {
-        //             console.log(error);
-        //         })
-        // }
+            axios.post(`${import.meta.env.VITE_APP_URL}/business-profile/pictures`,
+                formData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                }
+            )
+                .then(response => {
+
+                }).catch(function (error) {
+                    console.log(error);
+                })
+        }
 
 
-        // setShowSavingState(false)
-        // window.scrollTo(0, 0)
-        // window.location.reload()
+        setShowSavingState(false)
+        window.scrollTo(0, 0)
+        window.location.reload()
     }
 
 
@@ -255,14 +272,14 @@ export const BusinessProfile = () => {
                         <p className="font-bold text-xl ">Address</p>
                         <button type="button" className="text-blue-500 font-bold mr-6 cursor-pointer" onClick={(e) => setShowAddressForm(true)}>EDIT</button>
                     </div>
-                    { address.lat && address.lng?
+                    {address.lat && address.lng ?
                         <div className="mt-6 px-4 flex items-center justify-between">
                             <div className="flex">
                                 <div className="flex flex-col leading-8 mr-20 text-gray-500 font-bold">
                                     <p>Street</p>
                                     <p>City</p>
                                     <p>Country</p>
-                                    <p>Note</p>
+                                    <p>{address.note ? "Note" : null}</p>
                                 </div>
                                 <div className="flex flex-col leading-8 mr-20 text-gray-500 font-medium">
                                     <p>{address.street} {address.houseNumber}</p>
@@ -273,7 +290,7 @@ export const BusinessProfile = () => {
                             </div>
                             <div className="mt-4 w-1/2 h-60">
                                 <MapContainer
-                                    center={[address.lat,address.lng]}
+                                    center={[address.lat, address.lng]}
                                     zoom={13}
                                     style={{ height: "100%", width: "100%", zIndex: "1" }}
                                 >
@@ -281,12 +298,12 @@ export const BusinessProfile = () => {
                                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                         attribution="&copy; OpenStreetMap contributors"
                                     />
-                                        <Marker position={[address.lat,address.lng]} icon={mapPointIcon}>
-                                            <Popup>
-                                                {address.street} {address.houseNumber ? `${address.houseNumber}, ` : ""}
-                                                {address.city} {address.postcode}
-                                            </Popup>
-                                        </Marker>
+                                    <Marker position={[address.lat, address.lng]} icon={mapPointIcon}>
+                                        <Popup>
+                                            {address.street} {address.houseNumber ? `${address.houseNumber}, ` : ""}
+                                            {address.city} {address.postcode}
+                                        </Popup>
+                                    </Marker>
                                 </MapContainer>
                             </div>
                         </div>
