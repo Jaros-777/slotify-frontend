@@ -14,7 +14,7 @@ import { CustomToolbar } from "./components/CustomToolbar";
 import type { ServiceType } from "../../../types/ServiceType";
 import axios from "axios";
 import { toLocalDateTimeString } from "./utils/dateUtils";
-import type { clientType } from "../../../Client/types/clientType";
+import type { clientType } from "../../../Client/types/adminClientType";
 import { useNavigate } from "react-router-dom";
 
 

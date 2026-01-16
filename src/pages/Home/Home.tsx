@@ -7,7 +7,8 @@ import {X} from "lucide-react"
 function Home() {
 
   const [showInfo, setShowInfo] = useState<boolean>(true)
-
+  const url = window.location.href.split("/")[2].slice(0,9)
+  
   useEffect(() => {
           if (showInfo) {
               document.body.style.overflow = "hidden"
@@ -23,7 +24,7 @@ function Home() {
   return (
     <>
       <main>
-        {showInfo ?
+        {showInfo && url!="localhost" ?
           <div className='fixed inset-0 top-0 left-0 bg-gray-300/70   flex justify-center items-center'>
             <div className='w-150 bg-white border-2 border-gray-300 rounded-2xl p-4 flex flex-col items-center text-center'>
               <X className='ml-auto cursor-pointer  hover:bg-gray-300' onClick={()=>setShowInfo(false)}></X>

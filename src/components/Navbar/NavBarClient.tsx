@@ -77,9 +77,9 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
             }
             <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
                 {clientDetails?.pictureURL ?
-                    <img className="h-8 w-8 overflow-hidden rounded-full flex items-center justify-center" src={clientDetails.pictureURL} alt="Profile picture" />
+                    <img className="h-8 w-8 overflow-hidden rounded-sm flex items-center justify-center" src={clientDetails.pictureURL} alt="Profile picture" />
                     :
-                    <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-8 w-8 cursor-pointer" />
+                    <CircleUserRound className="text-gray-400 bg-gray-200 rounded-sm p-1 h-8 w-8 cursor-pointer" />
                 }
                 {clientIsLogged && clientDetails ?
                     <p className="ml-2 cursor-pointer font-medium">{clientDetails.name}</p>

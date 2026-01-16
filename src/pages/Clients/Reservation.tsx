@@ -32,13 +32,11 @@ export const Reservation = () => {
     const [currentDayOfWeek, setCurrentDayOfWeek] = useState<number>(0)
     const navigate = useNavigate()
     const [showServiceDescription, setShowServiceDescription] = useState<string | null>()
-    console.log(businessDetail)
     const handleValidPage = async () => {
         setLoadDetails(true)
 
         await axios.get(`${import.meta.env.VITE_APP_URL}/business-page/${businessName}`)
             .then((response) => {
-                console.log(response.data)
                 setBusinessDetail(response.data.businessProfileDTO)
                 const serData = response.data.servicesDTO
                 setServiceData(serData.filter((service: { isEditable: boolean }) => service.isEditable === true))

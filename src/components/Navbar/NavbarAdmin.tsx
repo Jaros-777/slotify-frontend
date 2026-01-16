@@ -12,8 +12,9 @@ export const NavbarAdmin = () => {
     const [showDropBarNotification, setShowDropBarNotification] = useState<boolean>(false)
     const [activeSection, setActiveSection] = useState<"calendar" | "client" | "booking" | "settings">()
     const section = window.location.href.split("/")[4];
-    const { userToken } = useData()
+    const { userToken, setBusinessPictureURL } = useData()
     const [notificationData, setNotificationData] = useState<NotificationType[]>([])
+    const [businessImgUrl, setBusinessImgUrl] = useState<string | null>()
 
     const navigate = useNavigate();
 
@@ -31,7 +32,7 @@ export const NavbarAdmin = () => {
                 }
             }
         ).then(response => {
-            const sorted = response.data.map((e:any)=>({
+            const sorted = response.data.notificationDTO.map((e:NotificationType)=>({
                 ...e,
                 date: new Date(e.date),
                 bookingStartDate: new Date(e.bookingStartDate),
@@ -39,6 +40,10 @@ export const NavbarAdmin = () => {
                 (a: NotificationType, b: NotificationType) => b.date.getTime() - a.date.getTime()
             )
             setNotificationData(sorted)
+            if(response.data.businessImgUrl){
+                setBusinessImgUrl(response.data.businessImgUrl)
+                setBusinessPictureURL(response.data.businessImgUrl)
+            }
 
         }).catch(function (error) {
             console.log(error)
@@ -194,11 +199,17 @@ export const NavbarAdmin = () => {
                         : null
                     }
                 </div>
-                <div className="bg-gray-300 rounded-full h-12 w-12 aspect-square flex items-center justify-center cursor-pointer relative" onClick={(e) => { e.stopPropagation(), setShowDropBarUser(!showDropBarUser), setShowDropBarNotification(false) }}>
-                    <p>US</p>
+                <div className="bg-gray-300 rounded-2xl h-12 w-12 aspect-square flex items-center justify-center cursor-pointer relative" onClick={(e) => { e.stopPropagation(), setShowDropBarUser(!showDropBarUser), setShowDropBarNotification(false) }}>
+                    
+                    {businessImgUrl ?
+                        <img className="h-full w-full object-contain overflow-hidden rounded-2xl" src={businessImgUrl} alt="Background picture" />
+                        :
+                        <p>US</p>
+                    }
+                
                     {showDropBarUser ?
-                        <ul className="absolute top-[3rem]  bg-white border-1 border-gray-300">
-                            <li className="px-6 py-2 whitespace-nowrap" onClick={() => alert("This section isn't implemented yet!")}>User profile</li>
+                        <ul className="absolute top-[3.5rem]  bg-white border-1 border-gray-300">
+                            <li className="px-6 py-2 whitespace-nowrap" onClick={() => navigate("/admin/user")}>User profile</li>
                             <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={() => alert("This section isn't implemented yet!")}>Support</li>
                             <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={logOut}>Log out</li>
                         </ul>

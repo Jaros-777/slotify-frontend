@@ -1,4 +1,4 @@
-import { Download, Mail, Copy, MousePointerClick,ChevronRight } from "lucide-react";
+import { Download, Mail, Copy, MousePointerClick, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../utlis/checkIsLoged";
 import { QRCodeCanvas } from "qrcode.react";
@@ -68,6 +68,7 @@ export const GetBooking = () => {
         })();
     }, []);
 
+
     if (isAuthLoading) {
         return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
@@ -84,16 +85,18 @@ export const GetBooking = () => {
                     <h2 className="font-bold text-xl">Your Booking Website</h2>
                     <h3 className="border-gray-300 border-b pt-2 pb-4">Your Booking Website is how your customers can see your business profile and book your services online.</h3>
                     <div className="flex mt-4">
-                        <div className="border border-gray-300 rounded-2xl w-1/5 p-4 flex flex-col items-center">
+                        <div className="border border-gray-300 rounded-2xl w-60 p-4 flex flex-col items-center">
                             <p className="pb-4 font-bold text-left w-full">QR code</p>
-                            <QRCodeCanvas
-                                ref={canvasRef}
-                                value={businessUrl}
-                                size={200}
-                                bgColor="#ffffff"
-                                fgColor="#000000"
-                                level="H"
-                            />
+                            <div className="">
+                                <QRCodeCanvas
+                                    ref={canvasRef}
+                                    value={businessUrl}
+                                    size={200}
+                                    bgColor="#ffffff"
+                                    fgColor="#000000"
+                                    level="H"
+                                />
+                            </div>
                             <button className="mt-4 p-2 border border-gray-300 text-nowrap text-gray-500 font-bold text-sm w-full flex items-center justify-center cursor-pointer hover:text-red-500" onClick={downloadQRCode}>
                                 <Download className="mr-2 h-[1.2em]"></Download>
                                 <span>DOWNLOAD QR CODE</span>
@@ -158,7 +161,7 @@ export const GetBooking = () => {
                             <p className="font-bold">Book now button</p>
                             <p>Get a code and customize your button to start receving bookings from your website.</p>
                         </div>
-                        <button className="flex text-blue-500 ml-auto font-bold cursor-pointer px-4 py-2 rounded-md duration-200 hover:bg-gray-300" onClick={()=>navigate("/admin/get-button")}>
+                        <button className="flex text-blue-500 ml-auto font-bold cursor-pointer px-4 py-2 rounded-md duration-200 hover:bg-gray-300" onClick={() => navigate("/admin/get-button")}>
                             <p>GET BUTTON</p>
                             <ChevronRight></ChevronRight>
                         </button>

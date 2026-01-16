@@ -5,26 +5,31 @@ import { Camera, Image, Loader, LockKeyhole } from "lucide-react";
 import axios from "axios";
 import { useData } from "../../../../AppRouter";
 import { LoadingPage } from "../../../../LoadingPage";
+import type { ClientType } from "./types/clientType";
 
-export const UserProfile = () => {
+
+export const ClientProfile = () => {
 
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("client");
     const fileInputRefServicePic = useRef<HTMLInputElement | null>(null)
     const [showPictureImageFileContainer, setShowPictureImageFileContainer] = useState<boolean>(false)
     const [clientPic, setClientPic] = useState<File | null>(null)
-    const { clientToken,clientDetails, setClientDetails } = useData();
+    const { clientToken, clientDetails, setClientDetails } = useData();
+    const [changedClientData, setChangedClientData] = useState<ClientType | null>(null)
     const [showSavingState, setShowSavingState] = useState<boolean>(false)
+    const [showInfoContainer, setShowInfoContainer] = useState<boolean>(false)
 
     const handleUpdateClientDetails = async () => {
         setShowSavingState(true)
         await axios.post(`${import.meta.env.VITE_APP_URL}/client`,
-            clientDetails,
+            changedClientData,
             {
-            headers: { Authorization: `Bearer ${clientToken}` },
-        }).then(response => {
-        }).catch(error => {
-            console.log(error)
-        });
+                headers: { Authorization: `Bearer ${clientToken}` },
+            }).then(response => {
+                setClientDetails(changedClientData)
+            }).catch(error => {
+                console.log(error)
+            });
 
 
 
@@ -48,6 +53,11 @@ export const UserProfile = () => {
                 })
         }
         setShowSavingState(false)
+        setShowInfoContainer(true)
+
+        setTimeout(() => {
+            setShowInfoContainer(false)
+        }, 1000);
     }
 
     const handleAddServicePic = () => {
@@ -61,16 +71,21 @@ export const UserProfile = () => {
             await checkIsLogged();
         })();
     }, [])
+    useEffect(() => {
+        if (clientDetails) {
+            setChangedClientData(clientDetails);
+        }
+    }, [clientDetails]);
 
     if (isAuthLoading) {
         return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
-    if (!clientDetails) {
+    if (!clientDetails || !changedClientData) {
         return <LoadingPage text="Loading data..." ></LoadingPage>;
     }
 
     return (
-        <div className="p-4 flex flex-col items-center">
+        <div className="p-4 flex flex-col items-center relative">
             {showPictureImageFileContainer ?
                 <ImageFileContainer file={clientPic} setShowImageFileContainer={setShowPictureImageFileContainer} setPic={setClientPic} aspectRatio={1} /> : null
             }
@@ -78,18 +93,18 @@ export const UserProfile = () => {
             <div className="border border-gray-300 rounded-2xl p-4 mt-8 min-w-300">
                 <p className="text-xl font-medium pb-4 border-b border-gray-300">Profile details</p>
                 <div className=" p-4 mt-8 flex">
-                    <div className="relative w-36 h-36 rounded-full border-2 border-blue-600 flex items-center justify-center">
+                    <div className="relative w-36 h-36 rounded-2xl border-2 border-blue-600 flex items-center justify-center">
                         {clientPic ?
-                            <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={URL.createObjectURL(clientPic)} alt="Background picture" />
+                            <img className="w-full h-full overflow-hidden rounded-2xl flex items-center justify-center" src={URL.createObjectURL(clientPic)} alt="Background picture" />
                             :
                             clientDetails.pictureURL ?
-                                <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={clientDetails.pictureURL} alt="Background picture" />
+                                <img className="w-full h-full overflow-hidden rounded-2xl flex items-center justify-center" src={clientDetails.pictureURL} alt="Background picture" />
                                 :
                                 <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
 
                         }
 
-                        <Camera className="w-[50%] h-[50%] z-40 bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
+                        <Camera className="w-[40%] h-[40%] z-40 bg-white rounded-2xl p-1.5 absolute bottom-[-1rem] right-[-1rem] text-blue-600 border-2 border-gray-300 cursor-pointer"
                             onClick={handleAddServicePic}
                         />
                         <input
@@ -101,14 +116,14 @@ export const UserProfile = () => {
                         ></input>
 
                     </div>
-                    <form onSubmit={e=> {e.preventDefault(); handleUpdateClientDetails()}} className="ml-20">
+                    <form onSubmit={e => { e.preventDefault(); handleUpdateClientDetails() }} className="ml-20 w-1/2">
                         <p>Full name</p>
                         <input
                             required
                             type="text"
                             className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
-                            value={clientDetails.name}
-                            onChange={(e)=>setClientDetails({...clientDetails, name:e.target.value})}
+                            value={changedClientData.name}
+                            onChange={(e) => setChangedClientData({ ...changedClientData, name: e.target.value })}
                         />
                         <p>Phone number</p>
                         <input
@@ -118,16 +133,16 @@ export const UserProfile = () => {
                             maxLength={9}
                             pattern="[0-9]+"
                             className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
-                            value={clientDetails.phone}
-                            onChange={(e)=>setClientDetails({...clientDetails, phone:e.target.value})}
+                            value={changedClientData.phone}
+                            onChange={(e) => setChangedClientData({ ...changedClientData, phone: e.target.value })}
                         />
                         <p>Email</p>
                         <input
                             required
                             type="email"
                             className="border border-gray-300 w-full rounded-md px-4 py-2 mt-2 outline-none"
-                            value={clientDetails.email}
-                            onChange={(e)=>setClientDetails({...clientDetails, email:e.target.value})}
+                            value={changedClientData.email}
+                            onChange={(e) => setChangedClientData({ ...changedClientData, email: e.target.value })}
                         />
                         <div>
                             <button
@@ -140,7 +155,16 @@ export const UserProfile = () => {
                                     <p>SAVE</p>
                                 }
                             </button>
-                            <button className="ml-12 border border-gray-300 px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-gray-300 duration-200">DISCARD CHANGES</button>
+                            {clientDetails.name !== changedClientData.name ||
+                                clientDetails.email !== changedClientData.email ||
+                                clientDetails.phone !== changedClientData.phone ?
+                                <button
+                                    className="ml-12 border border-gray-300 px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-gray-300 duration-200"
+                                    onClick={() => setChangedClientData(clientDetails)}
+                                    type="button"
+                                >DISCARD CHANGES</button>
+                                : null
+                            }
                         </div>
                     </form>
                 </div>
@@ -151,12 +175,18 @@ export const UserProfile = () => {
                     <p className="mt-2">Set or change your account password.</p>
                 </div>
                 <button
-                onClick={()=>alert("This section isn't implemented yet!")}
+                    onClick={() => alert("This section isn't implemented yet!")}
                     className="ml-12 border border-gray-300 px-6 py-2 rounded-md text-md font-medium flex items-center cursor-pointer hover:bg-gray-300 duration-200">
                     <LockKeyhole className="mr-4 h-[1.5em]"></LockKeyhole>
                     <span>CHANGE PASSWORD</span>
                 </button>
             </div>
+            {showInfoContainer ?
+                <div className="absolute top-[50%] left-[50%] bg-blue-500 border text-white border-gray-300 px-4 py-2 text-3xl">
+                    Update complete
+                </div>
+                : null
+            }
         </div>
     )
 }

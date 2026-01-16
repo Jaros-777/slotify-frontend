@@ -2,7 +2,7 @@ import { Search } from "lucide-react"
 import { useCheckIsLogged } from "../utlis/checkIsLoged";
 import { LoadingPage } from "../../../../LoadingPage";
 import { useEffect, useState } from "react";
-import type { clientType } from "./types/clientType";
+import type { adminClientType } from "./types/adminClientType";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import type { clientDetailsAndHistoryType } from "./types/clientDetailsAndHistoryType";
@@ -19,9 +19,9 @@ const colors = [
 export const Client = () => {
 
 	const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
-	const [clientData, setClientData] = useState<clientType[]>([])
+	const [clientData, setClientData] = useState<adminClientType[]>([])
 	const [fliteredByText, setFilteredByText] = useState<string>("")
-	const [filteredClientsList, setFilteredClientList] = useState<clientType[]>(clientData)
+	const [filteredClientsList, setFilteredClientList] = useState<adminClientType[]>(clientData)
 	const navigate = useNavigate();
 	const { userToken } = useData()
 

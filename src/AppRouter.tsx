@@ -10,6 +10,7 @@ import { ClientPanelLayout } from "./Layouts/ClientPanelLayout.tsx";
 
 
 import { CalendarPage } from "./pages/Admin/components/Calendar/CalendarPage.tsx";
+import { UserProfile } from "./pages/Admin/components/User/UserProfile.tsx";
 
 import { Client } from "./pages/Admin/components/Client/Client.tsx";
 import { ClientHistory } from "./pages/Admin/components/Client/component/ClientHistory.tsx";
@@ -26,13 +27,14 @@ import { Vacations } from "./pages/Admin/components/Settings/components/Vacation
 import { Reservation } from "./pages/Clients/Reservation.tsx";
 import { Order } from "./pages/Clients/components/Order/Order.tsx";
 
-import { UserProfile } from "./pages/Clients/components/ClientPanel/ClientProfile.tsx";
+import { ClientProfile } from "./pages/Clients/components/ClientPanel/ClientProfile.tsx";
 import { ClientBookings } from "./pages/Clients/components/ClientPanel/ClientBookings.tsx";
 
 import { NotFound } from "./pages/NotFound.tsx";
 
 import type { ServiceType } from "./pages/Admin/components/types/ServiceType.ts";
 import { createContext, useContext, useState, type ReactNode } from "react";
+import type { adminClientType } from "./pages/Admin/components/Client/types/adminClientType.ts";
 import type { ClientType } from "./pages/Clients/components/ClientPanel/types/clientType.ts";
 
 
@@ -54,6 +56,9 @@ interface DataContextType {
 
   clientDetails: ClientType | null
   setClientDetails: (t: ClientType | null) => void
+
+  businessPictureURL: string | null
+  setBusinessPictureURL: (t: string | null) => void
 }
 
 const DataContext = createContext<DataContextType>({
@@ -74,6 +79,9 @@ const DataContext = createContext<DataContextType>({
 
   clientDetails: null,
   setClientDetails: () => { },
+
+  businessPictureURL: null,
+  setBusinessPictureURL: () => { },
 })
 
 
@@ -84,9 +92,10 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
   const [clientDetails, setClientDetails] = useState<ClientType | null>(null)
   const [isAdminLogged, setIsAdminLogged] = useState<boolean>(false)
   const [isClientLogged, setIsClientLogged] = useState<boolean>(false)
+  const [businessPictureURL, setBusinessPictureURL] = useState<string | null>(null)
 
   return (
-    <DataContext.Provider value={{ userToken, setUserToken, serviceData, setServiceData, isAdminLogged, setIsAdminLogged, clientToken, setClientToken, isClientLogged, setIsClientLogged,clientDetails, setClientDetails }}>
+    <DataContext.Provider value={{ userToken, setUserToken, serviceData, setServiceData, isAdminLogged, setIsAdminLogged, clientToken, setClientToken, isClientLogged, setIsClientLogged,clientDetails, setClientDetails,businessPictureURL,setBusinessPictureURL }}>
       <Routes>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
@@ -99,6 +108,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
           <Route path="/admin/calendar" element={<CalendarPage />} />
           <Route path="/admin/client" element={<Client />} />
           <Route path="/admin/client/:clientId" element={<ClientHistory />} />
+          <Route path="/admin/user" element={<UserProfile />} />
           <Route element={<SettingsLayout />}>
             <Route path="/admin/settings/services" element={<Services />} />
             <Route path="/admin/settings/services/form/:id" element={<ServiceForm />} />
@@ -118,7 +128,7 @@ export const AppRouter = ({ }: { children: ReactNode }) => {
         <Route path="/admin/get-button" element={<BookNowHTML />} />
 
         <Route element={<ClientPanelLayout />}>
-          <Route path="/personal" element={<UserProfile />} />
+          <Route path="/personal" element={<ClientProfile />} />
           <Route path="/client-booking" element={<ClientBookings />} />
 
         </Route>
