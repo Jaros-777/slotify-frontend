@@ -11,7 +11,7 @@ interface navBarTypeProps {
 }
 
 export const NavBarClient = ({ type }: navBarTypeProps) => {
-    const bussinessName = window.location.href.split("/")[3]
+    const bussinessName = window.location.href.split("/")[3].replace(/^./, char => char.toUpperCase());
     const [showSideBar, setShowSideBar] = useState<boolean>(false)
     const [clientIsLogged, setClientIsLogged] = useState<boolean>(false)
     const { clientDetails, setClientDetails } = useData()
@@ -65,9 +65,12 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
 
 
     return (
-        <nav className="border-b border-gray-300 flex justify-between items-center px-40 py-6 z-50">
+        <nav className="border-b border-gray-300 flex items-center justify-center z-50">
+            <div className="flex justify-between items-center px-40 py-6 w-full max-w-[80rem]">
+
+            
             {type === "reservation" ?
-                <p className="font-bold ">{bussinessName}</p>
+                <p className="font-bold text-2xl cursor-default">{bussinessName}</p>
                 :
                 <img src={Logo} alt="Slotify logo" className="h-8" />
 
@@ -128,6 +131,7 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
                 :
                 null
             }
+            </div>
         </nav>
     )
 }

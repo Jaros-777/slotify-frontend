@@ -6,7 +6,7 @@ export const FooterReservation = () => {
 
     return (
         <footer className="mt-8 border-t border-gray-300 flex flex-col items-center w-full">
-            <div className="h-1/2 w-full flex justify-between py-6 px-8 ">
+            <div className="h-1/2 w-full max-w-[80rem] flex justify-between py-6 px-8 ">
                 <div className="h-full flex items-center justify-center">
                     <p>Powered by</p>
                     <img className="w-26 ml-2" src={Logo} alt="Slotify Logo" />

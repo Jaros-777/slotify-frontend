@@ -1,5 +1,5 @@
-import { NavigationType, useNavigate, useParams } from "react-router-dom"
-import { Image, Share2, Globe } from "lucide-react"
+import { useNavigate, useParams } from "react-router-dom"
+import { Image, Share2, Globe, Dot, Navigation } from "lucide-react"
 import { useEffect, useState } from "react"
 import type { ServiceType } from "../Admin/components/types/ServiceType"
 import axios from "axios"
@@ -9,6 +9,8 @@ import FacebookLogo from "../Admin/components/Booking/components/assets/Facebook
 import type { scheduleDay } from "../Admin//components/Settings/components/Availability/utlis/scheduleType"
 import { NavBarClient } from "../../components/Navbar/NavBarClient"
 import { LoadingPage } from "../../LoadingPage"
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { mapPointIcon } from "../Admin/components/Booking/components/BusinessProfile/utils/MapPointIcon"
 
 
 const dayTypes = [
@@ -23,19 +25,20 @@ const dayTypes = [
 
 export const Reservation = () => {
     const { businessName } = useParams<{ businessName: string }>()
-    const [businessDetail, setBusinessDetail] = useState<Partial<BusinessProfileType>>({})
+    const [businessDetail, setBusinessDetail] = useState<BusinessProfileType>()
     const [serviceData, setServiceData] = useState<Partial<ServiceType[]>>([])
     const [loadDetails, setLoadDetails] = useState<boolean>(true)
     const [schedulePlan, setSchedulePlan] = useState<scheduleDay[]>([])
     const [currentDayOfWeek, setCurrentDayOfWeek] = useState<number>(0)
     const navigate = useNavigate()
-    const [showServiceDescription, setShowServiceDescription] = useState<string|null>()
-
+    const [showServiceDescription, setShowServiceDescription] = useState<string | null>()
+    console.log(businessDetail)
     const handleValidPage = async () => {
         setLoadDetails(true)
 
         await axios.get(`${import.meta.env.VITE_APP_URL}/business-page/${businessName}`)
             .then((response) => {
+                console.log(response.data)
                 setBusinessDetail(response.data.businessProfileDTO)
                 const serData = response.data.servicesDTO
                 setServiceData(serData.filter((service: { isEditable: boolean }) => service.isEditable === true))
@@ -77,7 +80,7 @@ export const Reservation = () => {
         })();
     }, []);
 
-    if (loadDetails) {
+    if (loadDetails || !businessDetail) {
         return <LoadingPage text="Loading business details..." ></LoadingPage>;
     }
 
@@ -85,7 +88,7 @@ export const Reservation = () => {
         <>
             <NavBarClient type="reservation" ></NavBarClient>
             <div className="w-full flex flex-col items-center">
-                <section className="h-70 relative w-full flex justify-center items-center">
+                <section className=" w-full max-w-[80rem] flex justify-center items-center">
                     {
                         businessDetail.backgroundPictureURL ?
                             <img className="h-full w-full object-contain overflow-hidden" src={businessDetail.backgroundPictureURL} alt="Background picture" />
@@ -96,7 +99,7 @@ export const Reservation = () => {
 
                 </section>
                 <section className="flex flex-col items-center w-full p-4 pb-8 border-b border-gray-300 shadow-2xl">
-                    <div className="flex justify-between px-4 py-2 w-[80rem]">
+                    <div className="flex justify-between px-4 py-2 w-full max-w-[80rem]">
                         <div className="flex mx-4 items-center">
 
                             <div className="relative w-24 h-24 rounded-full flex items-center justify-center">
@@ -111,16 +114,27 @@ export const Reservation = () => {
 
                             <div className="ml-6">
                                 <p className="font-bold text-xl">{businessDetail.businessName}</p>
-                                <div className="flex mt-2">
+                                <div className="flex mt-2 text-sm items-center">
                                     {currentOpenCompanyStatus() ?
-                                        <p className="text-sm text-green-700 font-bold">Open</p>
+                                        <p className=" text-green-700 font-bold">Open</p>
                                         :
-                                        <p className="text-sm text-red-700 font-bold">Closed</p>
+                                        <p className=" text-red-700 font-bold">Closed</p>
                                     }
                                     {schedulePlan.filter(e => e.dayOfWeek === new Date().getDay() - 1)[0].isClose ?
                                         null
                                         :
-                                        <p className="text-sm ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
+                                        <p className="ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
+                                    }
+                                    {businessDetail.address.city ?
+                                        <>
+                                            <Dot className="mx-2" />
+                                            <p>{businessDetail.address.street} {businessDetail.address.houseNumber}, {businessDetail.address.city}</p>
+                                            <div className="ml-4 flex items-center cursor-pointer">
+                                                <Navigation className="h-4" />
+                                                <a href={`https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${businessDetail.address.lat},${businessDetail.address.lng}&travelmode=driving`} className="underline font-bold" target="_blank">Get directions</a>
+                                            </div>
+                                        </>
+                                        : null
                                     }
                                 </div>
                             </div>
@@ -134,7 +148,7 @@ export const Reservation = () => {
                     </div>
 
                 </section>
-                <section className="mt-10 p-4 w-[80rem]">
+                <section className="mt-10 py-4 px-8 w-full max-w-[80rem]">
                     <p className="text-2xl font-bold">Services</p>
                     <ul className="mt-4 border border-gray-300 rounded-md">
                         {serviceData.length > 0 ?
@@ -178,26 +192,26 @@ export const Reservation = () => {
                     </ul>
 
                 </section>
-                <section className="px-6 py-4 w-[80rem]">
+                <section className="px-8 py-4 w-full max-w-[80rem]">
                     {businessDetail.slogan || businessDetail.description ?
                         <div>
                             <h2 className="text-2xl font-bold">About</h2>
                         </div>
                         : null
                     }
-                    <div className="flex justify-between">
-                        <div>
+                    <div className="flex w-full justify-between">
+                        <div className="w-3/5">
 
                             {businessDetail.slogan ?
-                                <div className="w-1/2">
-                                    <p className="font-bold mt-8 text-lg">Slogan</p>
-                                    <p className="mt-4">{businessDetail.slogan}</p>
+                                <div className="w-full mt-12">
+                                    <p className="font-bold text-lg">Slogan</p>
+                                    <p className="mt-4 pr-6">{businessDetail.slogan}</p>
                                 </div>
                                 : null}
                             {businessDetail.description ?
-                                <div className="w-1/2">
-                                    <p className="font-bold mt-8 text-lg">Who we are</p>
-                                    <p className="mt-4">{businessDetail.description}</p>
+                                <div className="w-full mt-12">
+                                    <p className="font-bold text-lg">Who we are</p>
+                                    <p className="mt-4 pr-6">{businessDetail.description}</p>
                                 </div>
                                 : null}
                         </div>
@@ -248,6 +262,41 @@ export const Reservation = () => {
                         </div>
                     </div>
                 </section>
+                {businessDetail.address.lat && businessDetail.address.lng ?
+                    <section className="px-8 py-4 w-full max-w-[80rem] mt-4">
+                        <div>
+                            <h2 className="text-xl font-bold">Address</h2>
+                            <div className="border border-gray-300 rounded-md w-3/5 p-4 mt-4">
+                                <div className="mt-4 h-60">
+                                    <MapContainer
+                                        center={[businessDetail.address.lat, businessDetail.address.lng]}
+                                        zoom={13}
+                                        style={{ height: "100%", width: "100%", zIndex: "1" }}
+                                    >
+                                        <TileLayer
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            attribution="&copy; OpenStreetMap contributors"
+                                        />
+                                        <Marker position={[businessDetail.address.lat, businessDetail.address.lng]} icon={mapPointIcon}>
+                                            <Popup>
+                                                {businessDetail.address.street} {businessDetail.address.houseNumber ? `${businessDetail.address.houseNumber}, ` : ""}
+                                                {businessDetail.address.city} {businessDetail.address.postalCode}
+                                            </Popup>
+                                        </Marker>
+                                    </MapContainer>
+                                </div>
+
+                                <p className="mt-4 font-medium">{businessDetail.address.street} {businessDetail.address.houseNumber ? `${businessDetail.address.houseNumber}, ` : ""} {businessDetail.address.city}</p>
+                                <p>{businessDetail.address.note}</p>
+                                <div className="mt-4 flex items-center cursor-pointer">
+                                    <Navigation className="h-4" />
+                                    <a href={`https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${businessDetail.address.lat},${businessDetail.address.lng}&travelmode=driving`} className="underline font-bold" target="_blank">Get directions</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    : null
+                }
             </div>
             <FooterReservation></FooterReservation>
         </>
