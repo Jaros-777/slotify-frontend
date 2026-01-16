@@ -1,3 +1,4 @@
+import type { AddressType } from "./AddressType";
 
 export interface BusinessProfileType{
     id?:number,
@@ -9,9 +10,6 @@ export interface BusinessProfileType{
     websiteURL: string,
     facebookURL:string,
     profilePictureURL:string,
-    backgroundPictureURL:string;
-    houseNumber?: string;
-    street?: string | undefined;
-    city?: string;
-    locationDescription:string
+    backgroundPictureURL:string,
+    address: AddressType
 }

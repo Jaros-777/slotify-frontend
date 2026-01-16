@@ -5,12 +5,13 @@ import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from "react-leaf
 import axios from "axios";
 import type { AddressType } from "../types/AddressType";
 import { mapPointIcon } from "../utils/MapPointIcon";
+import type { BusinessProfileType } from "../types/BusinessProfileType";
 
 
 interface AddressProps {
     setShowAddressForm: React.Dispatch<React.SetStateAction<boolean>>
     address: Partial<AddressType>
-    setAddress: React.Dispatch<React.SetStateAction<AddressType>>
+    setCurrentBusinessProfile: React.Dispatch<React.SetStateAction<BusinessProfileType | undefined>>
 }
 
 type AddressShortenType = {
@@ -18,13 +19,13 @@ type AddressShortenType = {
     lng?: number | null,
     streetAndHouseNumber?: string;
     city?: string;
-    postcode?: string;
+    postalcode?: string;
     note?: string
 };
 
-export const AddressForm = ({ setShowAddressForm, address, setAddress }: AddressProps) => {
+export const AddressForm = ({ setShowAddressForm, address, setCurrentBusinessProfile }: AddressProps) => {
 
-    const [mapPoint, setMapPoint] = useState<[number, number]>(address.lat && address.lng? [address.lat, address.lng]: [53.023338, 18.632345])
+    const [mapPoint, setMapPoint] = useState<[number, number]>(address.lat && address.lng ? [address.lat, address.lng] : [53.023338, 18.632345])
     const [chosenAddress, setChosenAddress] = useState<AddressType>(address)
     const [buforAddress, setBuforAddress] = useState<AddressShortenType>({
         ...address,
@@ -42,39 +43,40 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
         return null;
     }
 
-    const fetchPointByLatAndLng = (lat:number,lng:number)=>{
+    const fetchPointByLatAndLng = (lat: number, lng: number) => {
         setMapPoint([lat, lng]);
 
-                axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
-                )
-                    .then(response => {
-                        let newAddress: AddressType = {
-                            lat: lat,
-                            lng: lng,
-                            houseNumber: response.data.address.house_number ?? "",
-                            street: response.data.address.road ?? "",
-                            city: response.data.address.city || response.data.address.town || response.data.address.village,
-                            postcode: response.data.address.postcode
-                        };
-                        setChosenAddress(newAddress);
-                        setBuforAddress({
-                            ...newAddress,
-                            streetAndHouseNumber: `${response.data.address.road ?? ""} ${response.data.address.house_number ?? ""}`
-                        });
-                    }
+        axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+        )
+            .then(response => {
+                let newAddress: AddressType = {
+                    lat: lat,
+                    lng: lng,
+                    houseNumber: response.data.address.house_number ?? "",
+                    street: response.data.address.road ?? "",
+                    city: response.data.address.city || response.data.address.town || response.data.address.village,
+                    postalCode: response.data.address.postcode,
+                    note: chosenAddress.note
+                };
+                setChosenAddress(newAddress);
+                setBuforAddress({
+                    ...newAddress,
+                    streetAndHouseNumber: `${response.data.address.road ?? ""} ${response.data.address.house_number ?? ""}`
+                });
+            }
 
-                    ).catch(error => {
-                        console.log(error)
-                    })
+            ).catch(error => {
+                console.log(error)
+            })
     }
 
-    const handleSetStreetAndHouseNumber = ():AddressType => {
+    const handleSetStreetAndHouseNumber = (): AddressType => {
 
-        if (!buforAddress.streetAndHouseNumber) return{
+        if (!buforAddress.streetAndHouseNumber) return {
             ...buforAddress,
             city: buforAddress.city,
-            street:"",
-            houseNumber:""
+            street: "",
+            houseNumber: ""
         };
 
         const parts = buforAddress.streetAndHouseNumber.trim().split(" ");
@@ -95,13 +97,13 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
         return {
             ...buforAddress,
             city: buforAddress.city,
-            street:street,
-            houseNumber:houseNumber
+            street: street,
+            houseNumber: houseNumber
         }
     }
 
-    const fetchPointByAddressName = async() => {
-        const tempAddress:AddressType = handleSetStreetAndHouseNumber()
+    const fetchPointByAddressName = async () => {
+        const tempAddress: AddressType = handleSetStreetAndHouseNumber()
 
         const query = `${tempAddress.street ? tempAddress.street : ""} ${tempAddress.houseNumber ? tempAddress.houseNumber : ""}, ${tempAddress.city ? tempAddress.city : ""}`
 
@@ -115,7 +117,7 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
             })
     }
 
-    
+
 
 
     return (
@@ -251,11 +253,11 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
                                 attribution="&copy; OpenStreetMap contributors"
                             />
                             <MapSetPoint />
-                            {mapPoint &&(
+                            {mapPoint && (
                                 <Marker position={mapPoint} icon={mapPointIcon}>
                                     <Popup>
                                         {chosenAddress.street} {chosenAddress.houseNumber ? `${chosenAddress.houseNumber}, ` : ""}
-                                        {chosenAddress.city} {chosenAddress.postcode}
+                                        {chosenAddress.city} {chosenAddress.postalCode}
                                     </Popup>
                                 </Marker>
                             )}
@@ -271,11 +273,20 @@ export const AddressForm = ({ setShowAddressForm, address, setAddress }: Address
                     >CANCEL</button>
                     <button
                         type="button"
-                        onClick={() => { setAddress(chosenAddress), setShowAddressForm(false) }}
+                        onClick={() => {
+                            setCurrentBusinessProfile(prev => {
+                                if (!prev) return prev;
+                                return {
+                                    ...prev,
+                                    address: chosenAddress
+                                }
+                            }),
+                                setShowAddressForm(false)
+                        }}
                         className="bg-blue-500 text-white ml-2 rounded-md cursor-pointer px-4 py-2 duration-200 hover:bg-blue-600"
                     >SAVE</button>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

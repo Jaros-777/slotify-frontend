@@ -7,8 +7,7 @@ import { useData } from "../../../../../../AppRouter";
 import { ImageFileContainer } from "./components/ImageFileContainer";
 import { LoadingPage } from "../../../../../../LoadingPage";
 import { AddressForm } from "./components/AddressForm";
-import type { AddressType } from "./types/AddressType";
-import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { mapPointIcon } from "./utils/MapPointIcon";
 
 export const BusinessProfile = () => {
@@ -17,15 +16,7 @@ export const BusinessProfile = () => {
     const fileInputRefBackgroundPic = useRef<HTMLInputElement | null>(null)
 
     const [showAddressForm, setShowAddressForm] = useState<boolean>(false)
-    const [address, setAddress] = useState<AddressType>({
-        "lat": null,
-        "lng": null,
-        "houseNumber": "",
-        "street": "",
-        "city": "",
-        "note": ""
-    })
-    const [currentBusinessProfile, setCurrentBusinessProfile] = useState<Partial<BusinessProfileType>>({})
+    const [currentBusinessProfile, setCurrentBusinessProfile] = useState<BusinessProfileType>()
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const { userToken } = useData();
     const [profilePic, setProfilePic] = useState<File | null>(null)
@@ -33,6 +24,7 @@ export const BusinessProfile = () => {
     const [backgroundPic, setBackgroundPic] = useState<File | null>(null)
     const [showBackgroundImageFileContainer, setShowBackgroundmageFileContainer] = useState<boolean>(false)
     const [showSavingState, setShowSavingState] = useState<boolean>(false)
+
 
     const handleFetchBusinessProfileData = async (token: string | boolean) => {
         setIsLoading(true)
@@ -45,14 +37,6 @@ export const BusinessProfile = () => {
         )
             .then(function (response) {
                 setCurrentBusinessProfile(response.data)
-                setAddress({
-                    lat: response.data.lat,
-                    lng: response.data.lng,
-                    houseNumber: response.data.houseNumber,
-                    street: response.data.street,
-                    city: response.data.city,
-                    note: response.data.note
-                })
                 setIsLoading(false)
 
             }).catch(function (error) {
@@ -69,20 +53,10 @@ export const BusinessProfile = () => {
     }
 
     const handleUpdateBusinessProfile = async () => {
-        const businessProfileAndAddress = {
-            ...currentBusinessProfile,
-            lat: address.lat,
-            lng: address.lng,
-            houseNumber: address.houseNumber,
-            street: address.street,
-            city: address.city,
-            note: address.note
-
-        }
         setShowSavingState(true)
 
         axios.put(`${import.meta.env.VITE_APP_URL}/business-profile`,
-            businessProfileAndAddress,
+            currentBusinessProfile,
             {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
@@ -150,7 +124,7 @@ export const BusinessProfile = () => {
     if (isAuthLoading) {
         return <LoadingPage text="Checking authentication..." ></LoadingPage>;
     }
-    if (isLoading) {
+    if (isLoading || !currentBusinessProfile) {
         return <LoadingPage text="Loading data..." ></LoadingPage>;
     }
 
@@ -272,25 +246,32 @@ export const BusinessProfile = () => {
                         <p className="font-bold text-xl ">Address</p>
                         <button type="button" className="text-blue-500 font-bold mr-6 cursor-pointer" onClick={(e) => setShowAddressForm(true)}>EDIT</button>
                     </div>
-                    {address.lat && address.lng ?
+                    {currentBusinessProfile.address.lat && currentBusinessProfile.address.lng ?
                         <div className="mt-6 px-4 flex items-center justify-between">
-                            <div className="flex">
-                                <div className="flex flex-col leading-8 mr-20 text-gray-500 font-bold">
-                                    <p>Street</p>
-                                    <p>City</p>
-                                    <p>Country</p>
-                                    <p>{address.note ? "Note" : null}</p>
+                            <div className="flex flex-col leading-8 w-1/2">
+                                <div className="flex">
+                                    <p className="text-gray-500 font-bold w-1/4">Street</p>
+                                    <p className="ml-6">{currentBusinessProfile.address.street} {currentBusinessProfile.address.houseNumber}</p>
                                 </div>
-                                <div className="flex flex-col leading-8 mr-20 text-gray-500 font-medium">
-                                    <p>{address.street} {address.houseNumber}</p>
-                                    <p>{address.city}</p>
-                                    <p>Poland</p>
-                                    <p>{address.note}</p>
+                                <div className="flex">
+                                    <p className="text-gray-500 font-bold w-1/4">City</p>
+                                    <p className="ml-6">{currentBusinessProfile.address.city}</p>
                                 </div>
+                                <div className="flex">
+                                    <p className="text-gray-500 font-bold w-1/4">Country</p>
+                                    <p className="ml-6">Poland</p>
+                                </div>
+                                {currentBusinessProfile.address.note ?
+                                    <div className="flex">
+                                        <p className="text-gray-500 font-bold w-1/4">Note</p>
+                                        <p className="ml-6">{currentBusinessProfile.address.note}</p>
+                                    </div>
+                                    : null
+                                }
                             </div>
                             <div className="mt-4 w-1/2 h-60">
                                 <MapContainer
-                                    center={[address.lat, address.lng]}
+                                    center={[currentBusinessProfile.address.lat, currentBusinessProfile.address.lng]}
                                     zoom={13}
                                     style={{ height: "100%", width: "100%", zIndex: "1" }}
                                 >
@@ -298,10 +279,10 @@ export const BusinessProfile = () => {
                                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                         attribution="&copy; OpenStreetMap contributors"
                                     />
-                                    <Marker position={[address.lat, address.lng]} icon={mapPointIcon}>
+                                    <Marker position={[currentBusinessProfile.address.lat, currentBusinessProfile.address.lng]} icon={mapPointIcon}>
                                         <Popup>
-                                            {address.street} {address.houseNumber ? `${address.houseNumber}, ` : ""}
-                                            {address.city} {address.postcode}
+                                            {currentBusinessProfile.address.street} {currentBusinessProfile.address.houseNumber ? `${currentBusinessProfile.address.houseNumber}, ` : ""}
+                                            {currentBusinessProfile.address.city} {currentBusinessProfile.address.postalCode}
                                         </Popup>
                                     </Marker>
                                 </MapContainer>
@@ -313,8 +294,8 @@ export const BusinessProfile = () => {
                 {showAddressForm ?
                     <AddressForm
                         setShowAddressForm={setShowAddressForm}
-                        address={address}
-                        setAddress={setAddress}
+                        address={currentBusinessProfile.address}
+                        setCurrentBusinessProfile={setCurrentBusinessProfile}
                     />
 
                     : null

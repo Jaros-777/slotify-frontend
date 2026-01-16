@@ -4,6 +4,6 @@ export interface AddressType {
     houseNumber?: string;
     street?: string;
     city?: string;
-    postcode?: string;
+    postalCode?: string;
     note?: string
 };
