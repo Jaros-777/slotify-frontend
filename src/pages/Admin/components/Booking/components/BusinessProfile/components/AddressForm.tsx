@@ -31,8 +31,6 @@ export const AddressForm = ({ setShowAddressForm, address, setCurrentBusinessPro
         ...address,
         streetAndHouseNumber: `${address.street ? address.street : ""}${address.houseNumber ? ` ${address.houseNumber}` : ""}`
     })
-    console.log("address ",address)
-    console.log("bufor ",buforAddress)
     const [editableAddress, setEditableAddress] = useState<boolean>(false)
 
     function MapSetPoint() {

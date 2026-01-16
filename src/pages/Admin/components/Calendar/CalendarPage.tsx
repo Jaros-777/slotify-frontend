@@ -8,9 +8,8 @@ import { useNavigate } from "react-router-dom"
 import { useData } from "../../../../AppRouter"
 import { useCheckIsLogged } from "../utlis/checkIsLoged"
 import { useLoadServiceData } from "../utlis/loadServiceData"
-import { Image } from "lucide-react"
+import { HandPlatter } from "lucide-react"
 import { LoadingPage } from "../../../../LoadingPage"
-
 
 
 export const CalendarPage = () => {
@@ -19,9 +18,10 @@ export const CalendarPage = () => {
 
     const { serviceData, userToken } = useData();
     const [eventsData, setEventsData] = useState<EventType[]>([])
+    const [filteredEventsData, setFilteredEventsData] = useState<EventType[]>([])
     const [currentWeekStart, setCurrentWeekStart] = useState<Date>(getWeekStart(new Date()));
     const [loadingState, setLoadingState] = useState<boolean>(false)
-    const navigate = useNavigate();
+    const [filteredService, setFitleredService] = useState<string | null>(null)
 
     function getWeekStart(date: Date) {
         const day = date.getDay();
@@ -35,10 +35,10 @@ export const CalendarPage = () => {
     async function fetchData(token?: string, currentWeekProps?: Date) {
         let localDateTimeStartWeek;
         if (currentWeekProps) {
-             localDateTimeStartWeek = encodeURI(currentWeekProps.toISOString())
+            localDateTimeStartWeek = encodeURI(currentWeekProps.toISOString())
 
         } else {
-             localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
+            localDateTimeStartWeek = encodeURI(currentWeekStart.toISOString())
         }
         axios.get(`${import.meta.env.VITE_APP_URL}/events/${localDateTimeStartWeek}`,
             {
@@ -59,6 +59,8 @@ export const CalendarPage = () => {
 
     }
 
+
+
     useEffect(() => {
 
         (async () => {
@@ -69,8 +71,10 @@ export const CalendarPage = () => {
                     setCurrentWeekStart(getWeekStart(new Date(prevWeek)))
                     localStorage.removeItem("currentWeek")
                     await fetchData(token, new Date(prevWeek))
-                }else
+                } else {
                     await fetchData(token)
+
+                }
 
                 await loadServiceData(token);
             }
@@ -82,6 +86,19 @@ export const CalendarPage = () => {
         fetchData()
 
     }, [currentWeekStart])
+
+    useEffect(() => {
+        if (!filteredService) {
+            setFilteredEventsData(eventsData);
+        } else {
+            setFilteredEventsData(
+                eventsData.filter(
+                    e => e.bookingStatus === "VACATION" || e.serviceId === filteredService
+                )
+            );
+        }
+    }, [eventsData, filteredService]);
+
 
     if (isAuthLoading) {
         return <LoadingPage text="Checking authentication..." ></LoadingPage>;
@@ -103,14 +120,25 @@ export const CalendarPage = () => {
                     <p className="font-medium">SERVICES</p>
 
                     <ul>
-                        {serviceData.map((_, index) => (
-                            <li key={index} className="mt-2 flex items-center">
-                                {serviceData[index].servicePictureURL ?
-                                    <img src={serviceData[index].servicePictureURL} alt="Service picture" className="h-6 rounded-2xl" />
+                        <li
+                            className={`mt-2 flex items-center cursor-pointer ${filteredService === null ? "text-blue-500" : null} `}
+                            onClick={() => setFitleredService(null)}
+                        >
+                            <HandPlatter className="h-6"></HandPlatter>
+                            <p className="ml-2">All services</p>
+                        </li>
+                        {serviceData.map((e) => (
+                            <li
+                                key={e.id}
+                                className={`mt-2 flex items-center cursor-pointer ${filteredService === e.id ? "text-blue-500" : null}`}
+                                onClick={() => setFitleredService(e.id)}
+                            >
+                                {e.servicePictureURL ?
+                                    <img src={e.servicePictureURL} alt="Service picture" className="h-6 rounded-2xl" />
                                     :
-                                    <Image className="h-6"></Image>
+                                    <HandPlatter className="h-6 w-6"></HandPlatter>
                                 }
-                                <p className="ml-2">{serviceData[index].name}</p>
+                                <p className="ml-2">{e.name}</p>
                             </li>
                         ))}
                     </ul>
@@ -121,7 +149,7 @@ export const CalendarPage = () => {
                     <BigCalendar
                         weekStartDate={currentWeekStart}
                         onWeekChange={setCurrentWeekStart}
-                        events={eventsData}
+                        events={filteredEventsData}
                         serviceData={serviceData}
                         fetchData={fetchData}
                         setLoadingState={setLoadingState}
