@@ -28,25 +28,6 @@ export const WhySlotify = () => {
         return value
     }
 
-
-    // useEffect(() => {
-    //     if (toScrool) {
-
-
-    //         const interval = setInterval(() => {
-    //             setNumber(prev => {
-    //                 if (prev >= 25) {
-    //                     clearInterval(interval)
-    //                     return prev
-    //                 }
-    //                 return prev + 1
-    //             })
-    //         }, 200)
-
-    //         return () => clearInterval(interval)
-    //     }
-    // }, [toScrool])
-
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY >= 1300)
@@ -63,23 +44,23 @@ export const WhySlotify = () => {
 
     return (
         <section id="why" className="bg-gray-200 flex flex-col items-center mt-20 py-30">
-            <h1 className="text-6xl font-bold">Why Slotify?</h1>
-            <div className="flex justify-around w-2/3 mt-14">
+            <h1 className="text-5xl lg:text-6xl font-bold">Why Slotify?</h1>
+            <div className="grid grid-cols-2 grid-rows-2 lg:grid-cols-3 lg:grid-rows-1 w-full lg:w-2/3 mt-14">
                 <div className="flex flex-col items-center">
                     <p 
-                    className={`font-bold text-6xl transition-colors duration-5000 ease-in-out ${toScroll ? "text-black" : "text-gray-400"}`}
+                    className={`font-bold text-5xl lg:text-6xl transition-colors duration-5000 ease-in-out ${toScroll ? "text-black" : "text-gray-400"}`}
                     >{bookedClients}<span className="text-black">M</span></p>
                     <p className="mt-4">booked clients</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <p 
-                    className={`font-bold text-6xl transition-colors duration-5000 ease-in-out ${toScroll ? "text-black" : "text-gray-400"}`}
+                    className={`font-bold text-5xl lg:text-6xl transition-colors duration-5000 ease-in-out ${toScroll ? "text-black" : "text-gray-400"}`}
                     >{bookingsPerYear}<span className="text-black">M</span></p>
                     <p className="mt-4">bookings per year</p>
                 </div>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center row-start-2 col-start-1 col-end-3 lg:row-start-1 lg:col-start-3 lg:col-end-4 mt-6 lg:mt-0">
                     <p 
-                    className={`font-bold text-6xl transition-colors duration-6000 ease-in-out ${toScroll ? "text-black" : "text-gray-400"}`}
+                    className={`font-bold text-5xl lg:text-6xl transition-colors duration-6000 ease-in-out ${toScroll ? "text-black" : "text-gray-400"}`}
                     >{businesses}<span className="text-black">K</span></p>
                     <p className="mt-4">satisfied businesses</p>
                 </div>

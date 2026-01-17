@@ -7,25 +7,25 @@ export const Pricing = () => {
 
     return (
         <section id="pricing" className="flex justify-center my-20">
-            <div className="w-2/3">
+            <div className="w-full px-4 lg:px-0 lg:w-2/3">
                 <h1 className="text-5xl font-bold">Plan for every business</h1>
-                <div className="mt-10 flex items-center">
+                <div className="mt-10 flex flex-col lg:flex-row items-start lg:items-center ">
                     <p className="font-bold text-2xl">Choose a biling cycle</p>
-                    <div className="border border-gray-300 rounded-2xl py-2 px-4 ml-6 text-lg font-medium relative">
+                    <div className="border border-gray-300 rounded-2xl  grid grid-cols-3 py-2 px-4 mt-6 lg:mt-0 lg:ml-6 lg:text-lg font-medium relative">
                         <button
                             className={`px-4 py-2 rounded-2xl w-30 cursor-pointer duration-200 ${chosenBilingCycle === "6" ? "bg-blue-500 text-white" : null} `}
                             onClick={() => setChosenBilingCycle("6")}
                         >6 months</button>
                         <button
-                            className={`px-4 py-2 rounded-2xl w-30 ml-2 cursor-pointer duration-200 ${chosenBilingCycle === "12" ? "bg-blue-500 text-white" : null} `}
+                            className={`px-4 py-2 rounded-2xl lg:w-30 cursor-pointer duration-200 ${chosenBilingCycle === "12" ? "bg-blue-500 text-white" : null} `}
                             onClick={() => setChosenBilingCycle("12")}
                         >1 year</button>
                         <button
-                            className={`px-4 py-2 rounded-2xl w-30 ml-2 cursor-pointer duration-200 ${chosenBilingCycle === "24" ? "bg-blue-500 text-white" : null} `}
+                            className={`px-4 py-2 rounded-2xl lg:w-30 cursor-pointer duration-200 ${chosenBilingCycle === "24" ? "bg-blue-500 text-white" : null} `}
                             onClick={() => setChosenBilingCycle("24")}
                         >2 years</button>
                         {chosenBilingCycle != "24" ?
-                            <div className="flex absolute -top-4 -right-60 items-start">
+                            <div className="flex flex-row-reverse lg:flex-row absolute top-16 right-20 lg:-top-4 lg:-right-60 items-end lg:items-start">
                                 <TrendingUp className="h-14 w-14" />
                                 <p className="px-4 py-2 rounded-2xl bg-blue-900 text-white ml-2 text-lg">Get 4 months for free</p>
                             </div>
@@ -33,17 +33,10 @@ export const Pricing = () => {
                         }
                     </div>
                 </div>
-                <div className="grid grid-cols-4 mt-20">
-                    <div className="col-end-4 bg-blue-500 flex items-center justify-center text-white rounded-t-2xl py-2">
-                        <Star />
-                        <p className="ml-2 font-medium">Top Choice</p>
-                    </div>
-
-                </div>
-                <div className="grid grid-cols-4 border border-gray-300  rounded-2xl">
-                    <div className="p-4 border-r border-gray-300">
+                <div className="flex flex-col xl:grid grid-cols-4  rounded-2xl mt-20">
+                    <div className="mt-10 p-4 border border-gray-300 rounded-2xl xl:rounded-tr-none xl:rounded-br-none h-full">
                         <p className="font-bold text-3xl">Launch</p>
-                        <p className="mt-4">A simple starting plan for individuals who want to begin accepting online bookings with ease.</p>
+                        <p className="mt-4 h-18">A simple starting plan for individuals who want to begin accepting online bookings with ease.</p>
                         <h3 className="font-bold text-4xl my-8">USD 0</h3>
                         {chosenBilingCycle != "6" ?
                             <div className="h-9">
@@ -90,9 +83,9 @@ export const Pricing = () => {
                             <p className="ml-2">Quick setup with no configuration required</p>
                         </div>
                     </div>
-                    <div className="p-4 border-r border-gray-300">
+                    <div className="mt-10 p-4 border lg:border-y border-gray-300 h-full rounded-2xl xl:rounded-none">
                         <p className="font-bold text-3xl">Growth</p>
-                        <p className="mt-4">
+                        <p className="mt-4 h-18">
                             Designed for freelancers and small businesses ready to manage a growing number of clients efficiently.
                         </p>
 
@@ -137,54 +130,62 @@ export const Pricing = () => {
                         <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Exportable booking data</p></div>
                         <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Customizable availability settings</p></div>
                     </div>
-                    <div className="p-4 border-r border-gray-300 bg-blue-100">
-                        <p className="font-bold text-3xl">Professional</p>
-                        <p className="mt-4">
-                            Advanced tools for established businesses that need customization and automation.
-                        </p>
+                    <div className="mt-10 xl:mt-0">
+                        <div className="col-end-4 bg-blue-500 flex items-center justify-center text-white rounded-t-2xl py-2">
+                            <Star />
+                            <p className="ml-2 font-medium">Top Choice</p>
+                        </div>
+                        <div className="p-4 border border-gray-300 bg-blue-100 h-full rounded-bl-2xl rounded-br-2xl xl:rounded-bl-none xl:rounded-br-none">
+                            <p className="font-bold text-3xl">Professional</p>
+                            <p className="mt-4">
+                                Advanced tools for established businesses that need customization and automation.
+                            </p>
 
-                        <div className=" my-8">
-                            <div className="flex">
-                                <h3 className="font-bold text-4xl ">USD {chosenBilingCycle === "6" ? "19.99" : chosenBilingCycle === "12" ? "18.99" : "17.99"}</h3>
-                                <div className="flex flex-col ml-4 font-medium">
-                                    <p>/month</p>
-                                    <p>+ VAT</p>
+                            <div className=" my-8">
+                                <div className="flex">
+                                    <h3 className="font-bold text-4xl ">USD {chosenBilingCycle === "6" ? "19.99" : chosenBilingCycle === "12" ? "18.99" : "17.99"}</h3>
+                                    <div className="flex flex-col ml-4 font-medium">
+                                        <p>/month</p>
+                                        <p>+ VAT</p>
+                                    </div>
                                 </div>
+                                {chosenBilingCycle != "6" ?
+                                    <div className="flex items-start ml-4 mt-2">
+                                        <CornerDownRight className="text-green-600" />
+                                        <p className="px-4 py-1 ml-2 bg-green-600 text-white rounded-2xl text-sm font-medium"
+                                        >+{chosenBilingCycle === "12" ? "2" : "4"} months free</p>
+                                    </div>
+                                    : null
+                                }
                             </div>
-                            {chosenBilingCycle != "6" ?
-                                <div className="flex items-start ml-4 mt-2">
-                                    <CornerDownRight className="text-green-600" />
-                                    <p className="px-4 py-1 ml-2 bg-green-600 text-white rounded-2xl text-sm font-medium"
-                                    >+{chosenBilingCycle === "12" ? "2" : "4"} months free</p>
-                                </div>
-                                : null
-                            }
-                        </div>
 
-                        <button className="bg-blue-500 text-white rounded-sm font-medium duration-200 w-full py-2 cursor-pointer 
+                            <button className="bg-blue-500 text-white rounded-sm font-medium duration-200 w-full py-2 cursor-pointer 
                         hover:bg-blue-600 "
-                            onClick={() => alert("This section isn't implemented yet!")}
-                        >
-                            Try for free
-                        </button>
+                                onClick={() => alert("This section isn't implemented yet!")}
+                            >
+                                Try for free
+                            </button>
 
-                        <p className="mt-4 font-medium">Payment fees from</p>
-                        <div className="flex mt-2">
-                            <Check className="text-blue-500" />
-                            <p className="ml-2">2.00% + USD 0.30</p>
+                            <p className="mt-4 font-medium">Payment fees from</p>
+                            <div className="flex mt-2">
+                                <Check className="text-blue-500" />
+                                <p className="ml-2">2.00% + USD 0.30</p>
+                            </div>
+
+                            <p className="mt-4 font-medium">Features</p>
+
+                            <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Up to 500 bookings per month</p></div>
+                            <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Memberships and service packages</p></div>
+                            <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Custom booking page branding</p></div>
+                            <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Editable notification templates</p></div>
+                            <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Staff scheduling tools</p></div>
+                            <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Priority customer support</p></div>
+                            <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Advanced integrations</p></div>
                         </div>
-
-                        <p className="mt-4 font-medium">Features</p>
-
-                        <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Up to 500 bookings per month</p></div>
-                        <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Memberships and service packages</p></div>
-                        <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Custom booking page branding</p></div>
-                        <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Editable notification templates</p></div>
-                        <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Staff scheduling tools</p></div>
-                        <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Priority customer support</p></div>
-                        <div className="flex mt-2"><Check className="text-blue-500" /><p className="ml-2">Advanced integrations</p></div>
                     </div>
-                    <div className="p-4">
+                    <div className="mt-10 p-4 border border-gray-300 rounded-2xl xl:rounded-tl-none xl:rounded-bl-none h-full">
+
+
                         <p className="font-bold text-3xl">Enterprise</p>
                         <p className="mt-4 pb-6">
                             A scalable solution built for large teams and multi-location businesses.

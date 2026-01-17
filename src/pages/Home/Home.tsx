@@ -8,7 +8,7 @@ import { Pricing } from './components/Pricing'
 
 function Home() {
 
-  const [showInfo, setShowInfo] = useState<boolean>(true)
+  const [showInfo, setShowInfo] = useState<boolean>(false)
   
   
   useEffect(() => {
@@ -33,8 +33,8 @@ function Home() {
     <>
       <main>
         {showInfo ?
-          <div className='fixed inset-0 top-0 left-0 bg-gray-300/70   flex justify-center items-center'>
-            <div className='w-150 bg-white border-2 border-gray-300 rounded-2xl p-4 flex flex-col items-center text-center'>
+          <div className='fixed inset-0 top-0 left-0 bg-gray-300/70 flex justify-center items-center'>
+            <div className='w-[calc(100%-3rem)] max-w-150 bg-white border-2 border-gray-300 rounded-2xl p-4 flex flex-col items-center text-center'>
               <X className='ml-auto cursor-pointer  hover:bg-gray-300' onClick={()=>setShowInfo(false)}></X>
               <h1 className='text-2xl  font-bold'>⚠️ Important notice</h1>
               <p className='mt-8'>This platform is running on a free hosting plan.
@@ -47,7 +47,7 @@ function Home() {
           </div>
           : null
         }
-        <Hero />
+         <Hero />
         <Features />
         <WhySlotify/>
         <Pricing/>
