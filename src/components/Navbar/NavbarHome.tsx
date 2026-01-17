@@ -8,16 +8,16 @@ export const NavbarHome = () => {
     const location = useLocation();
 
     return (
-        <header id="navbar" className="flex h-20 px-20 w-full  fixed top-0 left-0 bg-white justify-between items-center shadow-xl text-text-gray">
+        <header id="navbar" className="flex h-20 px-20 w-full fixed top-0 left-0 bg-white justify-between items-center shadow-xl z-20">
             <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
             {location.pathname != "/register/business" && location.pathname != "/register/personal" && location.pathname != "/login" ?
                 <>
                     <div>
                         <a href="#features" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Features</a>
-                        <a href="#" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Why Slotify?</a>
-                        <a href="#" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Pricing</a>
-                        <a href="#" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Contact</a>
+                        <a href="#why" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Why Slotify?</a>
+                        <a href="#pricing" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Pricing</a>
+                        <a href="#home-footer" className="px-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">Contact</a>
                     </div>
                     <div>
                         <button onClick={() => {navigate("/login");window.scrollTo(0,0)}} className="mr-8 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200">LOG IN</button>
