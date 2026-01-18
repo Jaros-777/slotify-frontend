@@ -14,8 +14,8 @@ export const Auth = ({ view }: AuthProps) => {
     const isPreviousUrl:boolean = localStorage.getItem("previousURL") ? true : false
 
     return (
-        <section className=" min-h-screen bg-gray-200 flex flex-col items-center">
-            <div className="my-34 bg-white w-[40rem] h-auto flex flex-col items-center text-center p-16 pb-0 shadow-2xl">
+        <section className=" min-h-screen bg-gray-200 flex flex-col items-center px-4">
+            <div className="my-34 bg-white w-full md:w-[40rem] h-auto flex flex-col items-center text-center p-6 py-12 md:p-16 pb-0 shadow-2xl">
                 {view === "login" ? <Login /> : <Register />}
                 <p className="mt-12">By signing in or creating an account, you agree with {" "}
                     <span onClick={() => alert("This section isn't implemented yet!")} className="cursor-pointer underline font-medium">Terms & Conditions</span>

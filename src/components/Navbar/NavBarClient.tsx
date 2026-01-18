@@ -65,29 +65,41 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
 
 
     return (
-        <nav className="border-b border-gray-300 flex items-center justify-center z-50">
-            <div className="flex justify-between items-center px-40 py-6 w-full max-w-[80rem]">
+        <>
 
-            
-            {type === "reservation" ?
-                <p className="font-bold text-2xl cursor-default">{bussinessName}</p>
-                :
-                <img src={Logo} alt="Slotify logo" className="h-8" />
 
-            }
-            <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
-                {clientDetails?.pictureURL ?
-                    <img className="h-8 w-8 overflow-hidden rounded-sm flex items-center justify-center" src={clientDetails.pictureURL} alt="Profile picture" />
-                    :
-                    <CircleUserRound className="text-gray-400 bg-gray-200 rounded-sm p-1 h-8 w-8 cursor-pointer" />
-                }
-                {clientIsLogged && clientDetails ?
-                    <p className="ml-2 cursor-pointer font-medium">{clientDetails.name}</p>
-                    :
-                    <button className="ml-2 cursor-pointer font-medium" onClick={() => { localStorage.setItem("previousURL", window.location.href.split("/")[3]); navigate("/login") }}>Log in</button>
-                }
-            </div>
+            <nav className="lg:border-b border-gray-300 flex items-center justify-center z-50">
+                <div className="hidden lg:flex justify-between items-center px-10 lg:px-40 py-6 w-full max-w-[80rem]">
 
+
+                    {type === "reservation" ?
+                        <p className="font-bold text-2xl cursor-default">{bussinessName}</p>
+                        :
+                        <img src={Logo} alt="Slotify logo" className="h-8" />
+
+                    }
+                    <div className="flex cursor-pointer items-center" onClick={() => setShowSideBar(true)}>
+                        {clientDetails?.pictureURL ?
+                            <img className="h-8 w-8 overflow-hidden rounded-sm flex items-center justify-center" src={clientDetails.pictureURL} alt="Profile picture" />
+                            :
+                            <CircleUserRound className="text-gray-400 bg-gray-200 rounded-sm p-1 h-8 w-8 cursor-pointer" />
+                        }
+                        {clientIsLogged && clientDetails ?
+                            <p className="ml-2 cursor-pointer font-medium">{clientDetails.name}</p>
+                            :
+                            <button className="ml-2 cursor-pointer font-medium" onClick={() => { localStorage.setItem("previousURL", window.location.href.split("/")[3]); navigate("/login") }}>Log in</button>
+                        }
+                    </div>
+                </div>
+                <div className="flex lg:hidden absolute top-4 right-4" onClick={() => {
+                    setShowSideBar(true); 
+                    if(!clientIsLogged && !clientDetails){
+                        navigate("/login")
+                    } }}
+                     >
+                        <CircleUserRound className="text-gray-400 bg-gray-200 rounded-sm p-1 h-12 w-12 cursor-pointer" />
+                </div>
+            </nav>
             {clientIsLogged && clientDetails ?
                 <div
                     className={`fixed inset-0 bg-gray-300/70 h-full w-full z-50 top-0 left-0 flex duration-300 ${showSideBar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
@@ -96,11 +108,12 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
                     <div className={`bg-white w-80 ml-auto p-4 flex flex-col justify-between duration-300 ${showSideBar ? "translate-x-0" : "translate-x-full"}`}>
                         <div>
                             <div className="flex justify-between border-b border-gray-300 pb-4 items-center">
-                                <h1 className="font-medium text-2xl">Profile</h1>
+                                <h1 className="font-medium text-2xl hidden lg:block">Profile</h1>
+                                <img src={Logo} alt="Slotify logo" className="h-8 block lg:hidden" />
                                 <X className="cursor-pointer" onClick={() => setShowSideBar(false)}></X>
                             </div>
                             <div className="flex items-center py-4">
-                                <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-12 w-12 cursor-pointer" />
+                                <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-12 w-12" />
                                 <div className="ml-4">
                                     <p className="font-medium">{clientDetails.name}</p>
                                     <p className="text-sm">{clientDetails.email}</p>
@@ -131,7 +144,6 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
                 :
                 null
             }
-            </div>
-        </nav>
+        </>
     )
 }

@@ -32,6 +32,8 @@ export const Reservation = () => {
     const [currentDayOfWeek, setCurrentDayOfWeek] = useState<number>(0)
     const navigate = useNavigate()
     const [showServiceDescription, setShowServiceDescription] = useState<string | null>()
+
+
     const handleValidPage = async () => {
         setLoadDetails(true)
 
@@ -86,10 +88,10 @@ export const Reservation = () => {
         <>
             <NavBarClient type="reservation" ></NavBarClient>
             <div className="w-full flex flex-col items-center">
-                <section className=" w-full max-w-[80rem] flex justify-center items-center">
+                <section className=" w-full max-w-[80rem] h-50 lg:h-80 flex justify-center items-center">
                     {
                         businessDetail.backgroundPictureURL ?
-                            <img className="h-full w-full object-contain overflow-hidden" src={businessDetail.backgroundPictureURL} alt="Background picture" />
+                            <img className="h-full w-full object-cover overflow-hidden" src={businessDetail.backgroundPictureURL} alt="Background picture" />
                             :
                             <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
 
@@ -98,9 +100,9 @@ export const Reservation = () => {
                 </section>
                 <section className="flex flex-col items-center w-full p-4 pb-8 border-b border-gray-300 shadow-2xl">
                     <div className="flex justify-between px-4 py-2 w-full max-w-[80rem]">
-                        <div className="flex mx-4 items-center">
+                        <div className="grid grid-cols-[1fr_4fr] grid-rows-[auto_auto_auto] md:grid-rows-2 mx-4 items-start">
 
-                            <div className="relative w-24 h-24 rounded-full flex items-center justify-center">
+                            <div className="relative w-24 h-24 rounded-full flex items-center justify-center row-start-1 row-end-3">
                                 {
                                     businessDetail.profilePictureURL ?
                                         <img className="w-full h-full overflow-hidden rounded-full flex items-center justify-center" src={businessDetail.profilePictureURL} alt="Background picture" />
@@ -108,33 +110,38 @@ export const Reservation = () => {
                                         <Image className="h-4/6 w-4/6 aspect-square text-gray-400" />
                                 }
                             </div>
-
-
-                            <div className="ml-6">
+                            <div className="flex flex-col h-full ml-6 justify-center md:justify-end row-start-1 row-end-3  md:row-end-1">
                                 <p className="font-bold text-xl">{businessDetail.businessName}</p>
-                                <div className="flex mt-2 text-sm items-center">
+                            </div>
+                            <div className="md:ml-6 flex mt-6 md:mt-2 text-sm sm:items-center
+                            col-start-1 col-end-3 md:col-start-2 row-start-3 row-end-3 md:row-start-2 md:row-end-2 
+                            flex-col sm:flex-row
+                            ">
+                                <div className="flex">
                                     {currentOpenCompanyStatus() ?
                                         <p className=" text-green-700 font-bold">Open</p>
                                         :
                                         <p className=" text-red-700 font-bold">Closed</p>
                                     }
-                                    {schedulePlan.filter(e => e.dayOfWeek === new Date().getDay() - 1)[0].isClose ?
+                                    {schedulePlan.filter(e => e.dayOfWeek === (new Date().getDay() === 0 ? 6 : new Date().getDay() - 1))[0].isClose ?
                                         null
                                         :
                                         <p className="ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
                                     }
-                                    {businessDetail.address.city ?
-                                        <>
-                                            <Dot className="mx-2" />
-                                            <p>{businessDetail.address.street} {businessDetail.address.houseNumber}, {businessDetail.address.city}</p>
-                                            <div className="ml-4 flex items-center cursor-pointer">
-                                                <Navigation className="h-4" />
-                                                <a href={`https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${businessDetail.address.lat},${businessDetail.address.lng}&travelmode=driving`} className="underline font-bold" target="_blank">Get directions</a>
-                                            </div>
-                                        </>
-                                        : null
-                                    }
                                 </div>
+                                {businessDetail.address.city ?
+                                    <div className="flex flex-col sm:flex-row">
+                                        <div className="flex mt-2 sm:mt-0">
+                                            <Dot className="mx-2 hidden sm:block" />
+                                            <p>{businessDetail.address.street} {businessDetail.address.houseNumber}, {businessDetail.address.city}</p>
+                                        </div>
+                                        <div className="mt-2 sm:mt-0 sm:ml-4 flex items-center cursor-pointer">
+                                            <Navigation className="h-4" />
+                                            <a href={`https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${businessDetail.address.lat},${businessDetail.address.lng}&travelmode=driving`} className="underline font-bold" target="_blank">Get directions</a>
+                                        </div>
+                                    </div>
+                                    : null
+                                }
                             </div>
                         </div>
                         {/* <div className="flex flex-col justify-center items-center">
@@ -146,38 +153,40 @@ export const Reservation = () => {
                     </div>
 
                 </section>
-                <section className="mt-10 py-4 px-8 w-full max-w-[80rem]">
+                <section className="mt-10 py-4 px-4 md:px-8 w-full max-w-[80rem]">
                     <p className="text-2xl font-bold">Services</p>
                     <ul className="mt-4 border border-gray-300 rounded-md">
                         {serviceData.length > 0 ?
-
-
                             serviceData.map((e) => (
-                                <li key={e?.id} className="flex p-4 border-b border-gray-300 items-center">
-                                    <div className="w-24 flex-shrink-0 bg-green-100  rounded-full overflow-hidden">
-                                        {e?.servicePictureURL ?
-                                            <img src={e.servicePictureURL} alt="Service picture" />
-                                            :
-                                            <Image className="h-full w-full p-2 text-green-600"></Image>
-                                        }
+                                <li key={e?.id} className="grid grid-cols-1 grid-rows-[1fr_auto] md:flex p-4 border-b border-gray-300 items-center">
+                                    <div className="flex">
+                                        <div className="w-24 shrink-0 rounded-full overflow-hidden">
+                                            {e?.servicePictureURL ?
+                                                <img className="h-24 w-full object-contain rounded-full" src={e.servicePictureURL} alt="Service picture" />
+                                                :
+                                                <Image className="h-full w-full p-3 text-green-600"></Image>
+                                            }
+                                        </div>
+                                        <div className="ml-6 w-auto">
+                                            <p className="font-bold text-lg">{e?.name}</p>
+                                            {showServiceDescription === e?.id ?
+                                                <p className="text-sm underline cursor-pointer mt-2 text-nowrap" onClick={ev => setShowServiceDescription(null)}>Hide details</p>
+                                                :
+                                                <p className="text-sm underline cursor-pointer mt-2 text-nowrap" onClick={ev => setShowServiceDescription(e?.id)}>Show details</p>
+                                            }
+                                            {showServiceDescription === e?.id ?
+                                                <p className="w-full md:w-2/3 mt-4">{e?.description}</p>
+                                                : null
+                                            }
+                                        </div>
                                     </div>
-                                    <div className="ml-6 w-auto">
-                                        <p className="font-bold text-lg">{e?.name}</p>
-                                        {showServiceDescription === e?.id ?
-                                            <p className="text-sm underline cursor-pointer mt-2" onClick={ev => setShowServiceDescription(null)}>Hide details</p>
-                                            :
-                                            <p className="text-sm underline cursor-pointer mt-2" onClick={ev => setShowServiceDescription(e?.id)}>Show details</p>
-                                        }
-                                        {showServiceDescription === e?.id ?
-                                            <p className="w-2/3 mt-4">{e?.description}</p>
-                                            : null
-                                        }
-                                    </div>
-                                    <div className="ml-auto flex items-center flex-shrink-0">
-                                        <p className="font-bold">{e?.price} USD</p>
+                                    <div className="md:ml-auto flex items-center mt-4 md:mt-0">
+                                        <p className="ml-4 md:ml-0 font-bold text-nowrap col-start-1 row-start-2">{e?.price} USD</p>
                                         <button
-                                            className="border border-blue-300 text-blue-400 font-bold px-4 py-2 rounded-md ml-4 cursor-pointer duration-200 
-                                hover:bg-blue-200"
+                                            className="border border-blue-300 text-blue-400 font-bold px-4 py-2 rounded-md md:ml-4 cursor-pointer duration-200 
+                                hover:bg-blue-200
+                                            ml-auto md:m row-start-2
+                                "
                                             onClick={() => navigate(`/${businessName}/order/${e?.id}`)}
                                         >
                                             Reservation
@@ -190,7 +199,7 @@ export const Reservation = () => {
                     </ul>
 
                 </section>
-                <section className="px-8 py-4 w-full max-w-[80rem]">
+                {/* <section className="px-8 py-4 w-full max-w-[80rem]">
                     {businessDetail.slogan || businessDetail.description ?
                         <div>
                             <h2 className="text-2xl font-bold">About</h2>
@@ -259,7 +268,7 @@ export const Reservation = () => {
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> */}
                 {businessDetail.address.lat && businessDetail.address.lng ?
                     <section className="px-8 py-4 w-full max-w-[80rem] mt-4">
                         <div>
