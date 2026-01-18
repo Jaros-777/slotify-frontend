@@ -24,7 +24,7 @@ export const Features = () => {
 
     return (
         <section id="features" className="my-40 w-full flex justify-center">
-            <div className="w-250 flex flex-col-reverse lg:flex-row px-4">
+            <div className="max-w-350 flex flex-col-reverse lg:flex-row px-4">
                 <div className="flex flex-col w-full lg:w-1/2 px-8 pb-4 h-full items-start">
                     <h1 className="text-center lg:text-left mt-10 lg:mt-0 text-4xl lg:text-5xl font-medium">Optimize your schedule with smart daily tools</h1>
                     <ul className="lg:ml-4 mt-4  lg:select-auto select-none">

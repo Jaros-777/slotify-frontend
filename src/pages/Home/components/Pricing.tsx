@@ -7,13 +7,13 @@ export const Pricing = () => {
 
     return (
         <section id="pricing" className="flex justify-center my-20">
-            <div className="w-full px-4 lg:px-0 lg:w-2/3">
+            <div className="w-full max-w-350 px-4 lg:px-16">
                 <h1 className="text-5xl font-bold">Plan for every business</h1>
                 <div className="mt-10 flex flex-col lg:flex-row items-start lg:items-center ">
                     <p className="font-bold text-2xl">Choose a biling cycle</p>
                     <div className="border border-gray-300 rounded-2xl  grid grid-cols-3 py-2 px-4 mt-6 lg:mt-0 lg:ml-6 lg:text-lg font-medium relative">
                         <button
-                            className={`px-4 py-2 rounded-2xl w-30 cursor-pointer duration-200 ${chosenBilingCycle === "6" ? "bg-blue-500 text-white" : null} `}
+                            className={`px-4 py-2 rounded-2xl lg:w-30 text-nowrap cursor-pointer duration-200 ${chosenBilingCycle === "6" ? "bg-blue-500 text-white" : null} `}
                             onClick={() => setChosenBilingCycle("6")}
                         >6 months</button>
                         <button
@@ -25,21 +25,21 @@ export const Pricing = () => {
                             onClick={() => setChosenBilingCycle("24")}
                         >2 years</button>
                         {chosenBilingCycle != "24" ?
-                            <div className="flex flex-row-reverse lg:flex-row absolute top-16 right-20 lg:-top-4 lg:-right-60 items-end lg:items-start">
+                            <div className="flex flex-row-reverse xl:flex-row absolute top-16 right-16 xl:-top-4 xl:-right-60 items-end lg:items-start">
                                 <TrendingUp className="h-14 w-14" />
-                                <p className="px-4 py-2 rounded-2xl bg-blue-900 text-white ml-2 text-lg">Get 4 months for free</p>
+                                <p className="px-4 py-2 rounded-2xl bg-blue-900 text-white ml-2 text-lg text-nowrap">Get 4 months for free</p>
                             </div>
                             : null
                         }
                     </div>
                 </div>
-                <div className="flex flex-col xl:grid grid-cols-4  rounded-2xl mt-20">
+                <div className="grid grid-cols-1 grid-rows-4 gap-4 xl:gap-0 xl:grid-cols-4 xl:grid-rows-1  rounded-2xl mt-20">
                     <div className="mt-10 p-4 border border-gray-300 rounded-2xl xl:rounded-tr-none xl:rounded-br-none h-full">
                         <p className="font-bold text-3xl">Launch</p>
-                        <p className="mt-4 h-18">A simple starting plan for individuals who want to begin accepting online bookings with ease.</p>
+                        <p className="mt-4 h-24">A simple starting plan for individuals who want to begin accepting online bookings with ease.</p>
                         <h3 className="font-bold text-4xl my-8">USD 0</h3>
                         {chosenBilingCycle != "6" ?
-                            <div className="h-9">
+                            <div className="lg:h-9">
                             </div>
                             : null
                         }
@@ -85,13 +85,13 @@ export const Pricing = () => {
                     </div>
                     <div className="mt-10 p-4 border lg:border-y border-gray-300 h-full rounded-2xl xl:rounded-none">
                         <p className="font-bold text-3xl">Growth</p>
-                        <p className="mt-4 h-18">
-                            Designed for freelancers and small businesses ready to manage a growing number of clients efficiently.
+                        <p className="mt-4 h-24">
+                            Designed for freelancers and small businesses ready to manage a clients efficiently.
                         </p>
 
                         <div className=" my-8">
                             <div className="flex">
-                                <h3 className="font-bold text-4xl ">USD {chosenBilingCycle === "6" ? "6.99" : chosenBilingCycle === "12" ? "5.99" : "4.99"}</h3>
+                                <h3 className="font-bold text-4xl text-nowrap">USD {chosenBilingCycle === "6" ? "6.99" : chosenBilingCycle === "12" ? "5.99" : "4.99"}</h3>
                                 <div className="flex flex-col ml-4 font-medium">
                                     <p>/month</p>
                                     <p>+ VAT</p>
@@ -137,13 +137,13 @@ export const Pricing = () => {
                         </div>
                         <div className="p-4 border border-gray-300 bg-blue-100 h-full rounded-bl-2xl rounded-br-2xl xl:rounded-bl-none xl:rounded-br-none">
                             <p className="font-bold text-3xl">Professional</p>
-                            <p className="mt-4">
+                            <p className="mt-4 h-24">
                                 Advanced tools for established businesses that need customization and automation.
                             </p>
 
                             <div className=" my-8">
                                 <div className="flex">
-                                    <h3 className="font-bold text-4xl ">USD {chosenBilingCycle === "6" ? "19.99" : chosenBilingCycle === "12" ? "18.99" : "17.99"}</h3>
+                                    <h3 className="font-bold text-4xl text-nowrap">USD {chosenBilingCycle === "6" ? "19.99" : chosenBilingCycle === "12" ? "18.99" : "17.99"}</h3>
                                     <div className="flex flex-col ml-4 font-medium">
                                         <p>/month</p>
                                         <p>+ VAT</p>
@@ -187,13 +187,13 @@ export const Pricing = () => {
 
 
                         <p className="font-bold text-3xl">Enterprise</p>
-                        <p className="mt-4 pb-6">
+                        <p className="mt-4 h-24">
                             A scalable solution built for large teams and multi-location businesses.
                         </p>
 
-                        <h3 className="font-bold text-4xl my-8">Custom</h3>
+                        <h3 className="font-bold text-4xl mb-4 lg:my-8">Custom</h3>
                         {chosenBilingCycle != "6" ?
-                            <div className="h-9">
+                            <div className="lg:h-9">
                             </div>
                             : null
                         }

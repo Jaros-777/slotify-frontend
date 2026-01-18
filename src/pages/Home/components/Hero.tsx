@@ -21,7 +21,7 @@ export const Hero = () => {
                 </div>
             </div>
             <div className="mx-4">
-                <img src={BackgroundBellRing} className="max-h-150 object-cover rounded-2xl mt-10" />
+                <img src={BackgroundBellRing} className="max-h-180 object-cover rounded-2xl mt-10" />
             </div>
         </section>
     )
