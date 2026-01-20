@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Info } from "lucide-react";
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, useMapEvents, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvents, Marker, Popup, useMap } from "react-leaflet";
 import axios from "axios";
 import type { AddressType } from "../types/AddressType";
 import { mapPointIcon } from "../utils/MapPointIcon";
@@ -22,6 +22,11 @@ type AddressShortenType = {
     postalcode?: string;
     note?: string
 };
+
+interface MapUpdaterProps {
+    lat: number | null;
+    lng: number | null;
+}
 
 export const AddressForm = ({ setShowAddressForm, address, setCurrentBusinessProfile }: AddressProps) => {
 
@@ -109,7 +114,12 @@ export const AddressForm = ({ setShowAddressForm, address, setCurrentBusinessPro
 
         axios.get(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5`)
             .then(response => {
-                fetchPointByLatAndLng(response.data[0].lat, response.data[0].lon)
+                if (tempAddress.street) {
+                    fetchPointByLatAndLng(response.data[0].lat, response.data[0].lon)
+                } else {
+                    setMapPoint([response.data[0].lat, response.data[0].lon])
+                    setChosenAddress(tempAddress);
+                }
             }
 
             ).catch(error => {
@@ -117,7 +127,15 @@ export const AddressForm = ({ setShowAddressForm, address, setCurrentBusinessPro
             })
     }
 
+    const MapUpdater = ({ lat, lng }: MapUpdaterProps) => {
+        const map = useMap();
+        if(lat && lng)
+            useEffect(() => {
+                map.setView([lat, lng]);
+            }, [lat, lng, map]);
 
+            return null;
+    };
 
 
     return (
@@ -253,6 +271,8 @@ export const AddressForm = ({ setShowAddressForm, address, setCurrentBusinessPro
                                 attribution="&copy; OpenStreetMap contributors"
                             />
                             <MapSetPoint />
+                            <MapUpdater lat={chosenAddress.lat ?? null} lng={chosenAddress.lng ?? null} />
+
                             {mapPoint && (
                                 <Marker position={mapPoint} icon={mapPointIcon}>
                                     <Popup>

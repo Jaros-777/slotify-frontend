@@ -166,7 +166,7 @@ export const NavbarAdmin = () => {
                         <p className="font-bold text-blue-500">{notificationData.filter(e => e.isReaded === false).length}</p>
                     </div>
                     {showDropBarNotification ?
-                        <div className="absolute top-[3rem] bg-white border border-gray-300 w-80 flex flex-col justify-center p-2 max-h-150">
+                        <div className="absolute top-[3rem] bg-white border border-gray-300 w-90 flex flex-col justify-center p-2 max-h-150">
                             <p className="text-center font-bold my-2">Notification</p>
                             <button className="mt-2 ml-auto text-blue-500 cursor-pointer font-medium" onClick={markAllAsReaded}>Mark all as read</button>
                             {notificationData.length > 0 ?

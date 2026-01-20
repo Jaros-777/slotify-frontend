@@ -14,7 +14,7 @@ import { CustomToolbar } from "./components/CustomToolbar";
 import type { ServiceType } from "../../../types/ServiceType";
 import axios from "axios";
 import { toLocalDateTimeString } from "./utils/dateUtils";
-import type { clientType } from "../../../Client/types/adminClientType";
+import type { adminClientType } from "../../../Client/types/adminClientType";
 import { useNavigate } from "react-router-dom";
 
 
@@ -48,8 +48,8 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
   const [selectedDuration, setSelectedDuration] = useState<number>(15);
   const [showEventDescription, setShowEventDescription] = useState<boolean>(false)
   const [showClientsList, setShowClientsList] = useState<boolean>(false);
-  const [clientDetails, setClientDetails] = useState<clientType[]>([])
-  const [filteredClientDetails, setFilteredClientDetails] = useState<clientType[]>([])
+  const [clientDetails, setClientDetails] = useState<adminClientType[]>([])
+  const [filteredClientDetails, setFilteredClientDetails] = useState<adminClientType[]>([])
   const navigate = useNavigate()
 
   const handleSelectSlot = async (slotInfo: SlotInfo) => {
@@ -64,7 +64,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
       startDate: slotInfo.start,
       endDate: slotInfo.end,
       bookingStatus: "CONFIRMED",
-      description: ""
+      description: null
     });
 
     setSelectedDuration(diffInMinutes);
@@ -358,8 +358,12 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                 <p className=" font-medium">Assign service</p>
                 <select
                   value={newEvent.serviceId ?? serviceData[0].id}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setNewEvent({ ...newEvent, serviceId: e.target.value })
+                    const serviceDuration = serviceData.find(ev => Number(ev.id) === Number(e.target.value))?.duration
+                    if (serviceDuration)
+                      setSelectedDuration(Number(serviceDuration / 60))
+                  }
                   }
                   className="w-full border p-2 rounded mb-4 border-gray-300"
                 >
@@ -373,7 +377,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                   <div>
                     <p className=" font-medium">Date</p>
                     <input
-                      className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
+                      className="border-1 px-2 py-1 h-[2em] border-gray-300"
                       type="date"
                       value={newEvent.startDate ? newEvent.startDate.toLocaleDateString("en-CA") : ""}
                       onChange={(e) => {
@@ -435,7 +439,7 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
                   <div>
                     <p className=" font-medium">Duration</p>
                     <select
-                      className="border-1 border-black px-2 py-1 h-[2em] border-gray-300"
+                      className="border-1 px-2 py-1 h-[2em] border-gray-300"
                       value={selectedDuration}
                       onChange={(e) => setSelectedDuration(Number(e.target.value))}
                     >

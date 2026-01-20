@@ -89,8 +89,8 @@ export const ClientProfile = () => {
             {showPictureImageFileContainer ?
                 <ImageFileContainer file={clientPic} setShowImageFileContainer={setShowPictureImageFileContainer} setPic={setClientPic} aspectRatio={1} /> : null
             }
-            <h1 className="text-2xl font-medium min-w-300">User profile</h1>
-            <div className="border border-gray-300 rounded-2xl p-4 mt-8 min-w-300">
+            <h1 className="text-2xl font-medium w-full max-w-300">User profile</h1>
+            <div className="border border-gray-300 rounded-2xl p-4 mt-8 w-full max-w-300">
                 <p className="text-xl font-medium pb-4 border-b border-gray-300">Profile details</p>
                 <div className=" p-4 mt-8 flex">
                     <div className="relative w-36 h-36 rounded-2xl border-2 border-blue-600 flex items-center justify-center">
@@ -169,7 +169,7 @@ export const ClientProfile = () => {
                     </form>
                 </div>
             </div>
-            <div className="border border-gray-300 rounded-2xl p-4 mt-8 flex justify-between min-w-300">
+            <div className="border border-gray-300 rounded-2xl p-4 mt-8 flex justify-between w-full max-w-300">
                 <div>
                     <p className="text-xl font-medium">Password</p>
                     <p className="mt-2">Set or change your account password.</p>

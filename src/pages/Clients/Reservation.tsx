@@ -75,7 +75,7 @@ export const Reservation = () => {
     useEffect(() => {
         (async () => {
             await handleValidPage()
-            setCurrentDayOfWeek((new Date().getDay() + 6) % 7)
+            setCurrentDayOfWeek(new Date().getDay())
 
         })();
     }, []);
@@ -123,7 +123,7 @@ export const Reservation = () => {
                                         :
                                         <p className=" text-red-700 font-bold">Closed</p>
                                     }
-                                    {schedulePlan.filter(e => e.dayOfWeek === (new Date().getDay() === 0 ? 6 : new Date().getDay() - 1))[0].isClose ?
+                                    {schedulePlan.filter(e => e.dayOfWeek === new Date().getDay())[0].isClose ?
                                         null
                                         :
                                         <p className="ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
@@ -133,7 +133,7 @@ export const Reservation = () => {
                                     <div className="flex flex-col sm:flex-row">
                                         <div className="flex mt-2 sm:mt-0">
                                             <Dot className="mx-2 hidden sm:block" />
-                                            <p>{businessDetail.address.street} {businessDetail.address.houseNumber}, {businessDetail.address.city}</p>
+                                            <p>{businessDetail.address.street} {businessDetail.address.houseNumber ? `${businessDetail.address.houseNumber}, ` : ""} {businessDetail.address.city}</p>
                                         </div>
                                         <div className="mt-2 sm:mt-0 sm:ml-4 flex items-center cursor-pointer">
                                             <Navigation className="h-4" />
@@ -199,7 +199,7 @@ export const Reservation = () => {
                     </ul>
 
                 </section>
-                {/* <section className="px-8 py-4 w-full max-w-[80rem]">
+                <section className="px-8 py-4 w-full max-w-[80rem]">
                     {businessDetail.slogan || businessDetail.description ?
                         <div>
                             <h2 className="text-2xl font-bold">About</h2>
@@ -212,13 +212,13 @@ export const Reservation = () => {
                             {businessDetail.slogan ?
                                 <div className="w-full mt-12">
                                     <p className="font-bold text-lg">Slogan</p>
-                                    <p className="mt-4 pr-6">{businessDetail.slogan}</p>
+                                    <p className="mt-4 pr-6 whitespace-pre-line">{businessDetail.slogan}</p>
                                 </div>
                                 : null}
                             {businessDetail.description ?
                                 <div className="w-full mt-12">
                                     <p className="font-bold text-lg">Who we are</p>
-                                    <p className="mt-4 pr-6">{businessDetail.description}</p>
+                                    <p className="mt-4 pr-6 whitespace-pre-line">{businessDetail.description}</p>
                                 </div>
                                 : null}
                         </div>
@@ -268,7 +268,7 @@ export const Reservation = () => {
                             </div>
                         </div>
                     </div>
-                </section> */}
+                </section>
                 {businessDetail.address.lat && businessDetail.address.lng ?
                     <section className="px-8 py-4 w-full max-w-[80rem] mt-4">
                         <div>

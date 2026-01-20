@@ -7,8 +7,14 @@ import { useData } from "../../../../../../AppRouter";
 import { ImageFileContainer } from "./components/ImageFileContainer";
 import { LoadingPage } from "../../../../../../LoadingPage";
 import { AddressForm } from "./components/AddressForm";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { mapPointIcon } from "./utils/MapPointIcon";
+
+
+interface MapUpdaterProps {
+    lat: number;
+    lng: number;
+}
 
 export const BusinessProfile = () => {
     const { checkIsLogged, isAuthLoading } = useCheckIsLogged("admin");
@@ -100,6 +106,15 @@ export const BusinessProfile = () => {
         window.location.reload()
     }
 
+    const MapUpdater = ({ lat, lng }: MapUpdaterProps) => {
+        const map = useMap();
+
+        useEffect(() => {
+            map.setView([lat, lng]);
+        }, [lat, lng, map]);
+
+        return null;
+    };
 
 
     useEffect(() => {
@@ -249,10 +264,13 @@ export const BusinessProfile = () => {
                     {currentBusinessProfile.address.lat && currentBusinessProfile.address.lng ?
                         <div className="mt-6 px-4 flex items-center justify-between">
                             <div className="flex flex-col leading-8 w-1/2">
-                                <div className="flex">
-                                    <p className="text-gray-500 font-bold w-1/4">Street</p>
-                                    <p className="ml-6">{currentBusinessProfile.address.street} {currentBusinessProfile.address.houseNumber}</p>
-                                </div>
+                                {currentBusinessProfile.address.street ?
+                                    <div className="flex">
+                                        <p className="text-gray-500 font-bold w-1/4">Street</p>
+                                        <p className="ml-6">{currentBusinessProfile.address.street} {currentBusinessProfile.address.houseNumber}</p>
+                                    </div>
+                                    : null
+                                }
                                 <div className="flex">
                                     <p className="text-gray-500 font-bold w-1/4">City</p>
                                     <p className="ml-6">{currentBusinessProfile.address.city}</p>
@@ -279,6 +297,8 @@ export const BusinessProfile = () => {
                                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                         attribution="&copy; OpenStreetMap contributors"
                                     />
+                                    <MapUpdater lat={currentBusinessProfile.address.lat} lng={currentBusinessProfile.address.lng} />
+
                                     <Marker position={[currentBusinessProfile.address.lat, currentBusinessProfile.address.lng]} icon={mapPointIcon}>
                                         <Popup>
                                             {currentBusinessProfile.address.street} {currentBusinessProfile.address.houseNumber ? `${currentBusinessProfile.address.houseNumber}, ` : ""}
