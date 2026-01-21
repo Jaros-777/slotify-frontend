@@ -43,7 +43,7 @@ export const ServiceForm = () => {
     const [servicePic, setServicePic] = useState<File | null>(null)
     const [showSavingState, setShowSavingState] = useState<boolean>(false)
 
-    
+
 
     const handleAddServicePic = () => {
         fileInputRefServicePic.current?.click()
@@ -83,35 +83,38 @@ export const ServiceForm = () => {
                         'Authorization': `Bearer ${userToken}`
                     }
                 }
-            ).then(() => {
+            ).then((response) => {
+                let createdServiceId: number | null = response.data
 
+                if (servicePic != null) {
+                    const formData = new FormData()
+                    if (id != null) {
+                        formData.append("id", id.toString())
+                    } else if (createdServiceId)
+                        formData.append("id", createdServiceId.toString())
+
+                    formData.append("servicePic", servicePic)
+
+                    axios.post(`${import.meta.env.VITE_APP_URL}/service/picture`,
+                        formData,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${userToken}`
+                            }
+                        }
+                    )
+                        .then(() => {
+
+                        }).catch(function (error) {
+                            console.log(error);
+                        })
+                }
             }).catch((error) => {
                 console.log(error)
             })
         }
 
-        if (servicePic != null) {
-            const formData = new FormData()
-            if (servicePic != null && id != null) {
-                formData.append("servicePic", servicePic)
-                formData.append("id", id.toString())
-            }
-            axios.post(`${import.meta.env.VITE_APP_URL}/service/picture`,
-                formData,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${userToken}`
-                    }
-                }
-            )
-                .then(response => {
 
-                }).catch(function (error) {
-                    console.log(error);
-                })
-
-
-        }
         setShowSavingState(false)
         window.scrollTo(0, 0)
         navigate("/admin/settings/services")
