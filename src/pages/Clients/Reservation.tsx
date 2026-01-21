@@ -167,17 +167,23 @@ export const Reservation = () => {
                                                 <Image className="h-full w-full p-3 text-green-600"></Image>
                                             }
                                         </div>
-                                        <div className="ml-6 w-auto">
+                                        <div className={`ml-6 w-auto flex flex-col ${e?.description ? null : "justify-center"} `}>
                                             <p className="font-bold text-lg">{e?.name}</p>
-                                            {showServiceDescription === e?.id ?
-                                                <p className="text-sm underline cursor-pointer mt-2 text-nowrap" onClick={ev => setShowServiceDescription(null)}>Hide details</p>
-                                                :
-                                                <p className="text-sm underline cursor-pointer mt-2 text-nowrap" onClick={ev => setShowServiceDescription(e?.id)}>Show details</p>
-                                            }
-                                            {showServiceDescription === e?.id ?
-                                                <p className="w-full md:w-2/3 mt-4">{e?.description}</p>
+                                            {e?.description ?
+                                                <>
+                                                    {showServiceDescription === e?.id ?
+                                                        <p className="text-sm underline cursor-pointer mt-2 text-nowrap" onClick={() => setShowServiceDescription(null)}>Hide details</p>
+                                                        :
+                                                        <p className="text-sm underline cursor-pointer mt-2 text-nowrap" onClick={() => setShowServiceDescription(e?.id)}>Show details</p>
+                                                    }
+                                                    {showServiceDescription === e?.id ?
+                                                        <p className="w-full md:w-2/3 mt-4">{e?.description}</p>
+                                                        : null
+                                                    }
+                                                </>
                                                 : null
                                             }
+
                                         </div>
                                     </div>
                                     <div className="md:ml-auto flex items-center mt-4 md:mt-0">
