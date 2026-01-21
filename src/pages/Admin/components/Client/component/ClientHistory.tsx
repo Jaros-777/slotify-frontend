@@ -15,16 +15,16 @@ export const ClientHistory = () => {
 
     const fetchData = async (token: string) => {
         await axios.get(`${import.meta.env.VITE_APP_URL}/admin/client/${clientId}`,
-			{
-				headers: {
-					'Authorization': `Bearer ${token}`
-				}
-			}
-		).then(response => {
-			setClientDetailsAndHistory(response.data)
-		}).catch(function (error) {
-			console.log(error)
-		})
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        ).then(response => {
+            setClientDetailsAndHistory(response.data)
+        }).catch(function (error) {
+            console.log(error)
+        })
     }
 
     useEffect(() => {
@@ -43,8 +43,8 @@ export const ClientHistory = () => {
     }
 
     return (
-        <>
-            <div className="mt-10 pb-4 bg-white p-4 border border-gray-300 rounded-md flex min-w-250">
+        <div className="px-4 lg:px-4 w-full max-w-250">
+            <div className="mt-10 pb-4 bg-white p-4 border border-gray-300 rounded-md flex">
                 <div className="w-full">
                     <div className="flex justify-between items-start">
                         <div className="flex">
@@ -67,7 +67,7 @@ export const ClientHistory = () => {
                     </div>
                 </div>
             </div>
-            <div className="my-10 bg-white p-4 border border-gray-300 rounded-md flex flex-col min-w-250">
+            <div className="my-10 bg-white p-4 border border-gray-300 rounded-md flex flex-col">
                 <p className="text-xl font-medium">Past bookings</p>
                 <ul className="mt-4">
                     {clientDetailsAndHistory.historyDTO.map(e => {
@@ -97,7 +97,7 @@ export const ClientHistory = () => {
                     })}
                 </ul>
             </div>
-        </>
+        </div>
 
     )
 }

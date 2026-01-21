@@ -132,8 +132,8 @@ export const Client = () => {
 	}
 
 	return (
-		<div className="bg-gray-200 flex justify-center min-w-250">
-			<div className="bg-white p-4 mt-10 h-40">
+		<div className="bg-gray-200 px-4 lg:px-0 flex flex-col lg:flex-row justify-center w-full max-w-250">
+			<div className="bg-white p-4 mt-10 h-40 border border-gray-300 rounded-md">
 				<div className="border border-gray-300 rounded-md flex p-2">
 					<Search className="mr-2"></Search>
 					<input
@@ -151,9 +151,9 @@ export const Client = () => {
 					>CSV</button>
 				</div>
 			</div>
-			<div className="mt-10 w-3/4 p-4">
+			<div className="mt-4 lg:mt-10 lg:w-3/4 lg:p-4">
 				<p className="text-2xl font-medium">Clients ({filteredClientsList.length})</p>
-				<ul className="grid grid-cols-2 gap-2 mt-4">
+				<ul className="flex flex-col lg:grid grid-cols-2 gap-2 mt-4">
 					{filteredClientsList.map(e => {
 						const bgColor = colors[Math.floor(Math.random() * colors.length)];
 						return (
