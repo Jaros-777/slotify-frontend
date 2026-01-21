@@ -32,7 +32,7 @@ export const NavbarAdmin = () => {
                 }
             }
         ).then(response => {
-            const sorted = response.data.notificationDTO.map((e:NotificationType)=>({
+            const sorted = response.data.notificationDTO.map((e: NotificationType) => ({
                 ...e,
                 date: new Date(e.date),
                 bookingStartDate: new Date(e.bookingStartDate),
@@ -40,7 +40,7 @@ export const NavbarAdmin = () => {
                 (a: NotificationType, b: NotificationType) => b.date.getTime() - a.date.getTime()
             )
             setNotificationData(sorted)
-            if(response.data.businessImgUrl){
+            if (response.data.businessImgUrl) {
                 setBusinessImgUrl(response.data.businessImgUrl)
                 setBusinessPictureURL(response.data.businessImgUrl)
             }
@@ -111,7 +111,7 @@ export const NavbarAdmin = () => {
 
     useEffect(() => {
         (async () => {
-            if(userToken)
+            if (userToken)
                 await fetchNotification();
         })();
     }, [userToken]);
@@ -119,7 +119,7 @@ export const NavbarAdmin = () => {
     useEffect(() => {
         const current = section as "calendar" | "client" | "booking" | "settings"
         setActiveSection(current)
-    }, [section])
+    }, [section, window.location.href])
 
     useEffect(() => {
         const handleClick = () => {
@@ -137,11 +137,11 @@ export const NavbarAdmin = () => {
     return (
         <header
             id="navbar"
-            className="flex h-20 px-20 w-full fixed top-0 left-0 z-60 bg-white justify-between items-center border-b-1 border-gray-300 "
+            className="flex h-20 px-12 xl:px-20 w-full fixed top-0 left-0 z-60 bg-white justify-between items-center border-b-1 border-gray-300 "
         >
-            <a className="h-[100%] flex items-center justify-center" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
+            <a className="h-[100%] flex items-center justify-center shrink-0" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
-            <div className="flex">
+            <div className="hidden lg:flex">
                 <button onClick={() => { navigate("/admin/calendar"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <CalendarDays className={activeSection === "calendar" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
@@ -151,8 +151,8 @@ export const NavbarAdmin = () => {
                     <span className={activeSection === "client" ? "text-blue-500" : ""}>Clients</span>
                 </button>
                 <button onClick={() => { navigate("/admin/booking/get-booking"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
-                    <Link className={activeSection === "booking" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
-                    <span className={activeSection === "booking" ? "text-blue-500" : ""}>Online booking</span>
+                    <Link className={`${activeSection === "booking" ? "text-blue-500" : null} mr-4 h-[1.5em] shrink-0`} />
+                    <span className={`${activeSection === "booking" ? "text-blue-500" : ""} text-nowrap`}>Online booking</span>
                 </button>
                 <button onClick={() => { navigate("/admin/settings/availability"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <Settings className={activeSection === "settings" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
@@ -160,17 +160,19 @@ export const NavbarAdmin = () => {
                 </button>
             </div>
             <div className="flex items-center h-3/6">
-                <div className="mr-10    flex items-center justify-center cursor-pointer relative" onClick={(e) => { e.stopPropagation(), setShowDropBarNotification(!showDropBarNotification), setShowDropBarUser(false) }}>
-                    <BellRing className="p-2 w-full h-full duration-200 hover:text-blue-500" />
-                    <div className={`absolute bottom-0 ${notificationData.filter(e => e.isReaded === false).length > 10 ? "-right-3" : "-right-1"}`}>
+                <div className="mr-10 flex items-center justify-center cursor-pointer relative">
+                    <BellRing
+                        className="hidden lg:block p-2 w-10 h-10 duration-200 hover:text-blue-500 shrink-0"
+                        onClick={(e) => { e.stopPropagation(), setShowDropBarNotification(!showDropBarNotification), setShowDropBarUser(false) }} />
+                    <div className={`hidden lg:block absolute bottom-0 ${notificationData.filter(e => e.isReaded === false).length > 10 ? "-right-3" : "-right-1"}`}>
                         <p className="font-bold text-blue-500">{notificationData.filter(e => e.isReaded === false).length}</p>
                     </div>
                     {showDropBarNotification ?
-                        <div className="absolute top-[3rem] bg-white border border-gray-300 w-90 flex flex-col justify-center p-2 max-h-150">
-                            <p className="text-center font-bold my-2">Notification</p>
+                        <div className="fixed top-18 right-2 lg:right-4 z-60 bg-white border-1 border-gray-300 w-[calc(100%-1rem)] lg:w-90 flex flex-col justify-center p-2 max-h-150">
+                            <p className="text-center font-bold my-2">Notifications</p>
                             <button className="mt-2 ml-auto text-blue-500 cursor-pointer font-medium" onClick={markAllAsReaded}>Mark all as read</button>
                             {notificationData.length > 0 ?
-                                <ul className="mt-2  overflow-y-scroll">
+                                <ul className="mt-2 max-h-100 overflow-y-scroll">
                                     {notificationData.map(e => (
                                         <div
                                             key={e.id}
@@ -200,16 +202,57 @@ export const NavbarAdmin = () => {
                     }
                 </div>
                 <div className="bg-gray-300 rounded-2xl h-12 w-12 aspect-square flex items-center justify-center cursor-pointer relative" onClick={(e) => { e.stopPropagation(), setShowDropBarUser(!showDropBarUser), setShowDropBarNotification(false) }}>
-                    
+
                     {businessImgUrl ?
                         <img className="h-full w-full object-contain overflow-hidden rounded-2xl" src={businessImgUrl} alt="Background picture" />
                         :
                         <p>US</p>
                     }
-                
+
                     {showDropBarUser ?
-                        <ul className="absolute top-[3.5rem]  bg-white border-1 border-gray-300">
-                            <li className="px-6 py-2 whitespace-nowrap" onClick={() => navigate("/admin/user")}>User profile</li>
+                        <ul className="fixed lg:absolute top-20 lg:top-[3.5rem] left-0 lg:left-auto w-full lg:w-auto  lg:-right-10 bg-white border-1 border-gray-300">
+                            <div className="block lg:hidden">
+                                <li
+                                    className={`px-6 py-2 flex ${notificationData.filter(e => e.isReaded === false).length > 0 ? "text-blue-500" : null}`}
+                                    onClick={(e) => { e.stopPropagation(), setShowDropBarNotification(!showDropBarNotification), setShowDropBarUser(false) }}
+                                >
+                                    <p>Notifications </p>
+                                    {notificationData.filter(e => e.isReaded === false).length > 0 ?
+                                        <p className="ml-2"> - {notificationData.filter(e => e.isReaded === false).length} new</p>
+                                        :
+                                        <p className="ml-2"> - nothing new</p>
+                                    }
+                                </li>
+                                <li
+                                    onClick={() => { navigate("/admin/calendar"); window.scrollTo(0, 0) }}
+                                    className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
+                                >
+                                    <CalendarDays className={activeSection === "calendar" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                                    <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
+                                </li>
+                                <li
+                                    onClick={() => { navigate("/admin/client"); window.scrollTo(0, 0) }}
+                                    className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
+                                >
+                                    <User className={activeSection === "client" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                                    <span className={activeSection === "client" ? "text-blue-500" : ""}>Clients</span>
+                                </li>
+                                <li
+                                    onClick={() => { navigate("/admin/booking/get-booking"); window.scrollTo(0, 0) }}
+                                    className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
+                                >
+                                    <Link className={`${activeSection === "booking" ? "text-blue-500" : null} mr-4 h-[1.5em] shrink-0`} />
+                                    <span className={`${activeSection === "booking" ? "text-blue-500" : ""} text-nowrap`}>Online booking</span>
+                                </li>
+                                <li
+                                    onClick={() => { navigate("/admin/settings/availability"); window.scrollTo(0, 0) }}
+                                    className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
+                                >
+                                    <Settings className={activeSection === "settings" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
+                                    <span className={activeSection === "settings" ? "text-blue-500" : ""}>Settings</span>
+                                </li>
+                            </div>
+                            <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={() => navigate("/admin/user")}>User profile</li>
                             <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={() => alert("This section isn't implemented yet!")}>Support</li>
                             <li className="px-6 py-2 whitespace-nowrap border-t-1 border-gray-300" onClick={logOut}>Log out</li>
                         </ul>
