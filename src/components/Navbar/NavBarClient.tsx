@@ -91,13 +91,34 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
                         }
                     </div>
                 </div>
-                <div className="flex lg:hidden absolute top-4 right-4" onClick={() => {
-                    setShowSideBar(true); 
-                    if(!clientIsLogged && !clientDetails){
-                        navigate("/login")
-                    } }}
-                     >
-                        <CircleUserRound className="text-gray-400 bg-gray-200 rounded-sm p-1 h-12 w-12 cursor-pointer" />
+                <div className={`flex lg:hidden absolute w-full justify-between items-center top-0 right-0 p-4 ${type === "panel" ? "border-b pb-4" : null} border-gray-300`}
+                >
+                    {type === "panel" ?
+                        <img src={Logo} alt="Slotify logo" className="h-8 ml-4" />
+                        : null
+                    }
+                    {clientDetails?.pictureURL ?
+                        <img
+                            className="rounded-sm ml-auto h-12 w-12 cursor-pointer"
+                            src={clientDetails.pictureURL}
+                            alt="Profile picture"
+                            onClick={() => {
+                                if (!clientIsLogged && !clientDetails) {
+                                    navigate("/login")
+                                }
+                                setShowSideBar(true);
+                            }} />
+                        :
+                        <CircleUserRound
+                            className="text-gray-400 bg-gray-200 rounded-sm ml-auto p-1 h-12 w-12 cursor-pointer"
+                            onClick={() => {
+                                if (!clientIsLogged && !clientDetails) {
+                                    navigate("/login")
+                                }
+                                setShowSideBar(true);
+                            }}
+                        />
+                    }
                 </div>
             </nav>
             {clientIsLogged && clientDetails ?
@@ -113,7 +134,16 @@ export const NavBarClient = ({ type }: navBarTypeProps) => {
                                 <X className="cursor-pointer" onClick={() => setShowSideBar(false)}></X>
                             </div>
                             <div className="flex items-center py-4">
-                                <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-12 w-12" />
+                                {clientDetails?.pictureURL ?
+                                    <img
+                                        className="rounded-md p-1 h-12 w-12"
+                                        src={clientDetails.pictureURL}
+                                        alt="Profile picture"
+                                    />
+                                    :
+                                    <CircleUserRound className="text-gray-400 bg-gray-200 rounded-md p-1 h-12 w-12" />
+                                }
+
                                 <div className="ml-4">
                                     <p className="font-medium">{clientDetails.name}</p>
                                     <p className="text-sm">{clientDetails.email}</p>
