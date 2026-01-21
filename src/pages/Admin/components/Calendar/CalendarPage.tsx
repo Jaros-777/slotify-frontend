@@ -107,7 +107,7 @@ export const CalendarPage = () => {
 
     return (
         <section className="flex h-full w-full bg-white">
-            <div className="w-1/6 border-r-1 border-b-1 border-gray-300 p-6">
+            <div className="w-1/6 min-w-60 border-r-1 border-b-1 border-gray-300 p-6">
                 {/* <button className="bg-blue-500 text-white px-6 py-2 rounded-md text-lg font-medium cursor-pointer hover:bg-blue-600 duration-200 w-full">
                     <img src="#" alt="" />
                     <span>CREATE NEW</span>
