@@ -65,21 +65,25 @@ export const ClientBookings = () => {
     }, [])
 
     if (isAuthLoading) {
-        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
+        return <div className="mt-24 lg:mt-0">
+            <LoadingPage text="Checking authentication..." ></LoadingPage>;
+        </div>
     }
 
     if (loadBookings) {
-        return <LoadingPage text="Loading data..." ></LoadingPage>;
+        return <div className="mt-24 lg:mt-0">
+            <LoadingPage text="Loading data..." ></LoadingPage>;
+        </div>
     }
 
     return (
-        <div className="p-4 flex flex-col items-center">
-            <h1 className="text-2xl font-medium min-w-300">Bookings</h1>
-            <div className="text-lg my-4 min-w-300">
+        <div className="p-4 flex flex-col items-center mt-20 lg:mt-0">
+            <h1 className="text-2xl font-medium w-full ml-2 max-w-300">Bookings</h1>
+            <div className="text-lg my-4 w-full max-w-300">
                 <button className={`py-2 px-4 font-medium cursor-pointer ${selectedTime === "future" ? "text-blue-500 underline" : null} `} onClick={() => setSelectedTime("future")}>UPCOMING</button>
                 <button className={`py-2 px-4 font-medium cursor-pointer ${selectedTime === "prev" ? "text-blue-500 underline" : null} `} onClick={() => setSelectedTime("prev")}>HISTORY</button>
             </div>
-            <ul className="min-w-300">
+            <ul className="w-full max-w-300">
                 {bookings.length === 0 ?
                     selectedTime === "future" ?
                         <p className="ml-4">You don’t have any upcoming bookings.</p>
@@ -90,25 +94,29 @@ export const ClientBookings = () => {
                         const date = new Date(e.date);
                         return (
 
-                            <li key={e.eventId} className="flex items-center border border-gray-300 rounded-2xl mb-2">
-                                <div className="flex flex-col items-center justify-center py-2 w-26">
-                                    <p className="font-medium">{monthTypes[date.getMonth()]}</p>
-                                    <p className="font-bold">{date.getDate()}</p>
-                                    <p className="font-medium">{String(date.getHours()).padStart(2, "0")}:{String(date.getMinutes()).padStart(2, "0")}</p>
+                            <li key={e.eventId} className="flex flex-col md:flex-row md:items-center border border-gray-300 rounded-2xl mb-2">
+                                <div className="flex flex-row md:flex-col items-center md:justify-center py-2 w-full md:w-26">
+                                    <p className="ml-6 md:ml-0 font-medium">{monthTypes[date.getMonth()]}</p>
+                                    <p className="ml-1 md:ml-0 font-medium md:font-bold">{date.getDate()}</p>
+                                    <p className=" md:hidden font-medium">,{date.getFullYear()}</p>
+                                    <p className="ml-2 md:ml-0 font-medium">{String(date.getHours()).padStart(2, "0")}:{String(date.getMinutes()).padStart(2, "0")}</p>
 
                                 </div>
-                                <div className="flex border-l border-gray-300 h-full py-4 pl-6 cursor-pointer" onClick={() => navigate(`/${e.businessName}`)}>
-                                    {e.businessProfilePicURL ?
-                                        <img className="h-20 overflow-hidden rounded-full flex items-center justify-center" src={e.businessProfilePicURL} alt="Business profile picture" />
-                                        :
-                                        <Image className="h-20 aspect-square text-gray-400" />}
+                                <div className="flex items-center">
+                                    <div className="flex border-l border-gray-300 h-full md:py-4 pl-6 cursor-pointer" onClick={() => navigate(`/${e.businessName}`)}>
+                                        {e.businessProfilePicURL ?
+                                            <img className="h-20 w-20 overflow-hidden rounded-full flex items-center justify-center shrink-0" src={e.businessProfilePicURL} alt="Business profile picture" />
+                                            :
+                                            <Image className="h-20 aspect-square text-gray-400" />}
+                                    </div>
+                                    <div className="ml-4 p-4">
+                                        <p className="font-bold">{e.serviceName}</p>
+                                        <p className="mt-2">{e.businessName}</p>
+                                    </div>
                                 </div>
-                                <div className="ml-4 p-4">
-                                    <p className="font-bold">{e.serviceName}</p>
-                                    <p className="mt-2">{e.businessName}</p>
-                                </div>
-                                <div className="ml-auto py-4 pr-8">
-                                    <p className="font-bold">{e.servicePrice} USD</p>
+
+                                <div className="md:ml-auto pb-4 md:py-4 pr-8">
+                                    <p className="ml-34 md:ml-0 font-bold">{e.servicePrice} USD</p>
                                 </div>
                             </li>
                         )
