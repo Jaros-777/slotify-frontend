@@ -212,8 +212,8 @@ export const Reservation = () => {
                         </div>
                         : null
                     }
-                    <div className="flex w-full justify-between">
-                        <div className="w-3/5">
+                    <div className="flex flex-col md:flex-row w-full justify-between">
+                        <div className="w-full md:w-3/5">
 
                             {businessDetail.slogan ?
                                 <div className="w-full mt-12">
@@ -232,7 +232,7 @@ export const Reservation = () => {
                             {businessDetail.websiteURL || businessDetail.facebookURL ?
                                 <div>
                                     <h2 className="font-bold mt-4 text-lg">Contact details</h2>
-                                    <div className="flex mt-4">
+                                    <div className="flex flex-col sm:flex-row  mt-4">
                                         {businessDetail.websiteURL ?
                                             <a href={businessDetail.websiteURL} className="flex items-center" target="_blank">
                                                 <Globe className="h-5"></Globe>
@@ -241,7 +241,7 @@ export const Reservation = () => {
                                             : null
                                         }
                                         {businessDetail.facebookURL ?
-                                            <a href={businessDetail.facebookURL} className="flex ml-6" target="_blank">
+                                            <a href={businessDetail.facebookURL} className="flex mt-4 sm:mt-0 sm:ml-6 items-center" target="_blank">
                                                 <img src={FacebookLogo} alt="Facebok logo" className="h-5" />
                                                 <p className="ml-4 underline text-nowrap">Facebook page</p>
                                             </a>
@@ -276,11 +276,10 @@ export const Reservation = () => {
                     </div>
                 </section>
                 {businessDetail.address.lat && businessDetail.address.lng ?
-                    <section className="px-8 py-4 w-full max-w-[80rem] mt-4">
-                        <div>
+                    <section className="px-4 md:px-8 py-4 w-full max-w-[80rem] mt-4">
                             <h2 className="text-xl font-bold">Address</h2>
-                            <div className="border border-gray-300 rounded-md w-3/5 p-4 mt-4">
-                                <div className="mt-4 h-60">
+                            <div className="border border-gray-300 rounded-md w-full p-4 mt-4">
+                                <div className="mt-4 h-90">
                                     <MapContainer
                                         center={[businessDetail.address.lat, businessDetail.address.lng]}
                                         zoom={13}
@@ -306,7 +305,6 @@ export const Reservation = () => {
                                     <a href={`https://www.google.com/maps/dir/?api=1&origin=current+location&destination=${businessDetail.address.lat},${businessDetail.address.lng}&travelmode=driving`} className="underline font-bold" target="_blank">Get directions</a>
                                 </div>
                             </div>
-                        </div>
                     </section>
                     : null
                 }
