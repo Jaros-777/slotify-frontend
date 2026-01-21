@@ -87,83 +87,92 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic, as
 
         setPic(croppedFile);
         setShowSavingState(false)
+        document.body.style.overflow = ""
         setShowImageFileContainer(false);
     };
 
 
     if (!file) return null;
 
+    useEffect(() => {
+        document.body.style.overflow = "hidden"
+    }, [])
+
 
     return (
-        <div className="bg-gray-400/50 absolute h-full w-full top-0 left-0 z-100 overflow-hidden flex items-center justify-center px-4 xl:px-0">
-            <div className="bg-white w-full xl:w-3/4 rounded-2xl">
-                <div className='flex justify-between py-4 px-8'>
+        <div className="bg-gray-400/50 absolute h-full w-full top-0 left-0 z-100 flex justify-center">
+            <div className="bg-white w-full xl:w-3/4 max-h-160 my-10 rounded-2xl flex flex-col items-center mx-4 xl:mx-0">
+                <div className='flex justify-between py-4 px-8 w-full'>
                     <p className='font-bold'>Reposition</p>
-                    <button onClick={() => {setShowImageFileContainer(false), setPic(null) }} className='cursor-pointer'><X /></button>
+                    <button onClick={() => { setShowImageFileContainer(false), setPic(null), document.body.style.overflow = "" }} className='cursor-pointer'><X /></button>
                 </div>
-                <div className='h-80 w-full flex justify-center items-center'>
-                    <Cropper
-                        image={URL.createObjectURL(file)}
-                        crop={crop}
-                        zoom={zoom}
-                        rotation={rotation}
-                        aspect={aspectRatio}
-                        onCropChange={setCrop}
-                        onZoomChange={setZoom}
-                        onRotationChange={setRotation}
-                        onCropComplete={onCropComplete}
-                        style={{
-                            containerStyle: {
-                                width: "100%",
-                                height: "100%",
-                                position: "relative",
-                            },
-                            mediaStyle: {
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                objectFit: "contain",
-                            },
-                        }}
-                    />
-                </div>
-                <div className='flex flex-col md:flex-row justify-between py-8 px-4 md:px-8 items-center'>
-                    <div className='w-full md:w-3/4 flex '>
-                        <button className='border border-gray-300 rounded-sm mr-4 p-2 cursor-pointer'><Minus className='text-gray-500' /></button>
-                        <input
-                            type="range"
-                            min={1}
-                            max={3}
-                            step={0.01}
-                            value={zoom}
-                            onChange={(e) => setZoom(Number(e.target.value))}
-                            className='w-full cursor-pointer' />
-                        <button className='border border-gray-300 rounded-sm ml-4 p-2 cursor-pointer'><Plus className='text-gray-500' /></button>
+                <div className=" overflow-y-scroll w-full mb-4 flex flex-col items-center">
+                    <div className='h-80 w-[calc(100%-2rem)] flex justify-center items-center'>
+                        <Cropper
+                            image={URL.createObjectURL(file)}
+                            crop={crop}
+                            zoom={zoom}
+                            rotation={rotation}
+                            aspect={aspectRatio}
+                            onCropChange={setCrop}
+                            onZoomChange={setZoom}
+                            onRotationChange={setRotation}
+                            onCropComplete={onCropComplete}
+                            style={{
+                                containerStyle: {
+                                    width: "100%",
+                                    height: "100%",
+                                    position: "relative",
+                                },
+                                mediaStyle: {
+                                    maxWidth: "100%",
+                                    maxHeight: "100%",
+                                    objectFit: "contain",
+                                },
+                            }}
+                        />
                     </div>
-                    <div className="mt-4 md:mt-0">
-                        <button
-                            className='border border-gray-400 rounded-sm p-2 mr-4 cursor-pointer'
-                            onClick={() => setRotation(rotation - 90)}
-                        ><RotateCcw className='text-gray-500' /></button>
-                        <button
-                            className='border border-gray-400 rounded-sm p-2 cursor-pointer'
-                            onClick={() => setRotation(rotation + 90)}
-                        ><RotateCw className='text-gray-500' /></button>
+                    <div className='flex flex-col md:flex-row justify-between py-8 px-4 md:px-8 items-center w-full'>
+                        <div className='w-full md:w-3/4 flex '>
+                            <button className='border border-gray-300 rounded-sm mr-4 p-2 cursor-pointer'><Minus className='text-gray-500' /></button>
+                            <input
+                                type="range"
+                                min={1}
+                                max={3}
+                                step={0.01}
+                                value={zoom}
+                                onChange={(e) => setZoom(Number(e.target.value))}
+                                className='w-full cursor-pointer' />
+                            <button className='border border-gray-300 rounded-sm ml-4 p-2 cursor-pointer'><Plus className='text-gray-500' /></button>
+                        </div>
+                        <div className="mt-4 md:mt-0">
+                            <button
+                                className='border border-gray-400 rounded-sm p-2 mr-4 cursor-pointer'
+                                onClick={() => setRotation(rotation - 90)}
+                            ><RotateCcw className='text-gray-500' /></button>
+                            <button
+                                className='border border-gray-400 rounded-sm p-2 cursor-pointer'
+                                onClick={() => setRotation(rotation + 90)}
+                            ><RotateCw className='text-gray-500' /></button>
+                        </div>
                     </div>
-                </div>
-                <div className='p-8 flex flex-col justify-end border-t border-gray-300'>
-                    <p className="text-end mb-4 text-red-500">The change won't be visible immediately. It may take up to 5 minutes.</p>
-                    <div className="flex justify-end">
-                        <button className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => {setShowImageFileContainer(false), setPic(null)}}>CANCEL</button>
-                        <button
-                            className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
-                            onClick={handleSave}
-                        >
-                            {showSavingState ?
-                                <Loader className="animate-spin"></Loader>
-                                :
-                                <p>SAVE</p>
-                            }
-                        </button>
+                    <div className='p-8 pb-4 flex flex-col justify-end border-t border-gray-300 w-full'>
+                        <p className="text-end mb-4 text-red-500">The change won't be visible immediately. It may take up to 5 minutes.</p>
+                        <div className="flex justify-end">
+                            <button
+                                className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200"
+                                onClick={() => { setShowImageFileContainer(false), setPic(null), document.body.style.overflow = "" }}>CANCEL</button>
+                            <button
+                                className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
+                                onClick={handleSave}
+                            >
+                                {showSavingState ?
+                                    <Loader className="animate-spin"></Loader>
+                                    :
+                                    <p>SAVE</p>
+                                }
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
