@@ -15,6 +15,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
     const handleCreateReservation = (e: React.FormEvent) => {
         e.preventDefault()
         onSuccess()
+        window.scrollTo(0,0)
     }
 
     const handleUpdateReservation = (field: string, value: string | number | boolean) => {
@@ -23,17 +24,18 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                 ...reservationDetails,
                 [field]: value
             })
+       
     }
 
 
     return (
         <>
             <h1 className='pl-4 py-2 font-bold text-xl'>Select a time</h1>
-            <div className='border border-gray-300 rounded-md ml-6 w-5/6'>
+            <div className='border border-gray-300 rounded-md w-full px-6 lg:px-0 lg:ml-6 lg:w-5/6'>
                 <h2 className='pl-4 py-4 font-bold text-l'>Personal information</h2>
                 <form className='border-t border-gray-300 flex flex-col p-4' id="client-details-form" onSubmit={(e) => handleCreateReservation(e)}>
-                    <div className="flex justify-between w-full">
-                        <div className="w-2/5">
+                    <div className="flex flex-col sm:flex-row justify-between w-full">
+                        <div className="w-full sm:w-2/5">
                             <p>First name</p>
                             <input 
                             required 
@@ -43,7 +45,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                             onChange={(e)=>handleUpdateReservation("firstName", e.target.value)}
                              />
                         </div>
-                        <div className="w-2/5">
+                        <div className="w-full sm:w-2/5">
                             <p>Last name</p>
                             <input 
                             required 
@@ -54,17 +56,17 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                              />
                         </div>
                     </div>
-                    <div>
+                    <div className="w-full">
                         <p>Email</p>
                         <input 
                         required 
                         type="email" 
-                        className="border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500"
+                        className="border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500 w-full"
                         value={reservationDetails?.email}
                         onChange={(e)=>handleUpdateReservation("email", e.target.value)}
                          />
                     </div>
-                    <div>
+                    <div className="w-full">
                         <p>Phone number</p>
                         <input 
                         required 
@@ -72,14 +74,14 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                         maxLength={9}
                         type="tel"
                         pattern="[0-9]+"
-                        className="border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500"
+                        className="border border-gray-300 rounded-md px-2 py-1 focus:outline-blue-500 w-full"
                         value={reservationDetails?.phone}
                         onChange={(e)=>handleUpdateReservation("phone", e.target.value)}
                          />
                     </div>
                 </form>
             </div>
-            <div className='border border-gray-300 rounded-md ml-6 mt-4 w-5/6'>
+            <div className='border border-gray-300 rounded-md px-6 lg:px-0 lg:ml-6 mt-4 w-full lg:w-5/6'>
                 <div className="flex justify-between px-4 py-4">
                     <h2 className='font-bold text-l'>Booking note</h2>
                     {showBookingNote ?
@@ -99,7 +101,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                     : null
                 }
             </div>
-            <div className='border border-gray-300 rounded-md ml-6 mt-4 w-5/6'>
+            <div className='border border-gray-300 rounded-md px-6 lg:px-0 lg:ml-6 mt-4 w-full lg:w-5/6'>
                 <h2 className='p-4 font-bold text-l'>Cancellation policy</h2>
                 <div className='border-t border-gray-300 flex flex-col p-4'>
                     <div className="flex">
@@ -107,7 +109,7 @@ export const ClientDetails = ({ onSuccess, setReservationDetails, reservationDet
                     </div>
                 </div>
             </div>
-            <div className='border border-gray-300 rounded-md ml-6 mt-4 w-5/6'>
+            <div className='border border-gray-300 rounded-md px-6 lg:px-0 lg:ml-6 mt-4 w-full lg:w-5/6'>
                 <h2 className='p-4 font-bold text-l'>Agreements</h2>
                 <div className='border-t border-gray-300 flex flex-col p-4'>
                     <div className="flex">

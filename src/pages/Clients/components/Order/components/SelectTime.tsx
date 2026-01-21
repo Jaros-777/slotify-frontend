@@ -159,11 +159,11 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
     return (
         <>
             <h1 className='pl-4 py-2 font-bold text-xl'>Select a time</h1>
-            <div className='border border-gray-300 rounded-md ml-6 w-5/6'>
+            <div className='border border-gray-300 rounded-md px-6 lg:px-0 lg:ml-6 w-full lg:w-5/6'>
                 <h2 className='pl-4 py-4 font-bold text-l'>Date and time</h2>
-                <div className='border-t border-gray-300 flex'>
+                <div className='border-t border-gray-300 flex flex-col lg:flex-row items-center lg:items-start'>
                     <Calendar
-                        className="bg-white p-4 rounded-xl shadow aspect-square w-2/5"
+                        className="bg-white p-4 rounded-xl shadow aspect-square w-full lg:w-2/5"
                         locale='en-EN'
                         prev2Label={null}
                         next2Label={null}
@@ -197,7 +197,7 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
                         }}
                     />
 
-                    <div className='border-l border-gray-300 w-3/5'>
+                    <div className='lg:border-l border-gray-300 w-full lg:w-3/5'>
                         {selectedDay && (
                             <>
                                 <div className="p-3 rounded-xl  text-center">

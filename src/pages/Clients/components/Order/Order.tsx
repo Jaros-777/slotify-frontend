@@ -114,9 +114,9 @@ export const Order = () => {
                         <p className="text-white font-medium">3</p>
                     </div>
                 </div >
-                <div className="flex flex-1">
+                <div className="flex flex-col lg:flex-row flex-1">
 
-                    <div className="w-3/5 p-6">
+                    <div className="w-full lg:w-3/5 p-6">
                         {currentSection === "time" ?
                             <SelectTime
                                 setReservationDetails={setReservationDetails}
@@ -136,7 +136,7 @@ export const Order = () => {
                         }
 
                     </div>
-                    <div className="ml-auto w-2/5">
+                    <div className="lg:ml-auto w-full lg:w-2/5">
                         <div className="bg-gray-200 px-6 py-10">
                             <h2 className="text-3xl font-bold">Summary</h2>
                             <div className="bg-white p-6 mt-6 rounded-2xl">
@@ -163,7 +163,7 @@ export const Order = () => {
                                             <p className="font-medium">{orderData.serviceDTO.name}</p>
                                             <p className="font-bold">{orderData.serviceDTO.price} USD</p>
                                         </div>
-                                        <div className="flex w-full items-center mt-2">
+                                        <div className="flex flex-col lg:flex-row w-full items-start lg:items-center mt-2">
                                             <p className="">{orderData.serviceDTO.duration / 60} minutes</p>
                                             {currentSection !== "time" && reservationDetails?.chosenDate ?
                                                 <>
@@ -196,7 +196,7 @@ export const Order = () => {
                                 </div>
                                 {sectionFinished && currentSection === "time" ?
                                     <button
-                                        onClick={() => { setCurrentSection("details"); setSectionFinished(false) }}
+                                        onClick={() => { setCurrentSection("details"); setSectionFinished(false); window.scrollTo(0,0) }}
                                         className="bg-blue-500 text-white font-medium w-full px-4 py-2 mt-6 rounded-md cursor-pointer duration-200 hover:bg-blue-600">CONTINUE</button>
                                     : null
                                 }
