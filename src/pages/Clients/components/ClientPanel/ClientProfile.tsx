@@ -78,22 +78,26 @@ export const ClientProfile = () => {
     }, [clientDetails]);
 
     if (isAuthLoading) {
-        return <LoadingPage text="Checking authentication..." ></LoadingPage>;
+        return <div className="mt-24 lg:mt-0">
+            <LoadingPage text="Checking authentication..." ></LoadingPage>;
+        </div>
     }
     if (!clientDetails || !changedClientData) {
-        return <LoadingPage text="Loading data..." ></LoadingPage>;
+        return <div className="mt-24 lg:mt-0">
+            <LoadingPage text="Loading data..." ></LoadingPage>;
+        </div>
     }
 
     return (
-        <div className="p-4 flex flex-col items-center relative">
+        <div className="p-4 flex flex-col items-center mt-20 lg:mt-0">
             {showPictureImageFileContainer ?
                 <ImageFileContainer file={clientPic} setShowImageFileContainer={setShowPictureImageFileContainer} setPic={setClientPic} aspectRatio={1} /> : null
             }
             <h1 className="text-2xl font-medium w-full max-w-300">User profile</h1>
             <div className="border border-gray-300 rounded-2xl p-4 mt-8 w-full max-w-300">
                 <p className="text-xl font-medium pb-4 border-b border-gray-300">Profile details</p>
-                <div className=" p-4 mt-8 flex">
-                    <div className="relative w-36 h-36 rounded-2xl border-2 border-blue-600 flex items-center justify-center">
+                <div className=" p-4 mt-8 flex flex-col md:flex-row items-center md:items-start">
+                    <div className="relative w-36 h-36 rounded-2xl border-2 border-blue-600">
                         {clientPic ?
                             <img className="w-full h-full overflow-hidden rounded-2xl flex items-center justify-center" src={URL.createObjectURL(clientPic)} alt="Background picture" />
                             :
@@ -116,7 +120,7 @@ export const ClientProfile = () => {
                         ></input>
 
                     </div>
-                    <form onSubmit={e => { e.preventDefault(); handleUpdateClientDetails() }} className="ml-20 w-1/2">
+                    <form onSubmit={e => { e.preventDefault(); handleUpdateClientDetails() }} className="mt-8 md:mt-0 md:ml-20 w-full md:w-1/2">
                         <p>Full name</p>
                         <input
                             required
@@ -169,16 +173,16 @@ export const ClientProfile = () => {
                     </form>
                 </div>
             </div>
-            <div className="border border-gray-300 rounded-2xl p-4 mt-8 flex justify-between w-full max-w-300">
+            <div className="border border-gray-300 rounded-2xl p-4 mt-8 flex flex-col md:flex-row justify-between w-full max-w-300">
                 <div>
                     <p className="text-xl font-medium">Password</p>
                     <p className="mt-2">Set or change your account password.</p>
                 </div>
                 <button
                     onClick={() => alert("This section isn't implemented yet!")}
-                    className="ml-12 border border-gray-300 px-6 py-2 rounded-md text-md font-medium flex items-center cursor-pointer hover:bg-gray-300 duration-200">
+                    className="mt-6 md:mt-0 md:ml-12 border border-gray-300 px-6 py-2 rounded-md text-md font-medium flex items-center justify-center cursor-pointer hover:bg-gray-300 duration-200">
                     <LockKeyhole className="mr-4 h-[1.5em]"></LockKeyhole>
-                    <span>CHANGE PASSWORD</span>
+                    <span >CHANGE PASSWORD</span>
                 </button>
             </div>
             {showInfoContainer ?
