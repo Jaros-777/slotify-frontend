@@ -95,11 +95,11 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic, as
 
 
     return (
-        <div className="bg-gray-400/50 absolute h-full w-full top-0 left-0 z-100 overflow-hidden flex items-center justify-center">
-            <div className="bg-white w-3/4 rounded-2xl">
+        <div className="bg-gray-400/50 absolute h-full w-full top-0 left-0 z-100 overflow-hidden flex items-center justify-center px-4 xl:px-0">
+            <div className="bg-white w-full xl:w-3/4 rounded-2xl">
                 <div className='flex justify-between py-4 px-8'>
                     <p className='font-bold'>Reposition</p>
-                    <button onClick={() => setShowImageFileContainer(false)} className='cursor-pointer'><X /></button>
+                    <button onClick={() => {setShowImageFileContainer(false), setPic(null) }} className='cursor-pointer'><X /></button>
                 </div>
                 <div className='h-80 w-full flex justify-center items-center'>
                     <Cropper
@@ -126,8 +126,8 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic, as
                         }}
                     />
                 </div>
-                <div className='flex justify-between p-8 items-center'>
-                    <div className='w-3/4 flex '>
+                <div className='flex flex-col md:flex-row justify-between py-8 px-4 md:px-8 items-center'>
+                    <div className='w-full md:w-3/4 flex '>
                         <button className='border border-gray-300 rounded-sm mr-4 p-2 cursor-pointer'><Minus className='text-gray-500' /></button>
                         <input
                             type="range"
@@ -139,7 +139,7 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic, as
                             className='w-full cursor-pointer' />
                         <button className='border border-gray-300 rounded-sm ml-4 p-2 cursor-pointer'><Plus className='text-gray-500' /></button>
                     </div>
-                    <div>
+                    <div className="mt-4 md:mt-0">
                         <button
                             className='border border-gray-400 rounded-sm p-2 mr-4 cursor-pointer'
                             onClick={() => setRotation(rotation - 90)}
@@ -153,7 +153,7 @@ export const ImageFileContainer = ({ file, setShowImageFileContainer, setPic, as
                 <div className='p-8 flex flex-col justify-end border-t border-gray-300'>
                     <p className="text-end mb-4 text-red-500">The change won't be visible immediately. It may take up to 5 minutes.</p>
                     <div className="flex justify-end">
-                        <button className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => setShowImageFileContainer(false)}>CANCEL</button>
+                        <button className="bg-red-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-red-600 duration-200" onClick={() => {setShowImageFileContainer(false), setPic(null)}}>CANCEL</button>
                         <button
                             className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-md text-md font-medium cursor-pointer hover:bg-blue-600 duration-200"
                             onClick={handleSave}
