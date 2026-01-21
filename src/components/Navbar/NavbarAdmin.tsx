@@ -142,19 +142,19 @@ export const NavbarAdmin = () => {
             <a className="h-[100%] flex items-center justify-center shrink-0" href="/"><img className="h-[50%]" src={Logo} alt="Slotify" /></a>
 
             <div className="hidden lg:flex">
-                <button onClick={() => { navigate("/admin/calendar"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={() => { navigate("/admin/calendar"); window.scrollTo(0, 0), setActiveSection("calendar") }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <CalendarDays className={activeSection === "calendar" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
                 </button>
-                <button onClick={() => { navigate("/admin/client"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={() => { navigate("/admin/client"); window.scrollTo(0, 0), setActiveSection("client") }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <User className={activeSection === "client" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "client" ? "text-blue-500" : ""}>Clients</span>
                 </button>
-                <button onClick={() => { navigate("/admin/booking/get-booking"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={() => { navigate("/admin/booking/get-booking"); window.scrollTo(0, 0), setActiveSection("booking") }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <Link className={`${activeSection === "booking" ? "text-blue-500" : null} mr-4 h-[1.5em] shrink-0`} />
                     <span className={`${activeSection === "booking" ? "text-blue-500" : ""} text-nowrap`}>Online booking</span>
                 </button>
-                <button onClick={() => { navigate("/admin/settings/availability"); window.scrollTo(0, 0) }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
+                <button onClick={() => { navigate("/admin/settings/availability"); window.scrollTo(0, 0), setActiveSection("settings") }} className="text-lg mx-4 font-medium cursor-pointer hover:text-blue-400 duration-200 flex items-center justify-center">
                     <Settings className={activeSection === "settings" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                     <span className={activeSection === "settings" ? "text-blue-500" : ""}>Settings</span>
                 </button>
@@ -224,28 +224,28 @@ export const NavbarAdmin = () => {
                                     }
                                 </li>
                                 <li
-                                    onClick={() => { navigate("/admin/calendar"); window.scrollTo(0, 0) }}
+                                    onClick={() => { navigate("/admin/calendar"); window.scrollTo(0, 0), setActiveSection("calendar") }}
                                     className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
                                 >
                                     <CalendarDays className={activeSection === "calendar" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                                     <span className={activeSection === "calendar" ? "text-blue-500" : ""}>Calendar</span>
                                 </li>
                                 <li
-                                    onClick={() => { navigate("/admin/client"); window.scrollTo(0, 0) }}
+                                    onClick={() => { navigate("/admin/client"); window.scrollTo(0, 0), setActiveSection("client") }}
                                     className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
                                 >
                                     <User className={activeSection === "client" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
                                     <span className={activeSection === "client" ? "text-blue-500" : ""}>Clients</span>
                                 </li>
                                 <li
-                                    onClick={() => { navigate("/admin/booking/get-booking"); window.scrollTo(0, 0) }}
+                                    onClick={() => { navigate("/admin/booking/get-booking"); window.scrollTo(0, 0), setActiveSection("booking") }}
                                     className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
                                 >
                                     <Link className={`${activeSection === "booking" ? "text-blue-500" : null} mr-4 h-[1.5em] shrink-0`} />
                                     <span className={`${activeSection === "booking" ? "text-blue-500" : ""} text-nowrap`}>Online booking</span>
                                 </li>
                                 <li
-                                    onClick={() => { navigate("/admin/settings/availability"); window.scrollTo(0, 0) }}
+                                    onClick={() => { navigate("/admin/settings/availability"); window.scrollTo(0, 0), setActiveSection("settings") }}
                                     className="px-6 py-2 cursor-pointer hover:text-blue-400 duration-200 flex items-center border-t-1 border-gray-300"
                                 >
                                     <Settings className={activeSection === "settings" ? "text-blue-500 mr-4 h-[1.5em]" : "mr-4 h-[1.5em]"} />
