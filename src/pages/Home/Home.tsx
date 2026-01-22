@@ -8,31 +8,31 @@ import { Pricing } from './components/Pricing'
 
 function Home() {
 
-  const [showInfo, setShowInfo] = useState<boolean>(false)
+  // const [showInfo, setShowInfo] = useState<boolean>(false)
   
   
-  useEffect(() => {
-          if (showInfo) {
-              document.body.style.overflow = "hidden"
-          } else {
-              document.body.style.overflow = ""
-          }
+  // useEffect(() => {
+  //         if (showInfo) {
+  //             document.body.style.overflow = "hidden"
+  //         } else {
+  //             document.body.style.overflow = ""
+  //         }
   
-          return () => {
-              document.body.style.overflow = ""
-          }
-      }, [showInfo])
+  //         return () => {
+  //             document.body.style.overflow = ""
+  //         }
+  //     }, [showInfo])
 
-  useEffect(()=>{
-    const url = window.location.href.split("/")[2].slice(0,9)
-    if(url ==="localhost")
-      setShowInfo(false)
-  },[])
+  // useEffect(()=>{
+  //   const url = window.location.href.split("/")[2].slice(0,9)
+  //   if(url ==="localhost")
+  //     setShowInfo(false)
+  // },[])
 
   return (
     <>
       <main>
-        {showInfo ?
+        {/* {showInfo ?
           <div className='fixed inset-0 top-0 left-0 bg-gray-300/70 flex justify-center items-center'>
             <div className='w-[calc(100%-3rem)] max-w-150 bg-white border-2 border-gray-300 rounded-2xl p-4 flex flex-col items-center text-center'>
               <X className='ml-auto cursor-pointer  hover:bg-gray-300' onClick={()=>setShowInfo(false)}></X>
@@ -46,7 +46,7 @@ function Home() {
             </div>
           </div>
           : null
-        }
+        } */}
          <Hero />
         <Features />
         <WhySlotify/>
