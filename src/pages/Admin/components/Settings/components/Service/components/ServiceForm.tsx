@@ -60,7 +60,6 @@ export const ServiceForm = () => {
             duration: selecetedDuration.durationHours * 3600 + selecetedDuration.durationMinutes * 60,
         }
 
-
         if (id) {
             const payloadWithId = id ? { ...payload, id } : payload;
             axios.put(`${import.meta.env.VITE_APP_URL}/service`,
@@ -71,6 +70,26 @@ export const ServiceForm = () => {
                     }
                 }
             ).then(() => {
+                if (servicePic != null) {
+                    const formData = new FormData()
+
+                    formData.append("id", id.toString())
+                    formData.append("servicePic", servicePic)
+
+                    axios.post(`${import.meta.env.VITE_APP_URL}/service/picture`,
+                        formData,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${userToken}`
+                            }
+                        }
+                    )
+                        .then(() => {
+
+                        }).catch(function (error) {
+                            console.log(error);
+                        })
+                }
             }).catch((error) => {
                 console.log(error)
             })
@@ -88,9 +107,7 @@ export const ServiceForm = () => {
 
                 if (servicePic != null) {
                     const formData = new FormData()
-                    if (id != null) {
-                        formData.append("id", id.toString())
-                    } else if (createdServiceId)
+                    if (createdServiceId)
                         formData.append("id", createdServiceId.toString())
 
                     formData.append("servicePic", servicePic)
