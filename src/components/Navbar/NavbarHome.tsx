@@ -41,7 +41,7 @@ export const NavbarHome = () => {
 
                                     {links.map((_, index) => (
 
-                                        <a href={links[index].href} className="mt-4 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200 flex justify-between"
+                                        <a key={index} href={links[index].href} className="mt-4 text-lg font-medium cursor-pointer hover:text-blue-400 duration-200 flex justify-between"
                                         >{links[index].label}<MoveRight /></a>
 
                                     ))}
