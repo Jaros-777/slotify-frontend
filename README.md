@@ -9,6 +9,8 @@
 **Slotify Frontend** is the client-side application for the Slotify booking system, built with Vite + React.js (TypeScript). It provides a modern and interactive interface to communicate with the Slotify backend.
 
 ---
+# 🌍 Live Demo
+### 🔗[LIVE DEMO](https://slotify7.netlify.app/)
 
 ## ✨ Features
 - ⚡ **Fast SPA:** Built with Vite for lightning-fast development and production builds.  
@@ -140,6 +142,7 @@ Backend repo - https://github.com/Jaros-777/slotify-backend
 ## ⚖ License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
 
 
 
