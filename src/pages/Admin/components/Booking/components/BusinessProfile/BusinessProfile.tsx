@@ -61,32 +61,12 @@ export const BusinessProfile = () => {
     const handleUpdateBusinessProfile = async () => {
         setShowSavingState(true)
 
-        axios.put(`${import.meta.env.VITE_APP_URL}/business-profile`,
-            currentBusinessProfile,
-            {
-                headers: {
-                    'Authorization': `Bearer ${userToken}`
-                }
-            }
-        )
-            .then(response => {
+        try {
 
-            }).catch(function (error) {
-                console.log(error);
-            })
 
-        if (profilePic != null || backgroundPic != null) {
-            const formData = new FormData()
-            if (profilePic != null) {
-                formData.append("profilePic", profilePic)
-            }
 
-            if (backgroundPic != null) {
-                formData.append("backgroundPic", backgroundPic)
-            }
-
-            axios.post(`${import.meta.env.VITE_APP_URL}/business-profile/pictures`,
-                formData,
+            axios.put(`${import.meta.env.VITE_APP_URL}/business-profile`,
+                currentBusinessProfile,
                 {
                     headers: {
                         'Authorization': `Bearer ${userToken}`
@@ -98,12 +78,44 @@ export const BusinessProfile = () => {
                 }).catch(function (error) {
                     console.log(error);
                 })
+
+            if (profilePic != null || backgroundPic != null) {
+                const formData = new FormData()
+                if (profilePic != null) {
+                    formData.append("profilePic", profilePic)
+                }
+
+                if (backgroundPic != null) {
+                    formData.append("backgroundPic", backgroundPic)
+                }
+
+                axios.post(`${import.meta.env.VITE_APP_URL}/business-profile/pictures`,
+                    formData,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${userToken}`
+                        }
+                    }
+                )
+                    .then(response => {
+
+                    }).catch(function (error) {
+                        console.log(error);
+                    })
+            }
+
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setShowSavingState(false)
+            window.scrollTo(0, 0)
+            if(userToken)
+                handleFetchBusinessProfileData(userToken);
         }
 
 
-        setShowSavingState(false)
-        window.scrollTo(0, 0)
-        window.location.reload()
+
+        // window.location.reload()
     }
 
     const MapUpdater = ({ lat, lng }: MapUpdaterProps) => {
