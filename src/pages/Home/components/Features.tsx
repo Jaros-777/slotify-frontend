@@ -47,6 +47,7 @@ export const Features = () => {
                         <img
                             key={i}
                             src={img}
+                            loading="lazy"
                             alt="Feature Image"
                             className={`absolute max-w-5/6 max-h-[40rem] transition-opacity duration-150 ease-in-out ${currentIndex === i ? "opacity-100 z-10" : "opacity-0 z-0"}`}
                         />
