@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useCheckIsLogged } from "../../../../utlis/checkIsLoged";
 import { LoadingPage } from "../../../../../../../LoadingPage";
-import { X, Copy, Check,Plus } from "lucide-react"
+import { X, Copy, Check, Plus, ConciergeBell } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import SlotifyIcon from "@/assets/desk-bell-icon.webp"
 
 type EmbedConfig = {
     text: string
@@ -55,7 +56,7 @@ export const BookNowHTML = () => {
             font-size: 18px;"
             onmouseover="this.style.backgroundColor='${config.hoverColor}'" 
             onmouseout="this.style.backgroundColor='${config.mainColor}'">
-            <img src="http://localhost:5173/src/assets/desk-bell-white.webp" alt="Slotify logo" style="height: 20px; width: 20px;display: block;">
+            <img src="https://unpkg.com/lucide-static@latest/icons/concierge-bell.svg" alt="Slotify logo" style="height: 26px; width: 26px;display: block;  filter: brightness(0) invert(1)">
             <p style="text-wrap: nowrap; margin: 0; margin-left: 8px;">${config.text.toUpperCase()}</p>
         </a>`
 
@@ -98,14 +99,14 @@ export const BookNowHTML = () => {
     }
 
     const openColorPicker = () => {
-    colorInputRef.current?.click();
-};
+        colorInputRef.current?.click();
+    };
 
 
     useEffect(() => {
         (async () => {
             const token = await checkIsLogged();
-            if(token)
+            if (token)
                 fetchBusinessName(token)
         })();
     }, []);
@@ -133,7 +134,7 @@ export const BookNowHTML = () => {
                         <div className="border-t border-gray-300 p-6">
                             <div className="border border-gray-300 rounded-md p-4">
                                 <p className="text-xl font-bold border-b border-gray-300 pb-2">Live preview</p>
-                                <div className="pt-8 pb-4 ml-4">
+                                <div className="pt-8 pb-4 ml-4 flex items-center">
                                     <a href={businessUrl}
                                         target="_blank"
                                         style={{
@@ -155,10 +156,7 @@ export const BookNowHTML = () => {
                                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = config.hoverColor)}
                                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = config.mainColor)}
                                     >
-                                        <img
-                                            src="http://localhost:5173/src/assets/desk-bell-white.webp"
-                                            alt="Slotify logo"
-                                            style={{ height: "20px", width: "20px", display: "block" }} />
+                                        <ConciergeBell style={{ height: "26px", width: "26px", display: "block" }} />
                                         <span
                                             style={{ textWrap: "nowrap", margin: "0px", marginLeft: "8px" }}
                                         >{config.text.toUpperCase()}</span>
@@ -208,7 +206,7 @@ export const BookNowHTML = () => {
                                     <input
                                         type="color"
                                         ref={colorInputRef}
-                                        value={colors.includes(config.mainColor) ? "#fafcfc" : config.mainColor }
+                                        value={colors.includes(config.mainColor) ? "#fafcfc" : config.mainColor}
                                         onChange={(e) => setConfig(prev => ({
                                             ...prev,
                                             mainColor: e.target.value,
