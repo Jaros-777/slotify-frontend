@@ -40,8 +40,7 @@ export const Reservation = () => {
         await axios.get(`${import.meta.env.VITE_APP_URL}/business-page/${businessName}`)
             .then((response) => {
                 setBusinessDetail(response.data.businessProfileDTO)
-                const serData = response.data.servicesDTO
-                setServiceData(serData.filter((service: { isEditable: boolean }) => service.isEditable === true))
+                setServiceData(response.data.servicesDTO)
                 const sortedSchedule = response.data.availabilityDTO.sort((a: scheduleDay, b: scheduleDay) => a.dayOfWeek - b.dayOfWeek)
                 setSchedulePlan(sortedSchedule)
                 setLoadDetails(false)
@@ -75,7 +74,7 @@ export const Reservation = () => {
     useEffect(() => {
         (async () => {
             await handleValidPage()
-            setCurrentDayOfWeek(new Date().getDay())
+            setCurrentDayOfWeek(new Date().getDay()-1)
 
         })();
     }, []);
@@ -123,7 +122,7 @@ export const Reservation = () => {
                                         :
                                         <p className=" text-red-700 font-bold">Closed</p>
                                     }
-                                    {schedulePlan.filter(e => e.dayOfWeek === new Date().getDay())[0].isClose ?
+                                    {schedulePlan.find(e => e.dayOfWeek === (currentDayOfWeek))?.isClose ?
                                         null
                                         :
                                         <p className="ml-2">({schedulePlan[currentDayOfWeek].openHour} - {schedulePlan[currentDayOfWeek].closeHour})</p>
