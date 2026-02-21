@@ -67,6 +67,14 @@
   display: none !important;
 }
 
+.pending-event{
+  background-color: rgb(203, 245, 14)!important;
+  cursor: default;
+  &:focus{
+    outline: none;
+  }
+}
+
 .to-be-confirmed-event{
   background: repeating-linear-gradient(
     45deg,

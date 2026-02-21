@@ -237,7 +237,9 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
           if (event.bookingStatus === "VACATION") {
             localStorage.setItem("currentWeek", weekStartDate.toDateString())
             navigate(`/admin/settings/vacations/${event.id}`)
-          } else {
+          } else if(event.bookingStatus === "PENDING"){
+
+          }else {
             setNewEvent(event);
             const durationInMinutes = (event.endDate.getTime() - event.startDate.getTime()) / 60000;
             setSelectedDuration(durationInMinutes);
@@ -254,6 +256,11 @@ export const BigCalendar = ({ weekStartDate, onWeekChange, serviceData, events, 
           toolbar: (props) => <CustomToolbar {...props} currentViewDate={weekStartDate} />,
         }}
         eventPropGetter={(event: EventType) => {
+          if (event.bookingStatus === "PENDING") {
+            return {
+              className: "pending-event",
+            };
+          }
           if (event.bookingStatus === "VACATION") {
             return {
               className: "vacation-event",

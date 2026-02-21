@@ -8,6 +8,7 @@ import { dayTypes, monthTypes } from '../types/dayAndMonthNames';
 import axios from 'axios';
 import { LoadingPage } from '../../../../../LoadingPage';
 import { toLocalDateTimeString } from '../../../../Admin/components/Calendar/components/BigCalendar/utils/dateUtils';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 
@@ -27,21 +28,20 @@ interface bookedTimeType {
 
 
 export const SelectTime = ({ setReservationDetails, reservationDetails, availability, serviceDuration, setSectionFinished }: timeProps) => {
-
+    const { serviceId } = useParams()
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>()
     const [openHours, setOpenHours] = useState<string[]>([])
     const [bookedTime, setBookedTime] = useState<bookedTimeType[]>([])
+    
 
     const today = new Date();
 
     const fetchBookedTime = async (day: Date) => {
 
-        if (reservationDetails)
-            await axios.get(`${import.meta.env.VITE_APP_URL}/order/booked/${reservationDetails.serviceId}/${toLocalDateTimeString(day)}`)
+            await axios.get(`${import.meta.env.VITE_APP_URL}/order/booked/${serviceId}/${toLocalDateTimeString(day)}`)
                 .then(function (response) {
                     setBookedTime(response.data)
-
 
                 }).catch(function (error) {
                     console.log(error);
@@ -150,6 +150,14 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
 
     }, [bookedTime, selectedDay]);
 
+    useEffect(() => {
+        if (!reservationDetails?.chosenDate) {
+            setSelectedDay(null);
+            setSelectedTime(null);
+            setOpenHours([]);
+            setBookedTime([]);
+        }
+    }, [reservationDetails?.chosenDate]);
 
     if (!reservationDetails) {
         return <LoadingPage text='Loading data...'></LoadingPage>
@@ -161,7 +169,7 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
             <h1 className='pl-4 py-2 font-bold text-xl'>Select a time</h1>
             <div className='border border-gray-300 rounded-md px-6 lg:px-0 lg:ml-6 w-full lg:w-5/6'>
                 <h2 className='pl-4 py-4 font-bold text-l'>Date and time</h2>
-                <div className='border-t border-gray-300 flex flex-col lg:flex-row items-center lg:items-start'>
+                <div className='border-t border-gray-300 flex flex-col lg:flex-row items-center lg:items-stretch'>
                     <Calendar
                         className="bg-white p-4 rounded-xl shadow aspect-square w-full lg:w-2/5"
                         locale='en-EN'
@@ -197,10 +205,10 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
                         }}
                     />
 
-                    <div className='lg:border-l border-gray-300 w-full lg:w-3/5'>
+                    <div className='lg:border-l border-gray-300 w-full lg:w-3/5 flex flex-col'>
                         {selectedDay && (
                             <>
-                                <div className="p-3 rounded-xl  text-center">
+                                <div className="p-3 rounded-xl text-center">
                                     <p className='font-bold'>{dayTypes[selectedDay.getDay()]}, {monthTypes[selectedDay.getMonth()]} {selectedDay.getDate()}, {selectedDay.getFullYear()}</p>
                                 </div>
                                 {openHours.length > 0 ?
@@ -218,7 +226,9 @@ export const SelectTime = ({ setReservationDetails, reservationDetails, availabi
                                         }
                                     </ul>
                                     :
-                                    <p className='mt-6 font-medium w-full text-center'>No available hours</p>
+                                    <div className='flex-1 flex items-center justify-center'>
+                                        <p className='mb-6 lg:mb-0 font-medium w-full text-center'>No available hours</p>
+                                    </div>
                                 }
                             </>
 

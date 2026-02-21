@@ -8,5 +8,4 @@ export interface OrderResponse{
     phone?:string
     description?: string
     agreements?: boolean
-    loggedClient?: boolean
 }

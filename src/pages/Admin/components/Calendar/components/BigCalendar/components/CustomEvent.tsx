@@ -7,10 +7,14 @@ export const CustomEvent = ({ event }: { event: EventType }) => {
 
   return (
     <div className={`p-1 flex flex-col rounded-sm`}>
-      {event.clientName ?
-        <span className="font-semibold text-[0.7rem] ">{ event.clientName}</span>
-        :
-        <span className="font-semibold text-[2rem] ">{event.description}</span>
+      {
+        event.bookingStatus === "PENDING" ?
+          <span className="font-semibold text-[0.7rem] ">Booking pending...</span>
+          :
+          event.bookingStatus === "VACATION" ?
+            <span className="font-semibold text-[2rem] ">{event.description}</span>
+            :
+            <span className="font-semibold text-[0.7rem] ">{event.clientName}</span>
       }
       <span className=" text-[0.7rem] py-1 ">{currentService?.name}</span>
     </div>
