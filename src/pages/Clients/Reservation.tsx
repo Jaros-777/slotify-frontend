@@ -33,7 +33,6 @@ export const Reservation = () => {
     const navigate = useNavigate()
     const [showServiceDescription, setShowServiceDescription] = useState<string | null>()
 
-
     const handleValidPage = async () => {
         setLoadDetails(true)
 
@@ -74,7 +73,8 @@ export const Reservation = () => {
     useEffect(() => {
         (async () => {
             await handleValidPage()
-            setCurrentDayOfWeek(new Date().getDay()-1)
+
+            setCurrentDayOfWeek(new Date().getDay() == 0 ? 6 :new Date().getDay()-1)
 
         })();
     }, []);
